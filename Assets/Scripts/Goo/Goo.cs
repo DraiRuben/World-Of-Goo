@@ -53,7 +53,7 @@ public class Goo : MonoBehaviour
         if (m_isSelected)
         {
             //checks if the click was on top of a link between 2 goos, if yes, put the selected goo back there, otherwise just build
-            var overlapping = Physics2D.OverlapCircleAll(transform.position, 1.5f);
+            var overlapping = Physics2D.OverlapCircleAll(transform.position, 0.5f);
             foreach(var p in overlapping)
             {
                 if (p.name.Contains("Bar"))
@@ -68,10 +68,11 @@ public class Goo : MonoBehaviour
             //Try to attach it to the structure
             if (!m_validAnchors.Contains(null))
             {
-                DisablePreviewers();
                 Use();
+                DisablePreviewers();
+
             }
-            
+
         }
         else
         {
@@ -88,6 +89,11 @@ public class Goo : MonoBehaviour
         {
             transform.GetChild(i).GetComponent<Connection>().m_isInUse = false;
         }
+        EmptyAnchors();
+    }
+    private void EmptyAnchors()
+    {
+        for (int i = 0; i < m_validAnchors.Count; i++) m_validAnchors[i] = null;
     }
     public void Use()
     {
