@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class Goo : MonoBehaviour
 {
+    public bool move = true;
     [SerializeField]
     private protected bool m_IsUsed = false;
     private protected bool m_isSelected = false;
@@ -32,12 +33,10 @@ public class Goo : MonoBehaviour
         {
             var temp = gameObject.AddComponent<SpringJoint2D>();
             temp.enabled = false;
-            temp.frequency = 10f;
+            temp.frequency = 500f;
         }
         m_springJoints = GetComponents<SpringJoint2D>().ToList();
         m_rb = GetComponent<Rigidbody2D>();
-        if(transform.parent != null)
-        target = transform.parent.gameObject;
 
         if (!m_IsUsed) StartCoroutine(Behaviour());
     }
@@ -66,7 +65,9 @@ public class Goo : MonoBehaviour
                 {
                     //sets the origin of the connection as the initial target to go to
                     DisablePreviewers();
+                    m_rb.isKinematic = true;
                     IsThereAGooSelected = false;
+                    m_isSelected = false;
                     target = p.transform.parent.parent.gameObject;
                     StartCoroutine(Behaviour());
                     return;
@@ -112,9 +113,16 @@ public class Goo : MonoBehaviour
         {
             m_springJoints[i].connectedBody = m_validAnchors[i].GetComponent<Rigidbody2D>();
             m_springJoints[i].enabled = true;
+            m_springJoints[i].autoConfigureDistance = false;
             var connection = Instantiate(m_connectionPrefab, transform.position, Quaternion.identity, transform);
             connection.GetComponent<Connection>().m_target = m_validAnchors[i];
             connection.GetComponent<Connection>().m_isInUse = true;
+        }
+        //creates a copy of the anchors and pass it onto the structure
+        PathFinder.Instance.Structure.Connections[gameObject] = m_validAnchors.ToList();
+        foreach(var connector in m_validAnchors)
+        {
+            PathFinder.Instance.Structure.Connections[connector].Add(gameObject);
         }
         m_IsUsed = true;
         m_isSelected = false;
@@ -203,17 +211,15 @@ public class Goo : MonoBehaviour
         m_rb.gravityScale = 0f;
         m_isSelected = false;
         //in case the structure falls somehow
-        transform.parent = target.transform;
         while (!m_isSelected)
         {
             if(Vector2.Distance(transform.position, target.transform.position) < 0.2f)
             {
                 target = PathFinder.Instance.Structure.GetRandomDestination(target);
-                transform.parent = target.transform;
             }
             else
             {
-                m_rb.MovePosition(Vector3.MoveTowards(transform.position,target.transform.position, m_movementSpeed/50));
+                m_rb.MovePosition(Vector3.Lerp(transform.position,target.transform.position, m_movementSpeed*Time.fixedDeltaTime/10));
             }
             yield return new WaitForFixedUpdate();
         }
@@ -221,6 +227,8 @@ public class Goo : MonoBehaviour
     }
     public IEnumerator Select()
     {
+        transform.parent = null;
+        m_rb.isKinematic = false;
         while (m_isSelected)
         {
             m_rb.MovePosition((Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition));

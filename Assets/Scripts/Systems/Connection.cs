@@ -23,6 +23,7 @@ public class Connection : MonoBehaviour
         }
         else if (transform.parent != Pooling.Instance.transform)
         {
+            m_target = null;
             transform.parent = Pooling.Instance.transform;
             transform.localPosition = Vector3.zero;
             transform.rotation = Quaternion.identity;

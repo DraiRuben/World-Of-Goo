@@ -161,6 +161,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 662bcbd75bb9cde488cc847759e8febe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  move: 0
   m_IsUsed: 0
   m_minAttachDistance: 1
   m_maxAttachDistance: 5

@@ -13,7 +13,7 @@ public class Spawner : MonoBehaviour
         {
             for(int i = 0; i < v.Amount; i++)
             {
-                Instantiate(v.Object,transform.position, Quaternion.identity,v.parent.transform);
+                Instantiate(v.Object,transform.position, Quaternion.identity);
             }
         }
     }
