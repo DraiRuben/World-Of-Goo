@@ -126,7 +126,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3570231603850673826, guid: fead8e44c2408c14fa02a1e579fd6c81, type: 3}
       propertyPath: m_BodyType
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3570231603850673826, guid: fead8e44c2408c14fa02a1e579fd6c81, type: 3}
       propertyPath: m_CollisionDetection
@@ -218,7 +218,7 @@ SpringJoint2D:
   m_AutoConfigureDistance: 0
   m_Distance: 3
   m_DampingRatio: 0
-  m_Frequency: 20
+  m_Frequency: 13
 --- !u!231 &7469985258371643898
 SpringJoint2D:
   m_ObjectHideFlags: 0
@@ -239,7 +239,7 @@ SpringJoint2D:
   m_AutoConfigureDistance: 0
   m_Distance: 4.6021843
   m_DampingRatio: 0
-  m_Frequency: 20
+  m_Frequency: 13
 --- !u!4 &3719419142405870099 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4017665154632792079, guid: fead8e44c2408c14fa02a1e579fd6c81, type: 3}
@@ -272,7 +272,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3570231603850673826, guid: fead8e44c2408c14fa02a1e579fd6c81, type: 3}
       propertyPath: m_BodyType
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3570231603850673826, guid: fead8e44c2408c14fa02a1e579fd6c81, type: 3}
       propertyPath: m_Interpolate
@@ -368,7 +368,7 @@ SpringJoint2D:
   m_AutoConfigureDistance: 0
   m_Distance: 3.54
   m_DampingRatio: 0
-  m_Frequency: 20
+  m_Frequency: 13
 --- !u!231 &4210381092903941694
 SpringJoint2D:
   m_ObjectHideFlags: 0
@@ -389,7 +389,7 @@ SpringJoint2D:
   m_AutoConfigureDistance: 0
   m_Distance: 4.6402154
   m_DampingRatio: 0
-  m_Frequency: 20
+  m_Frequency: 13
 --- !u!4 &3474085269543618130 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4017665154632792079, guid: fead8e44c2408c14fa02a1e579fd6c81, type: 3}
@@ -764,7 +764,7 @@ SpringJoint2D:
   m_AutoConfigureDistance: 0
   m_Distance: 3.0004165
   m_DampingRatio: 0
-  m_Frequency: 20
+  m_Frequency: 13
 --- !u!1001 &4325112104143464013
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1133,4 +1133,4 @@ SpringJoint2D:
   m_AutoConfigureDistance: 0
   m_Distance: 3.4899998
   m_DampingRatio: 0
-  m_Frequency: 20
+  m_Frequency: 13

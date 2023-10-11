@@ -36,7 +36,7 @@ public class Goo : MonoBehaviour
         {
             var temp = gameObject.AddComponent<SpringJoint2D>();
             temp.enabled = false;
-            temp.frequency = 20f;
+            temp.frequency = 13f;
         }
         m_springJoints = GetComponents<SpringJoint2D>().ToList();
         m_rb = GetComponent<Rigidbody2D>();
@@ -94,7 +94,7 @@ public class Goo : MonoBehaviour
             if (TryGetPath())
                 return;
             //Try to attach it to the structure
-            if (m_validAnchors.Count(x=>x==null)<m_minAllowedAnchorsAmount)
+            if (m_maxAllowedAnchorsAmount- m_validAnchors.Count(x=>x==null)>=m_minAllowedAnchorsAmount)
             {
                 Use();
                 DisablePreviewers();
