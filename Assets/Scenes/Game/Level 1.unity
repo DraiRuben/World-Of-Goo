@@ -1235,6 +1235,54 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!1 &146235695
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 146235697}
+  - component: {fileID: 146235696}
+  m_Layer: 0
+  m_Name: Spawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &146235696
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 146235695}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f89e32f25e0488449178d36feec41e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Spawn:
+  - parent: {fileID: 2008591108}
+    Object: {fileID: 527057930320455668, guid: fead8e44c2408c14fa02a1e579fd6c81, type: 3}
+    Amount: 5
+--- !u!4 &146235697
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 146235695}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -9.39, y: -11.98, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &174637181
 GameObject:
   m_ObjectHideFlags: 0
@@ -5570,7 +5618,7 @@ SpringJoint2D:
   m_AutoConfigureDistance: 0
   m_Distance: 3
   m_DampingRatio: 0
-  m_Frequency: 20
+  m_Frequency: 10
 --- !u!231 &739792482
 SpringJoint2D:
   m_ObjectHideFlags: 0
@@ -5591,7 +5639,7 @@ SpringJoint2D:
   m_AutoConfigureDistance: 0
   m_Distance: 4.6021843
   m_DampingRatio: 0
-  m_Frequency: 20
+  m_Frequency: 10
 --- !u!1 &769189146
 GameObject:
   m_ObjectHideFlags: 0
@@ -8632,6 +8680,10 @@ PrefabInstance:
       propertyPath: m_IsUsed
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3570231603850673826, guid: fead8e44c2408c14fa02a1e579fd6c81, type: 3}
+      propertyPath: m_BodyType
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4017665154632792079, guid: fead8e44c2408c14fa02a1e579fd6c81, type: 3}
       propertyPath: m_LocalPosition.x
       value: -5.88
@@ -8722,7 +8774,7 @@ SpringJoint2D:
   m_AutoConfigureDistance: 0
   m_Distance: 3.4899998
   m_DampingRatio: 0
-  m_Frequency: 20
+  m_Frequency: 10
 --- !u!1 &1992520171
 GameObject:
   m_ObjectHideFlags: 0
@@ -8810,6 +8862,10 @@ PrefabInstance:
     - target: {fileID: 1541796990499192543, guid: fead8e44c2408c14fa02a1e579fd6c81, type: 3}
       propertyPath: m_IsUsed
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3570231603850673826, guid: fead8e44c2408c14fa02a1e579fd6c81, type: 3}
+      propertyPath: m_BodyType
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4017665154632792079, guid: fead8e44c2408c14fa02a1e579fd6c81, type: 3}
       propertyPath: m_LocalPosition.x
@@ -8901,7 +8957,7 @@ SpringJoint2D:
   m_AutoConfigureDistance: 0
   m_Distance: 3.0004165
   m_DampingRatio: 0
-  m_Frequency: 20
+  m_Frequency: 10
 --- !u!1001 &2132316971
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8921,6 +8977,10 @@ PrefabInstance:
     - target: {fileID: 1541796990499192543, guid: fead8e44c2408c14fa02a1e579fd6c81, type: 3}
       propertyPath: m_IsUsed
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3570231603850673826, guid: fead8e44c2408c14fa02a1e579fd6c81, type: 3}
+      propertyPath: m_BodyType
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4017665154632792079, guid: fead8e44c2408c14fa02a1e579fd6c81, type: 3}
       propertyPath: m_LocalPosition.x
@@ -9018,7 +9078,7 @@ SpringJoint2D:
   m_AutoConfigureDistance: 0
   m_Distance: 3.54
   m_DampingRatio: 0
-  m_Frequency: 20
+  m_Frequency: 10
 --- !u!231 &2132316979
 SpringJoint2D:
   m_ObjectHideFlags: 0
@@ -9039,7 +9099,7 @@ SpringJoint2D:
   m_AutoConfigureDistance: 0
   m_Distance: 4.6402154
   m_DampingRatio: 0
-  m_Frequency: 20
+  m_Frequency: 10
 --- !u!1001 &450588126041736517
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9195,6 +9255,10 @@ PrefabInstance:
     - target: {fileID: 1541796990499192543, guid: fead8e44c2408c14fa02a1e579fd6c81, type: 3}
       propertyPath: m_IsUsed
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3570231603850673826, guid: fead8e44c2408c14fa02a1e579fd6c81, type: 3}
+      propertyPath: m_BodyType
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4017665154632792079, guid: fead8e44c2408c14fa02a1e579fd6c81, type: 3}
       propertyPath: m_LocalPosition.x
@@ -9485,15 +9549,16 @@ BoxCollider2D:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 174637183}
+  - {fileID: 1508198784}
   - {fileID: 4483135194787909354}
   - {fileID: 3911041548768640824}
   - {fileID: 769189148}
+  - {fileID: 1992520173}
+  - {fileID: 146235697}
+  - {fileID: 174637183}
   - {fileID: 450588126041736517}
-  - {fileID: 1508198784}
   - {fileID: 1761184987712976819}
   - {fileID: 2132316971}
   - {fileID: 2008591107}
   - {fileID: 1822370480}
-  - {fileID: 1992520173}
   - {fileID: 204501663}

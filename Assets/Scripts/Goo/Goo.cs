@@ -20,6 +20,8 @@ public class Goo : MonoBehaviour
     [SerializeField]
     private protected GameObject m_connectionPrefab;
 
+    public GameObject target;
+
     private protected List<SpringJoint2D> m_springJoints;
     private Rigidbody2D m_rb;
     
@@ -30,10 +32,14 @@ public class Goo : MonoBehaviour
         {
             var temp = gameObject.AddComponent<SpringJoint2D>();
             temp.enabled = false;
-            temp.frequency = 20f;
+            temp.frequency = 10f;
         }
         m_springJoints = GetComponents<SpringJoint2D>().ToList();
         m_rb = GetComponent<Rigidbody2D>();
+        if(transform.parent != null)
+        target = transform.parent.gameObject;
+
+        if (!m_IsUsed) StartCoroutine(Behaviour());
     }
     private void OnJointBreak2D(Joint2D joint)
     {
@@ -61,7 +67,8 @@ public class Goo : MonoBehaviour
                     //sets the origin of the connection as the initial target to go to
                     DisablePreviewers();
                     IsThereAGooSelected = false;
-                    StartCoroutine(Behaviour(p.transform.parent.parent.gameObject));
+                    target = p.transform.parent.parent.gameObject;
+                    StartCoroutine(Behaviour());
                     return;
                 }
             }
@@ -190,20 +197,23 @@ public class Goo : MonoBehaviour
             //TODO: Remove all connection previews on routine exit
         }
     }
-    public IEnumerator Behaviour(GameObject initialTarget)
+    public IEnumerator Behaviour()
     {
+        yield return null;
         m_rb.gravityScale = 0f;
         m_isSelected = false;
-        GameObject Target= initialTarget;
+        //in case the structure falls somehow
+        transform.parent = target.transform;
         while (!m_isSelected)
         {
-            if(Vector2.Distance(transform.position, Target.transform.position) < 0.2f)
+            if(Vector2.Distance(transform.position, target.transform.position) < 0.2f)
             {
-                Target = PathFinder.Instance.Structure.GetRandomDestination(Target);
+                target = PathFinder.Instance.Structure.GetRandomDestination(target);
+                transform.parent = target.transform;
             }
             else
             {
-                m_rb.MovePosition(Vector3.MoveTowards(transform.position,Target.transform.position, m_movementSpeed/50));
+                m_rb.MovePosition(Vector3.MoveTowards(transform.position,target.transform.position, m_movementSpeed/50));
             }
             yield return new WaitForFixedUpdate();
         }
