@@ -20,7 +20,6 @@ public class Spawner : MonoBehaviour
     [Serializable]
     struct Spawnable
     {
-        public GameObject parent;
         public GameObject Object;
         public int Amount;
     }

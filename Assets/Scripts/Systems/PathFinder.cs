@@ -32,6 +32,16 @@ public class PathFinder : MonoBehaviour
                 Connection.Value.Remove(Point);
             }
         }
+        public GameObject GetConnector(GameObject origin, GameObject destination)
+        {
+            var Connectors = origin.GetComponentsInChildren<Connection>();
+            foreach(var Connector in Connectors)
+            {
+                if (Connector.m_target != null && Connector.m_target == destination)
+                    return Connector.gameObject;
+            }
+            return null;
+        }
         public void RemoveConnection(GameObject origin, GameObject Destination)
         {
             //removes the key and all references of the point/all connections to this point in the graph
