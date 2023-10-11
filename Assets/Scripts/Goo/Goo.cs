@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Goo : MonoBehaviour
@@ -9,15 +10,29 @@ public class Goo : MonoBehaviour
     private protected static bool IsThereAGooSelected = false;
     private protected int AllowAnchorsAmount = 2;
     private protected List<GameObject> ValidAnchors = new ();
-
     [SerializeField]
     private protected float MinAttachDistance = 1f;
     [SerializeField]
     private protected float MaxAttachDistance = 5f;
+    [SerializeField]
+    private protected GameObject ConnectionPrefab;
 
+    private protected List<SpringJoint2D> SpringJoints;
+    
     private void Start()
     {
         for (int i = 0; i < AllowAnchorsAmount; i++) ValidAnchors.Add(null);
+        for(int i = 0; i < AllowAnchorsAmount; i++)
+        {
+            var temp = gameObject.AddComponent<SpringJoint2D>();
+            temp.enableCollision = true;
+        }
+        SpringJoints = GetComponents<SpringJoint2D>().ToList();
+    }
+    private void OnJointBreak2D(Joint2D joint)
+    {
+        //not sure this works, since if the joint break,s maybe the connected body is set to null, I didn't test it
+        PathFinder.Instance.Structure.RemoveConnection(gameObject, joint.connectedBody.gameObject);
     }
     public IEnumerator GoToPipe()
     {
@@ -32,7 +47,7 @@ public class Goo : MonoBehaviour
         if (IsSelected)
         {
             //Try to attach it to the structure
-            if(ValidAnchors != null)
+            if(!ValidAnchors.Contains(null))
             Use();
 
         }
@@ -53,9 +68,11 @@ public class Goo : MonoBehaviour
         //starts coroutine that does whatever I want when it's placed on a structure like a balloon lifing up
         StopCoroutine(Select());
         StopCoroutine(AnchorTesting());
-        foreach(var a in ValidAnchors)
+        for(int i = 0; i < ValidAnchors.Count; i++)
         {
-            //attach this object to each anchorpoint
+            SpringJoints[i].connectedBody = ValidAnchors[i].GetComponent<Rigidbody2D>();
+            var connection = Instantiate(ConnectionPrefab, transform.position, Quaternion.AngleAxis(Mathf.Atan2(transform.position.z, transform.position.y) * Mathf.Rad2Deg, Vector3.forward), transform);
+            connection.GetComponent<Connection>().Target = ValidAnchors[i];
         }
         IsUsed = true;
         IsSelected = false;
@@ -73,6 +90,14 @@ public class Goo : MonoBehaviour
                 if (!(Distance >= MinAttachDistance && Distance <= MaxAttachDistance))
                 {
                     //disable preview connection thingy, then remove from list, cool since we're not changing the collection's size
+                    var allChildren = transform.Cast<Transform>().Select(t => t.GetComponent<Connection>()).ToList();
+                    //replaces the target of the previewer to replace, instead of going through the pool system which would be longer
+                    var previewer = allChildren.Find(x => x.Target == ValidAnchors[i]);
+                    previewer.Target = null;
+                    previewer.IsInUse = false;
+                    previewer.transform.parent = Pooling.Instance.transform;
+                    previewer.transform.localPosition = Vector3.zero;
+                    previewer.enabled = false;
                     ValidAnchors[i] = null;
                 }
             }
@@ -80,8 +105,8 @@ public class Goo : MonoBehaviour
             if(A != null)
                 foreach(var coll in A)
                 { 
-                    //checks for min distance and if it's a goo
-                    if (coll.CompareTag("Goo"))
+                    //checks for min distance and if it's a goo and fixed on a structure
+                    if (coll.CompareTag("Goo") && coll.GetComponent<Goo>().IsUsed)
                     {
                         float Distance = Vector2.Distance(coll.transform.position, transform.position);
                         if (Distance >= MinAttachDistance)
@@ -94,6 +119,13 @@ public class Goo : MonoBehaviour
                             if (index != -1)
                             {
                                 ValidAnchors[index] = coll.gameObject;
+                                //gets a connection previewer that's usable and sets it up
+                                Connection availableConnection = (Connection)Pooling.Instance.pools["Previewers"].Find(x => !((Connection)x).IsInUse);
+                                availableConnection.transform.position = transform.position;
+                                availableConnection.transform.parent = transform;
+                                availableConnection.Target = coll.gameObject;
+                                availableConnection.IsInUse = true;
+                                availableConnection.enabled = true;
                             }
                             else
                             {
@@ -103,9 +135,19 @@ public class Goo : MonoBehaviour
                                     if (Vector2.Distance(transform.position, ValidAnchors[i].transform.position) > Distance)
                                         HighestDistanceAnchorIndex = i;
                                 }
-                                if(HighestDistanceAnchorIndex!=-1)
+                                //replace an existing previewer
+                                if (HighestDistanceAnchorIndex != -1)
+                                {
+                                    var allChildren = transform.Cast<Transform>().Select(t => t.GetComponent<Connection>()).ToList();
+                                    //replaces the target of the previewer to replace, instead of going through the pool system which would be longer
+                                    var connection = allChildren.Find(x=>x.Target == ValidAnchors[HighestDistanceAnchorIndex]);
+                                    connection.Target = coll.gameObject;
+                                    connection.IsInUse = true;
+                                    connection.enabled = true;
                                     ValidAnchors[HighestDistanceAnchorIndex] = coll.gameObject;
+                                }
                             }
+                            
                         }
                     }
                 }

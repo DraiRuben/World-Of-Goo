@@ -5,14 +5,15 @@ using UnityEngine;
 
 public class Pooling : MonoBehaviour
 {
+    public static Pooling Instance;
     public List<ObjectPool> Pools;
     [Serializable]
     public struct ObjectPool
     {
         public string name;
-        public List<GameObject> objects;
+        public List<UnityEngine.Object> objects;
     }
-    public Dictionary<string,List<GameObject>> pools;
+    public Dictionary<string,List<UnityEngine.Object>> pools = new();
     // Start is called before the first frame update
     void Start()
     {
@@ -24,5 +25,10 @@ public class Pooling : MonoBehaviour
     void Update()
     {
         
+    }
+    private void Awake()
+    {
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
     }
 }

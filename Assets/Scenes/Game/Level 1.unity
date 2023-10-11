@@ -5473,6 +5473,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MinAttachDistance: 1
   MaxAttachDistance: 5
+  ConnectionPrefab: {fileID: 8332312455515233139, guid: b3c0af728fd7805488d8efdfbcccfc48, type: 3}
 --- !u!1 &769189146
 GameObject:
   m_ObjectHideFlags: 0
@@ -8157,6 +8158,50 @@ MonoBehaviour:
   m_DeselectOnBackgroundClick: 1
   m_PointerBehavior: 0
   m_CursorLockBehavior: 0
+--- !u!1 &1992520171
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1992520173}
+  - component: {fileID: 1992520172}
+  m_Layer: 0
+  m_Name: Structure
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1992520172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1992520171}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae540840f22bf21498c7e2a9e15036b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1992520173
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1992520171}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -3.433141, y: -9.842517, z: -0.2015159}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &450588126041736517
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8352,6 +8397,14 @@ PrefabInstance:
       propertyPath: m_Follow
       value: 
       objectReference: {fileID: 4483135194787909354}
+    - target: {fileID: 5575033499397449896, guid: 49b1e51320fea344e84e4da3f5e8ac66, type: 3}
+      propertyPath: Pools.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5575033499397449896, guid: 49b1e51320fea344e84e4da3f5e8ac66, type: 3}
+      propertyPath: Pools.Array.data[1].name
+      value: Previewers
+      objectReference: {fileID: 0}
     - target: {fileID: 6974427192739613578, guid: 49b1e51320fea344e84e4da3f5e8ac66, type: 3}
       propertyPath: m_LocalPosition.x
       value: -8.674152
@@ -8468,3 +8521,4 @@ SceneRoots:
   - {fileID: 450588126041736517}
   - {fileID: 1508198784}
   - {fileID: 739792478}
+  - {fileID: 1992520173}
