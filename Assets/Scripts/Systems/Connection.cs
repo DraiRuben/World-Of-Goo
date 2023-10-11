@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Connection : MonoBehaviour
 {
-    public GameObject Target;
-    public bool IsInUse = false;
+    public GameObject m_target;
+    public bool m_isInUse = false;
     //origin is parent
     // Start is called before the first frame update
     void Start()
@@ -15,14 +15,19 @@ public class Connection : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (IsInUse)
+        if (m_isInUse)
         {
-            transform.localScale = new(0.3f, Vector2.Distance(transform.position, Target.transform.position), 1);
-            float angle = Mathf.Atan2(transform.position.z, transform.position.y) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+            transform.localScale = new(Vector2.Distance(transform.position, m_target.transform.position),0.3f, 1);
+            float angle =Mathf.Atan2(m_target.transform.position.y- transform.position.y , m_target.transform.position.x- transform.position.x ) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.Euler(0,0,angle);
         }
-        else if (transform.parent != Pooling.Instance.transform) 
+        else if (transform.parent != Pooling.Instance.transform)
+        {
             transform.parent = Pooling.Instance.transform;
-        
+            transform.localPosition = Vector3.zero;
+            transform.rotation = Quaternion.identity;
+            transform.localScale = new(1, 03f, 1);
+        }
+
     }
 }

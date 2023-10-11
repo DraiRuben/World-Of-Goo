@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class PathFinder : MonoBehaviour
 {
     public static PathFinder Instance;
@@ -12,7 +13,7 @@ public class PathFinder : MonoBehaviour
     {
 
         //key is origin point, list is all available destinations
-        public Dictionary<GameObject, List<GameObject>> Connections;
+        public GOGOArrayDictionary Connections;
         public GameObject GetRandomDestination(GameObject Key)
         {
             return Connections[Key][UnityEngine.Random.Range(0, Connections[Key].Count)];
