@@ -16,6 +16,8 @@ public class Goo : MonoBehaviour
     [SerializeField]
     private protected float m_maxAttachDistance = 5f;
     [SerializeField]
+    private protected float m_movementSpeed = 5f;
+    [SerializeField]
     private protected GameObject m_connectionPrefab;
 
     private protected List<SpringJoint2D> m_springJoints;
@@ -50,10 +52,20 @@ public class Goo : MonoBehaviour
 
         if (m_isSelected)
         {
+            //checks if the click was on top of a link between 2 goos, if yes, put the selected goo back there, otherwise just build
+            var overlapping = Physics2D.OverlapCircleAll(transform.position, 1.5f);
+            foreach(var p in overlapping)
+            {
+                if (p.name.Contains("Bar"))
+                {
+                    //sets the origin of the connection as the initial target to go to
+                    StartCoroutine(Behaviour(p.transform.parent.parent.gameObject));
+                    return;
+                }
+            }
             //Try to attach it to the structure
-            if(!m_validAnchors.Contains(null))
-            Use();
-
+            if (!m_validAnchors.Contains(null))
+                Use();
         }
         else
         {
@@ -64,7 +76,6 @@ public class Goo : MonoBehaviour
             StartCoroutine(AnchorTesting());
         }
     }
-    //=null is only for compilation for now, remove it when tryinteract it done
     public void Use()
     {
         //stops select and anchorpoint testing routines
@@ -163,6 +174,25 @@ public class Goo : MonoBehaviour
             yield return null;
             //TODO: Remove all connection previews on routine exit
         }
+    }
+    public IEnumerator Behaviour(GameObject initialTarget)
+    {
+        m_rb.gravityScale = 0f;
+        m_isSelected = false;
+        GameObject Target= initialTarget;
+        while (!m_isSelected)
+        {
+            if(Vector2.Distance(transform.position, Target.transform.position) < 0.2f)
+            {
+                Target = PathFinder.Instance.Structure.GetRandomDestination(Target);
+            }
+            else
+            {
+                m_rb.MovePosition((Target.transform.position - transform.position) * m_movementSpeed/50);
+            }
+            yield return new WaitForFixedUpdate();
+        }
+        m_rb.gravityScale = 1f;
     }
     public IEnumerator Select()
     {
