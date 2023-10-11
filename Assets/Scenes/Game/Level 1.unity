@@ -8767,6 +8767,7 @@ MonoBehaviour:
       - data:
         - {fileID: 2008591108}
         - {fileID: 739792475}
+        - {fileID: 1822370481}
       - data:
         - {fileID: 2132316972}
         - {fileID: 1822370481}
@@ -8774,6 +8775,7 @@ MonoBehaviour:
       - data:
         - {fileID: 739792475}
         - {fileID: 2008591108}
+        - {fileID: 2132316972}
 --- !u!4 &1992520173
 Transform:
   m_ObjectHideFlags: 0

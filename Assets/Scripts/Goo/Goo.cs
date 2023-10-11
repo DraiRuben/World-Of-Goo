@@ -59,13 +59,19 @@ public class Goo : MonoBehaviour
                 if (p.name.Contains("Bar"))
                 {
                     //sets the origin of the connection as the initial target to go to
+                    DisablePreviewers();
+                    IsThereAGooSelected = false;
                     StartCoroutine(Behaviour(p.transform.parent.parent.gameObject));
                     return;
                 }
             }
             //Try to attach it to the structure
             if (!m_validAnchors.Contains(null))
+            {
+                DisablePreviewers();
                 Use();
+            }
+            
         }
         else
         {
@@ -76,16 +82,19 @@ public class Goo : MonoBehaviour
             StartCoroutine(AnchorTesting());
         }
     }
+    private void DisablePreviewers()
+    {
+        for (int i = 0; i < m_validAnchors.Count; i++)
+        {
+            transform.GetChild(i).GetComponent<Connection>().m_isInUse = false;
+        }
+    }
     public void Use()
     {
         //stops select and anchorpoint testing routines
         //manages flags
         //Places goo on structure
         //starts coroutine that does whatever I want when it's placed on a structure like a balloon lifing up
-        for(int i=0;i<m_validAnchors.Count;i++)
-        {
-            transform.GetChild(i).GetComponent<Connection>().m_isInUse = false;
-        }
         for(int i = 0; i < m_validAnchors.Count; i++)
         {
             m_springJoints[i].connectedBody = m_validAnchors[i].GetComponent<Rigidbody2D>();
@@ -188,7 +197,7 @@ public class Goo : MonoBehaviour
             }
             else
             {
-                m_rb.MovePosition((Target.transform.position - transform.position) * m_movementSpeed/50);
+                m_rb.MovePosition(Vector3.MoveTowards(transform.position,Target.transform.position, m_movementSpeed/50));
             }
             yield return new WaitForFixedUpdate();
         }
