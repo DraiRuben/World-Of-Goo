@@ -8474,18 +8474,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: StartingStructure
       objectReference: {fileID: 0}
-    - target: {fileID: 1241310259469980867, guid: 8cf1cb244c1ebd04da7c5bca95f8ac32, type: 3}
-      propertyPath: m_isUsed
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1338241162400678018, guid: 8cf1cb244c1ebd04da7c5bca95f8ac32, type: 3}
-      propertyPath: m_isUsed
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3368420606078770059, guid: 8cf1cb244c1ebd04da7c5bca95f8ac32, type: 3}
-      propertyPath: m_isUsed
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 5473820537454821218, guid: 8cf1cb244c1ebd04da7c5bca95f8ac32, type: 3}
       propertyPath: m_LocalPosition.x
       value: -4.983829
@@ -8525,14 +8513,6 @@ PrefabInstance:
     - target: {fileID: 5473820537454821218, guid: 8cf1cb244c1ebd04da7c5bca95f8ac32, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8008159633792559797, guid: 8cf1cb244c1ebd04da7c5bca95f8ac32, type: 3}
-      propertyPath: m_isUsed
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8300623216188504079, guid: 8cf1cb244c1ebd04da7c5bca95f8ac32, type: 3}
-      propertyPath: Structure.vertices
-      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

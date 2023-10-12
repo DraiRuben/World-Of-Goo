@@ -5,15 +5,16 @@ using UnityEngine;
 
 public class Goo : MonoBehaviour
 {
+    public static bool s_isThereAGooSelected = false;
+    public static bool s_goToFinishLine = false;
+    public static GameObject s_finishLineGoo;
     public bool move = true;
     
     public bool m_isUsed = false;
     private protected bool m_isSelected = false; 
     [SerializeField]
     private protected bool m_isBuildableOn = true;
-    public static bool s_isThereAGooSelected = false;
-    public static bool s_goToFinishLine = false;
-    public static GameObject s_finishLineGoo;
+
     [SerializeField]
     private protected int m_maxAllowedAnchorsAmount = 3;
     [SerializeField]
@@ -32,6 +33,7 @@ public class Goo : MonoBehaviour
 
     private protected List<SpringJoint2D> m_springJoints;
     private protected List<DistanceJoint2D> m_distanceJoints;
+    private protected List<GameObject> pathToEnd = null;
     private protected Rigidbody2D m_rb;
     
     private void Start()
@@ -61,15 +63,12 @@ public class Goo : MonoBehaviour
     {
         //not sure this works, since if the joint break,s maybe the connected body is set to null, I didn't test it
         PathFinder.Instance.Structure.RemoveConnection(gameObject, joint.connectedBody.gameObject);
-    }
-    public IEnumerator GoToPipe()
-    {
-        yield return null;
+        PathFinder.Instance.Structure.vertices--;
     }
     //thing done when selected and then placed
     private bool TryGetPath(float searchRadius =0.5f)
     {
-        var overlapping = Physics2D.OverlapCircleAll(transform.position, searchRadius);
+        var overlapping = Physics2D.OverlapCircleAll(transform.position, searchRadius,LayerMask.GetMask("GooConnection"));
 
         foreach (var p in overlapping)
         {
@@ -80,11 +79,9 @@ public class Goo : MonoBehaviour
                 //don't want to be able to place a goo back on a balloon's string
                 if (m_pathTarget.GetComponent<Goo_Balloon>() != null || m_pathOrigin.GetComponent<Goo_Balloon>() != null) return false;
                 
-                //sets the origin of the connection as the initial target to go to
                 DisablePreviewers();
                 m_rb.isKinematic = true;
                 m_isSelected = false;
-
                 s_isThereAGooSelected = false;
                 //swaps if the origin is further from the goo, so that the target is the further one
                 if (Vector2.Distance(transform.position, m_pathTarget.transform.position) < Vector2.Distance(transform.position, m_pathOrigin.transform.position))
@@ -146,7 +143,7 @@ public class Goo : MonoBehaviour
     {
         //stops select and anchorpoint testing routines
         //manages flags
-        //Places goo on structure
+        //Places goo on structure or puts it back if close enough
         //starts coroutine that does whatever I want when it's placed on a structure like a balloon lifing up
         
         //remove all null refs
@@ -154,15 +151,7 @@ public class Goo : MonoBehaviour
         filteredAnchors.RemoveAll(x => x == null);
         for(int i = 0; i < filteredAnchors.Count; i++)
         {
-            PathFinder.Instance.Structure.vertices++;
-            m_springJoints[i].connectedBody = filteredAnchors[i].GetComponent<Rigidbody2D>();
-            m_springJoints[i].enabled = true;
-            m_springJoints[i].autoConfigureDistance = false;
-            var connection = Instantiate(m_connectionPrefab, transform.position, Quaternion.identity, transform);
-            connection.GetComponent<Connection>().m_target = filteredAnchors[i];
-            connection.GetComponent<Connection>().m_isInUse = true;
-            
-            
+            PlaceConnection(filteredAnchors, i);
         }
         //creates a copy of the anchors and pass it onto the structure
         PathFinder.Instance.Structure.Connections[gameObject] = filteredAnchors.ToList();
@@ -178,25 +167,7 @@ public class Goo : MonoBehaviour
     {
         while (m_isSelected)
         {
-            //clears connections for goos that were in connection preview but went too far
-            for(int i=0; i<m_validAnchors.Count;i++)
-            {
-                if (m_validAnchors[i] == null) continue;
-                float Distance = Vector2.Distance(m_validAnchors[i].transform.position, transform.position);
-                if (!(Distance >= m_minAttachDistance && Distance <= m_maxAttachDistance))
-                {
-                    //disable preview connection thingy, then remove from list, cool since we're not changing the collection's size
-                    var allChildren = transform.Cast<Transform>().Select(t => t.GetComponent<Connection>()).ToList();
-                    //replaces the target of the previewer to replace, instead of going through the pool system which would be longer
-                    var previewer = allChildren.Find(x => x.m_target == m_validAnchors[i]);
-                    previewer.m_target = null;
-                    previewer.m_isInUse = false;
-                    previewer.transform.parent = Pooling.Instance.transform;
-                    previewer.transform.localPosition = Vector3.zero;
-                    previewer.enabled = false;
-                    m_validAnchors[i] = null;
-                }
-            }
+            TryResetPreviewers();
             var  A = Physics2D.OverlapCircleAll(transform.position, m_maxAttachDistance);
             if(A != null)
                 foreach(var coll in A)
@@ -211,17 +182,12 @@ public class Goo : MonoBehaviour
                             //between this and the anchor is smaller than one of the things in the list
                             //or if the list isn't full yet, just add it to the anchor points instead of replacing one
                             var index = m_validAnchors.IndexOf(null);
-                            //returns -1 if it doesn't find an element that's null/if the list is full already
+                            //returns -1 if it doesn't find an element that's null => if the list is full already
                             if (index != -1 && !m_validAnchors.Contains(coll.gameObject))
                             {
                                 m_validAnchors[index] = coll.gameObject;
-                                //gets a connection previewer that's usable and sets it up
-                                Connection availableConnection = (Connection)Pooling.Instance.pools["Previewers"].Find(x => !((Connection)x).m_isInUse);
-                                availableConnection.transform.position = transform.position;
-                                availableConnection.transform.parent = transform;
-                                availableConnection.m_target = coll.gameObject;
-                                availableConnection.m_isInUse = true;
-                                availableConnection.enabled = true;
+                                SetupPreviewer(coll);
+                                
                             }
                             else if (!m_validAnchors.Contains(coll.gameObject))
                             {
@@ -234,12 +200,7 @@ public class Goo : MonoBehaviour
                                 //replace an existing previewer
                                 if (HighestDistanceAnchorIndex != -1)
                                 {
-                                    var allChildren = transform.Cast<Transform>().Select(t => t.GetComponent<Connection>()).ToList();
-                                    //replaces the target of the previewer to replace, instead of going through the pool system which would be longer
-                                    var connection = allChildren.Find(x=>x.m_target == m_validAnchors[HighestDistanceAnchorIndex]);
-                                    connection.m_target = coll.gameObject;
-                                    connection.m_isInUse = true;
-                                    connection.enabled = true;
+                                    UpdatePreviewer(coll, HighestDistanceAnchorIndex);
                                     m_validAnchors[HighestDistanceAnchorIndex] = coll.gameObject;
                                 }
                             }
@@ -248,52 +209,7 @@ public class Goo : MonoBehaviour
                     }
                 }
             yield return null;
-            //TODO: Remove all connection previews on routine exit
         }
-    }
-    public IEnumerator Behaviour()
-    {
-        yield return null;
-        m_rb.gravityScale = 0f;
-        m_isSelected = false;
-        float movementTimer = Vector2.Distance(transform.position,m_pathOrigin.transform.position)/Vector2.Distance(m_pathOrigin.transform.position,m_pathTarget.transform.position);
-        List<GameObject> pathToEnd = null;
-        while (!m_isSelected)
-        {
-            movementTimer += Time.fixedDeltaTime;
-            if(Vector2.Distance(transform.position, m_pathTarget.transform.position) < 0.2f)
-            {
-                movementTimer = 0f;
-                m_pathOrigin = m_pathTarget;
-                if (s_goToFinishLine && pathToEnd == null)
-                {
-                    pathToEnd = PathFinder.Instance.Structure.GetShortestPathBetween(m_pathOrigin, s_finishLineGoo);
-                }
-                else if (s_goToFinishLine && pathToEnd.Count > 0)
-                {
-                    pathToEnd.RemoveAt(0);
-                    if (pathToEnd.Count <= 0) break;
-
-                    if (pathToEnd[0] != null)
-                    {
-                        m_pathTarget = pathToEnd[0];
-                    }
-                    else
-                    {
-                        //regens the path to the end if one step gets destroyed/if a connection breaks
-                        pathToEnd = PathFinder.Instance.Structure.GetShortestPathBetween(m_pathOrigin, s_finishLineGoo);
-                        m_pathTarget = pathToEnd[0];
-                    }
-                }
-                else m_pathTarget = PathFinder.Instance.Structure.GetRandomDestination(m_pathTarget);
-            }
-            else
-            {
-                m_rb.MovePosition(Vector3.Lerp(m_pathOrigin.transform.position,m_pathTarget.transform.position, movementTimer));
-            }
-            yield return new WaitForFixedUpdate();
-        }
-        m_rb.gravityScale = 1f;
     }
     public IEnumerator Select()
     {
@@ -307,4 +223,111 @@ public class Goo : MonoBehaviour
     }
     //clears the selected goo flag only 1 frame later so that if the player places a goo on another one, it doesn't select that previous goo as well during the same frame
     public virtual IEnumerator DoThingIfUsed() { yield return null; s_isThereAGooSelected = false; }
+
+    public IEnumerator Behaviour()
+    {
+        yield return null;
+        m_rb.gravityScale = 0f;
+        m_isSelected = false;
+        float movementTimer = Vector2.Distance(transform.position,m_pathOrigin.transform.position)/Vector2.Distance(m_pathOrigin.transform.position,m_pathTarget.transform.position);
+        
+        while (!m_isSelected)
+        {
+            //normalizes so that speed doesn't change depending on the length of the connection
+            movementTimer += 2*Time.fixedDeltaTime/Vector2.Distance(m_pathOrigin.transform.position,m_pathTarget.transform.position);
+            if(Vector2.Distance(transform.position, m_pathTarget.transform.position) < 0.2f)
+            {
+                movementTimer = 0f;
+                if (!FindNextTarget()) break;
+            }
+            else
+            {
+                m_rb.MovePosition(Vector3.Lerp(m_pathOrigin.transform.position,m_pathTarget.transform.position, movementTimer));
+            }
+            yield return new WaitForFixedUpdate();
+        }
+        m_rb.gravityScale = 1f;
+    }
+    private bool FindNextTarget()
+    {
+        //finds next target, either random if the structure isn't connected to the exit,
+        //or the next target in the shortest path towards the exit if there is one
+        m_pathOrigin = m_pathTarget;
+        if (s_goToFinishLine && pathToEnd == null)
+        {
+            pathToEnd = PathFinder.Instance.Structure.GetShortestPathBetween(m_pathOrigin, s_finishLineGoo);
+        }
+        else if (s_goToFinishLine && pathToEnd.Count > 0)
+        {
+            pathToEnd.RemoveAt(0);
+            if (pathToEnd.Count <= 0) return false;
+
+            if (pathToEnd[0] != null)
+            {
+                m_pathTarget = pathToEnd[0];
+            }
+            else
+            {
+                //regens the path to the end if one step gets destroyed/if a connection breaks
+                pathToEnd = PathFinder.Instance.Structure.GetShortestPathBetween(m_pathOrigin, s_finishLineGoo);
+                m_pathTarget = pathToEnd[0];
+            }
+        }
+        else
+        {
+            m_pathTarget = PathFinder.Instance.Structure.GetRandomDestination(m_pathTarget);
+        }
+        return true;
+    }
+    private void SetupPreviewer(Collider2D coll)
+    {
+        //gets a connection previewer that's usable and sets it up
+        Connection availableConnection = (Connection)Pooling.Instance.pools["Previewers"].Find(x => !((Connection)x).m_isInUse);
+        availableConnection.transform.position = transform.position;
+        availableConnection.transform.parent = transform;
+        availableConnection.m_target = coll.gameObject;
+        availableConnection.m_isInUse = true;
+        availableConnection.enabled = true;
+    }
+    private void TryResetPreviewers()
+    {
+        //clears connections for goos that were in connection preview but went too far
+        for (int i = 0; i < m_validAnchors.Count; i++)
+        {
+            if (m_validAnchors[i] == null) continue;
+            float Distance = Vector2.Distance(m_validAnchors[i].transform.position, transform.position);
+            if (!(Distance >= m_minAttachDistance && Distance <= m_maxAttachDistance))
+            {
+                //disable preview connection thingy, then remove from list, cool since we're not changing the collection's size
+                var allChildren = transform.Cast<Transform>().Select(t => t.GetComponent<Connection>()).ToList();
+                //replaces the target of the previewer to replace, instead of going through the pool system which would be longer
+                var previewer = allChildren.Find(x => x.m_target == m_validAnchors[i]);
+                previewer.m_target = null;
+                previewer.m_isInUse = false;
+                previewer.transform.parent = Pooling.Instance.transform;
+                previewer.transform.localPosition = Vector3.zero;
+                previewer.enabled = false;
+                m_validAnchors[i] = null;
+            }
+        }
+    }
+    private void UpdatePreviewer(Collider2D coll, int HighestDistanceAnchorIndex)
+    {
+        var allChildren = transform.Cast<Transform>().Select(t => t.GetComponent<Connection>()).ToList();
+        //replaces the target of the previewer to replace, instead of going through the pool system which would be longer
+        var Previewer = allChildren.Find(x => x.m_target == m_validAnchors[HighestDistanceAnchorIndex]);
+        Previewer.m_target = coll.gameObject;
+        Previewer.m_isInUse = true;
+        Previewer.enabled = true;
+    }
+    private void PlaceConnection(List<GameObject> filteredAnchors,int i)
+    {
+        PathFinder.Instance.Structure.vertices++;
+        m_springJoints[i].connectedBody = filteredAnchors[i].GetComponent<Rigidbody2D>();
+        m_springJoints[i].enabled = true;
+        m_springJoints[i].autoConfigureDistance = false;
+        var connection = Instantiate(m_connectionPrefab, transform.position, Quaternion.identity, transform);
+        connection.GetComponent<Connection>().m_target = filteredAnchors[i];
+        connection.GetComponent<Connection>().m_isInUse = true;
+    }
 }

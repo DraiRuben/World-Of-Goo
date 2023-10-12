@@ -31,7 +31,7 @@ public class ReplayManager : MonoBehaviour
             }
             else
             {
-                buttonList[i - 1].m_Text.text += ": " + PlayerPrefs.GetInt("Level 1 Score");
+                buttonList[i - 1].m_Text.text += ": " + PlayerPrefs.GetInt($"Level {1.ToString()} Score");
             }
 
         }

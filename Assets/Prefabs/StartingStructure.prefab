@@ -29,11 +29,11 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 8410439350245344156}
-  - {fileID: 3719419142405870099}
-  - {fileID: 3474085269543618130}
-  - {fileID: 872297187261554011}
   - {fileID: 5586363323759307877}
+  - {fileID: 872297187261554011}
+  - {fileID: 3474085269543618130}
+  - {fileID: 3719419142405870099}
+  - {fileID: 8410439350245344156}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1397968512335186182
@@ -81,6 +81,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Structure:
+    vertices: 4
     Connections:
       m_keys:
       - {fileID: 220651428676652520}
@@ -114,7 +115,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 527057930320455668, guid: fead8e44c2408c14fa02a1e579fd6c81, type: 3}
       propertyPath: m_Name
-      value: Goo
+      value: TopRight
       objectReference: {fileID: 0}
     - target: {fileID: 1541796990499192543, guid: fead8e44c2408c14fa02a1e579fd6c81, type: 3}
       propertyPath: IsUsed
@@ -122,6 +123,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1541796990499192543, guid: fead8e44c2408c14fa02a1e579fd6c81, type: 3}
       propertyPath: m_IsUsed
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1541796990499192543, guid: fead8e44c2408c14fa02a1e579fd6c81, type: 3}
+      propertyPath: m_isUsed
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3570231603850673826, guid: fead8e44c2408c14fa02a1e579fd6c81, type: 3}
@@ -260,7 +265,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 527057930320455668, guid: fead8e44c2408c14fa02a1e579fd6c81, type: 3}
       propertyPath: m_Name
-      value: Goo (1)
+      value: TopLeft
       objectReference: {fileID: 0}
     - target: {fileID: 1541796990499192543, guid: fead8e44c2408c14fa02a1e579fd6c81, type: 3}
       propertyPath: IsUsed
@@ -268,6 +273,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1541796990499192543, guid: fead8e44c2408c14fa02a1e579fd6c81, type: 3}
       propertyPath: m_IsUsed
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1541796990499192543, guid: fead8e44c2408c14fa02a1e579fd6c81, type: 3}
+      propertyPath: m_isUsed
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3570231603850673826, guid: fead8e44c2408c14fa02a1e579fd6c81, type: 3}
@@ -660,7 +669,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 527057930320455668, guid: fead8e44c2408c14fa02a1e579fd6c81, type: 3}
       propertyPath: m_Name
-      value: Goo (2)
+      value: BottomLeft
       objectReference: {fileID: 0}
     - target: {fileID: 1541796990499192543, guid: fead8e44c2408c14fa02a1e579fd6c81, type: 3}
       propertyPath: IsUsed
@@ -668,6 +677,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1541796990499192543, guid: fead8e44c2408c14fa02a1e579fd6c81, type: 3}
       propertyPath: m_IsUsed
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1541796990499192543, guid: fead8e44c2408c14fa02a1e579fd6c81, type: 3}
+      propertyPath: m_isUsed
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3570231603850673826, guid: fead8e44c2408c14fa02a1e579fd6c81, type: 3}
@@ -1029,7 +1042,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 527057930320455668, guid: fead8e44c2408c14fa02a1e579fd6c81, type: 3}
       propertyPath: m_Name
-      value: Goo (3)
+      value: BottomRight
       objectReference: {fileID: 0}
     - target: {fileID: 1541796990499192543, guid: fead8e44c2408c14fa02a1e579fd6c81, type: 3}
       propertyPath: IsUsed
@@ -1037,6 +1050,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1541796990499192543, guid: fead8e44c2408c14fa02a1e579fd6c81, type: 3}
       propertyPath: m_IsUsed
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1541796990499192543, guid: fead8e44c2408c14fa02a1e579fd6c81, type: 3}
+      propertyPath: m_isUsed
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3570231603850673826, guid: fead8e44c2408c14fa02a1e579fd6c81, type: 3}
