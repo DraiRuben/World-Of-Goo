@@ -12,6 +12,7 @@ public class FinishLine : MonoBehaviour
         {
             m_vaccum.enabled = true;
             m_vaccum.connectedBody = collision.GetComponent<Rigidbody2D>();
+            Goo.FinishLineGoo = collision.gameObject;
             Goo.GoToFinishLine = true;
             StartCoroutine(Suck());
         }
@@ -22,6 +23,7 @@ public class FinishLine : MonoBehaviour
         {
             m_vaccum.enabled = true;
             m_vaccum.connectedBody = collision.GetComponent<Rigidbody2D>();
+            Goo.FinishLineGoo = collision.gameObject;
             Goo.GoToFinishLine = true;
             StartCoroutine(Suck());
         }

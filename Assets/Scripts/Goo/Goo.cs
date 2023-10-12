@@ -13,6 +13,7 @@ public class Goo : MonoBehaviour
     private protected bool m_isBuildableOn = true;
     public static bool IsThereAGooSelected = false;
     public static bool GoToFinishLine = false;
+    public static GameObject FinishLineGoo;
     [SerializeField]
     private protected int m_maxAllowedAnchorsAmount = 3;
     [SerializeField]
@@ -252,7 +253,7 @@ public class Goo : MonoBehaviour
         m_rb.gravityScale = 0f;
         m_isSelected = false;
         float movementTimer = Vector2.Distance(transform.position,origin.transform.position)/Vector2.Distance(origin.transform.position,target.transform.position);
-        //in case the structure falls somehow
+        List<GameObject> pathToEnd = null;
         while (!m_isSelected)
         {
             movementTimer += Time.fixedDeltaTime;
@@ -260,7 +261,17 @@ public class Goo : MonoBehaviour
             {
                 movementTimer = 0f;
                 origin = target;
-                target = PathFinder.Instance.Structure.GetRandomDestination(target);
+                if (GoToFinishLine && pathToEnd == null)
+                {
+                    pathToEnd = PathFinder.Instance.Structure.GetShortestPathBetween(origin, FinishLineGoo);
+                }
+                else if (GoToFinishLine && pathToEnd.Count>0)
+                {
+                    pathToEnd.RemoveAt(0);
+                    if (pathToEnd.Count<=0) break;
+                    target = pathToEnd[0];
+                }
+                else target = PathFinder.Instance.Structure.GetRandomDestination(target);
             }
             else
             {
