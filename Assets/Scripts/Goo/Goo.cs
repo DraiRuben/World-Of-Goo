@@ -11,9 +11,9 @@ public class Goo : MonoBehaviour
     private protected bool m_isSelected = false; 
     [SerializeField]
     private protected bool m_isBuildableOn = true;
-    public static bool IsThereAGooSelected = false;
-    public static bool GoToFinishLine = false;
-    public static GameObject FinishLineGoo;
+    public static bool s_isThereAGooSelected = false;
+    public static bool s_goToFinishLine = false;
+    public static GameObject s_finishLineGoo;
     [SerializeField]
     private protected int m_maxAllowedAnchorsAmount = 3;
     [SerializeField]
@@ -27,8 +27,8 @@ public class Goo : MonoBehaviour
     [SerializeField]
     private protected GameObject m_connectionPrefab;
 
-    private GameObject origin;
-    private GameObject target;
+    private GameObject m_pathOrigin;
+    private GameObject m_pathTarget;
 
     private protected List<SpringJoint2D> m_springJoints;
     private protected List<DistanceJoint2D> m_distanceJoints;
@@ -75,19 +75,23 @@ public class Goo : MonoBehaviour
         {
             if (p.name.Contains("Bar"))
             {
+                m_pathTarget = p.transform.parent.parent.gameObject;
+                m_pathOrigin = p.transform.parent.GetComponent<Connection>().m_target;
+                //don't want to be able to place a goo back on a balloon's string
+                if (m_pathTarget.GetComponent<Goo_Balloon>() != null || m_pathOrigin.GetComponent<Goo_Balloon>() != null) return false;
+                
                 //sets the origin of the connection as the initial target to go to
                 DisablePreviewers();
                 m_rb.isKinematic = true;
-                IsThereAGooSelected = false;
                 m_isSelected = false;
-                target = p.transform.parent.parent.gameObject;
-                origin = p.transform.parent.GetComponent<Connection>().m_target;
+
+                s_isThereAGooSelected = false;
                 //swaps if the origin is further from the goo, so that the target is the further one
-                if (Vector2.Distance(transform.position, target.transform.position) < Vector2.Distance(transform.position, origin.transform.position))
+                if (Vector2.Distance(transform.position, m_pathTarget.transform.position) < Vector2.Distance(transform.position, m_pathOrigin.transform.position))
                 {
-                    var temp = target;
-                    target = origin;
-                    origin = temp;
+                    var temp = m_pathTarget;
+                    m_pathTarget = m_pathOrigin;
+                    m_pathOrigin = temp;
                 }
                 StartCoroutine(Behaviour());
                 return true;
@@ -97,7 +101,7 @@ public class Goo : MonoBehaviour
     }
     public virtual void TryInteract()
     {
-        if(m_isUsed || (IsThereAGooSelected && !m_isSelected)) return;
+        if(m_isUsed || (s_isThereAGooSelected && !m_isSelected)) return;
 
         if (m_isSelected)
         {
@@ -116,7 +120,7 @@ public class Goo : MonoBehaviour
         else
         {
             //make it follow the mouse
-            IsThereAGooSelected = true;
+            s_isThereAGooSelected = true;
             m_isSelected = true;
             StartCoroutine(Select());
             StartCoroutine(AnchorTesting());
@@ -252,30 +256,40 @@ public class Goo : MonoBehaviour
         yield return null;
         m_rb.gravityScale = 0f;
         m_isSelected = false;
-        float movementTimer = Vector2.Distance(transform.position,origin.transform.position)/Vector2.Distance(origin.transform.position,target.transform.position);
+        float movementTimer = Vector2.Distance(transform.position,m_pathOrigin.transform.position)/Vector2.Distance(m_pathOrigin.transform.position,m_pathTarget.transform.position);
         List<GameObject> pathToEnd = null;
         while (!m_isSelected)
         {
             movementTimer += Time.fixedDeltaTime;
-            if(Vector2.Distance(transform.position, target.transform.position) < 0.2f)
+            if(Vector2.Distance(transform.position, m_pathTarget.transform.position) < 0.2f)
             {
                 movementTimer = 0f;
-                origin = target;
-                if (GoToFinishLine && pathToEnd == null)
+                m_pathOrigin = m_pathTarget;
+                if (s_goToFinishLine && pathToEnd == null)
                 {
-                    pathToEnd = PathFinder.Instance.Structure.GetShortestPathBetween(origin, FinishLineGoo);
+                    pathToEnd = PathFinder.Instance.Structure.GetShortestPathBetween(m_pathOrigin, s_finishLineGoo);
                 }
-                else if (GoToFinishLine && pathToEnd.Count>0)
+                else if (s_goToFinishLine && pathToEnd.Count > 0)
                 {
                     pathToEnd.RemoveAt(0);
-                    if (pathToEnd.Count<=0) break;
-                    target = pathToEnd[0];
+                    if (pathToEnd.Count <= 0) break;
+
+                    if (pathToEnd[0] != null)
+                    {
+                        m_pathTarget = pathToEnd[0];
+                    }
+                    else
+                    {
+                        //regens the path to the end if one step gets destroyed/if a connection breaks
+                        pathToEnd = PathFinder.Instance.Structure.GetShortestPathBetween(m_pathOrigin, s_finishLineGoo);
+                        m_pathTarget = pathToEnd[0];
+                    }
                 }
-                else target = PathFinder.Instance.Structure.GetRandomDestination(target);
+                else m_pathTarget = PathFinder.Instance.Structure.GetRandomDestination(m_pathTarget);
             }
             else
             {
-                m_rb.MovePosition(Vector3.Lerp(origin.transform.position,target.transform.position, movementTimer));
+                m_rb.MovePosition(Vector3.Lerp(m_pathOrigin.transform.position,m_pathTarget.transform.position, movementTimer));
             }
             yield return new WaitForFixedUpdate();
         }
@@ -292,5 +306,5 @@ public class Goo : MonoBehaviour
         }
     }
     //clears the selected goo flag only 1 frame later so that if the player places a goo on another one, it doesn't select that previous goo as well during the same frame
-    public virtual IEnumerator DoThingIfUsed() { yield return null; IsThereAGooSelected = false; }
+    public virtual IEnumerator DoThingIfUsed() { yield return null; s_isThereAGooSelected = false; }
 }

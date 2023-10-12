@@ -8,29 +8,29 @@ public class FinishLine : MonoBehaviour
     private DistanceJoint2D m_vaccum;
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Goo") && !Goo.GoToFinishLine && collision.GetComponent<Goo>().m_isUsed)
+        if (collision.CompareTag("Goo") && !Goo.s_goToFinishLine && collision.GetComponent<Goo>().m_isUsed && collision.GetComponent<Goo_Balloon>() == null)
         {
             m_vaccum.enabled = true;
             m_vaccum.connectedBody = collision.GetComponent<Rigidbody2D>();
-            Goo.FinishLineGoo = collision.gameObject;
-            Goo.GoToFinishLine = true;
+            Goo.s_finishLineGoo = collision.gameObject;
+            Goo.s_goToFinishLine = true;
             StartCoroutine(Suck());
         }
     }
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.CompareTag("Goo") && !Goo.GoToFinishLine && collision.GetComponent<Goo>().m_isUsed)
+        if (collision.CompareTag("Goo") && !Goo.s_goToFinishLine && collision.GetComponent<Goo>().m_isUsed && collision.GetComponent<Goo_Balloon>()==null)
         {
             m_vaccum.enabled = true;
             m_vaccum.connectedBody = collision.GetComponent<Rigidbody2D>();
-            Goo.FinishLineGoo = collision.gameObject;
-            Goo.GoToFinishLine = true;
+            Goo.s_finishLineGoo = collision.gameObject;
+            Goo.s_goToFinishLine = true;
             StartCoroutine(Suck());
         }
     }
     private void OnJointBreak2D(Joint2D joint)
     {
-        Goo.GoToFinishLine = false;
+        Goo.s_goToFinishLine = false;
         m_vaccum.connectedBody = null;
     }
     void Start()
@@ -42,7 +42,7 @@ public class FinishLine : MonoBehaviour
     {
         yield return null;
         m_vaccum.autoConfigureDistance = false;
-        while(Goo.GoToFinishLine)
+        while(Goo.s_goToFinishLine)
         {
             //m_vaccum
             if(m_vaccum.distance>1.2f)

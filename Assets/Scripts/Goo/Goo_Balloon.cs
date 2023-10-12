@@ -12,7 +12,7 @@ public class Goo_Balloon : Goo
     public override IEnumerator DoThingIfUsed()
     {
         yield return null;
-        IsThereAGooSelected = false;
+        s_isThereAGooSelected = false;
         while (m_isUsed)
         {
             m_rb.velocity += new Vector2(0, LiftStrength);
