@@ -11,7 +11,7 @@ public class PathFinder : MonoBehaviour
     [Serializable]
     public struct Graph
     {
-
+        public int vertices;
         //key is origin point, list is all available destinations
         public GOGOArrayDictionary Connections;
         public GameObject GetRandomDestination(GameObject Key)
@@ -19,10 +19,7 @@ public class PathFinder : MonoBehaviour
             return Connections[Key][UnityEngine.Random.Range(0, Connections[Key].Count)];
         }
         //not correct I think, I'll need to do a recursive algorythm, so I can return a list of destinations to go to in order I think
-        public GameObject GetNextStepTo(GameObject destination)
-        {
-            return null;
-        }
+        
         public void RemovePoint(GameObject Point)
         {
             //removes the key and all references of the point/all connections to this point in the graph
@@ -47,6 +44,10 @@ public class PathFinder : MonoBehaviour
             //removes the key and all references of the point/all connections to this point in the graph
             Connections[origin].Remove(Destination);
             Connections[Destination].Remove(origin);     
+        }
+        public List<GameObject> GetShortestPathBetween(GameObject origin, GameObject destination)
+        {
+            return BFS.FindShortestPath(Connections, origin, destination); ;
         }
     }
     [SerializeField]

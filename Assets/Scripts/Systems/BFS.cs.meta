@@ -1,10 +1,9 @@
 fileFormatVersion: 2
-guid: 662bcbd75bb9cde488cc847759e8febe
+guid: 215cb5ba731e1a94d8f7d37def53de2d
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences:
-  - m_connectionPrefab: {fileID: 8332312455515233139, guid: b3c0af728fd7805488d8efdfbcccfc48, type: 3}
+  defaultReferences: []
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

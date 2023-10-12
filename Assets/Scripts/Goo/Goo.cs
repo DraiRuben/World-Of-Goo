@@ -6,10 +6,13 @@ using UnityEngine;
 public class Goo : MonoBehaviour
 {
     public bool move = true;
+    
+    public bool m_isUsed = false;
+    private protected bool m_isSelected = false; 
     [SerializeField]
-    private protected bool m_IsUsed = false;
-    private protected bool m_isSelected = false;
-    private protected static bool IsThereAGooSelected = false;
+    private protected bool m_isBuildableOn = true;
+    public static bool IsThereAGooSelected = false;
+    public static bool GoToFinishLine = false;
     [SerializeField]
     private protected int m_maxAllowedAnchorsAmount = 3;
     [SerializeField]
@@ -27,7 +30,8 @@ public class Goo : MonoBehaviour
     private GameObject target;
 
     private protected List<SpringJoint2D> m_springJoints;
-    private Rigidbody2D m_rb;
+    private protected List<DistanceJoint2D> m_distanceJoints;
+    private protected Rigidbody2D m_rb;
     
     private void Start()
     {
@@ -38,10 +42,16 @@ public class Goo : MonoBehaviour
             temp.enabled = false;
             temp.frequency = 13f;
         }
+        for(int i = GetComponents<DistanceJoint2D>().Length; i < m_maxAllowedAnchorsAmount; i++)
+        {
+            var temp = gameObject.AddComponent<DistanceJoint2D>();
+            temp.enabled = false;
+        }
+        m_distanceJoints = GetComponents<DistanceJoint2D>().ToList();
         m_springJoints = GetComponents<SpringJoint2D>().ToList();
         m_rb = GetComponent<Rigidbody2D>();
 
-        if (!m_IsUsed)
+        if (!m_isUsed)
         {
             TryGetPath(1.5f);
         }
@@ -53,13 +63,13 @@ public class Goo : MonoBehaviour
     }
     public IEnumerator GoToPipe()
     {
-        //algo that allows goo to go to the pipe when it's active by using a navmesh through all connections of the structure built by the player
         yield return null;
     }
     //thing done when selected and then placed
     private bool TryGetPath(float searchRadius =0.5f)
     {
         var overlapping = Physics2D.OverlapCircleAll(transform.position, searchRadius);
+
         foreach (var p in overlapping)
         {
             if (p.name.Contains("Bar"))
@@ -71,7 +81,7 @@ public class Goo : MonoBehaviour
                 m_isSelected = false;
                 target = p.transform.parent.parent.gameObject;
                 origin = p.transform.parent.GetComponent<Connection>().m_target;
-                //swaps
+                //swaps if the origin is further from the goo, so that the target is the further one
                 if (Vector2.Distance(transform.position, target.transform.position) < Vector2.Distance(transform.position, origin.transform.position))
                 {
                     var temp = target;
@@ -86,7 +96,7 @@ public class Goo : MonoBehaviour
     }
     public virtual void TryInteract()
     {
-        if(m_IsUsed || (IsThereAGooSelected && !m_isSelected)) return;
+        if(m_isUsed || (IsThereAGooSelected && !m_isSelected)) return;
 
         if (m_isSelected)
         {
@@ -127,7 +137,7 @@ public class Goo : MonoBehaviour
     {
         for (int i = 0; i < m_validAnchors.Count; i++) m_validAnchors[i] = null;
     }
-    public void Use()
+    public virtual void Use()
     {
         //stops select and anchorpoint testing routines
         //manages flags
@@ -139,7 +149,7 @@ public class Goo : MonoBehaviour
         filteredAnchors.RemoveAll(x => x == null);
         for(int i = 0; i < filteredAnchors.Count; i++)
         {
-            
+            PathFinder.Instance.Structure.vertices++;
             m_springJoints[i].connectedBody = filteredAnchors[i].GetComponent<Rigidbody2D>();
             m_springJoints[i].enabled = true;
             m_springJoints[i].autoConfigureDistance = false;
@@ -155,7 +165,7 @@ public class Goo : MonoBehaviour
         {
             PathFinder.Instance.Structure.Connections[connector].Add(gameObject);
         }
-        m_IsUsed = true;
+        m_isUsed = true;
         m_isSelected = false;
         StartCoroutine(DoThingIfUsed());
     }
@@ -187,7 +197,7 @@ public class Goo : MonoBehaviour
                 foreach(var coll in A)
                 { 
                     //checks for min distance and if it's a goo and fixed on a structure
-                    if (coll.CompareTag("Goo") && coll.GetComponent<Goo>().m_IsUsed)
+                    if (coll.CompareTag("Goo") && coll.GetComponent<Goo>().m_isUsed && coll.GetComponent<Goo>().m_isBuildableOn)
                     {
                         float Distance = Vector2.Distance(coll.transform.position, transform.position);
                         if (Distance >= m_minAttachDistance)
