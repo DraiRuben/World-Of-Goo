@@ -56,7 +56,7 @@ public class Goo : MonoBehaviour
 
         if (!m_isUsed)
         {
-            TryGetPath(1.5f);
+            if(TryGetPath(1.5f))StartCoroutine(Behaviour());
         }
     }
     private void OnJointBreak2D(Joint2D joint)
@@ -90,7 +90,7 @@ public class Goo : MonoBehaviour
                     m_pathTarget = m_pathOrigin;
                     m_pathOrigin = temp;
                 }
-                StartCoroutine(Behaviour());
+                m_rb.isKinematic = true;
                 return true;
             }
         }
@@ -104,11 +104,24 @@ public class Goo : MonoBehaviour
         {
             //checks if the click was on top of a link between 2 goos, if yes, put the selected goo back there, otherwise just build
             if (TryGetPath())
+            {
+                StartCoroutine(Behaviour());
                 return;
+
+            }
             //Try to attach it to the structure
             if (m_maxAllowedAnchorsAmount- m_validAnchors.Count(x=>x==null)>=m_minAllowedAnchorsAmount)
             {
                 Use();
+                DisablePreviewers();
+            }
+            else
+            {
+                //drop the goo in the air
+                StartCoroutine(Behaviour());
+                m_isSelected = false;
+                m_rb.isKinematic = false;
+                s_isThereAGooSelected=false;
                 DisablePreviewers();
 
             }
@@ -227,23 +240,42 @@ public class Goo : MonoBehaviour
     public IEnumerator Behaviour()
     {
         yield return null;
-        m_rb.gravityScale = 0f;
+        if (m_rb.isKinematic)
+        {
+            m_rb.gravityScale = 0f;
+        }
+        else
+        {
+            //gets first child of the structure => bottom left goo of the starter structure
+            m_pathTarget = PathFinder.Instance.transform.parent.GetChild(0).gameObject;
+        }
         m_isSelected = false;
         float movementTimer = Vector2.Distance(transform.position,m_pathOrigin.transform.position)/Vector2.Distance(m_pathOrigin.transform.position,m_pathTarget.transform.position);
         
         while (!m_isSelected)
         {
-            //normalizes so that speed doesn't change depending on the length of the connection
-            movementTimer += 2*Time.fixedDeltaTime/Vector2.Distance(m_pathOrigin.transform.position,m_pathTarget.transform.position);
-            if(Vector2.Distance(transform.position, m_pathTarget.transform.position) < 0.2f)
+            //if it's on the structure it's kinematic
+            if(m_rb.isKinematic)
             {
-                movementTimer = 0f;
-                if (!FindNextTarget()) break;
-            }
+                //normalizes so that speed doesn't change depending on the length of the connection
+                movementTimer += 2 * Time.fixedDeltaTime / Vector2.Distance(m_pathOrigin.transform.position, m_pathTarget.transform.position);
+                if (Vector2.Distance(transform.position, m_pathTarget.transform.position) < 0.2f)
+                {
+                    movementTimer = 0f;
+                    if (!FindNextTarget()) break;
+                }
+                else
+                {
+                    //teleports when goo enters structure by itself, TODO: Fix that shit
+                    m_rb.MovePosition(Vector3.Lerp(m_pathOrigin.transform.position, m_pathTarget.transform.position, movementTimer));
+                }
+            }//otherwise it's on the ground
             else
             {
-                m_rb.MovePosition(Vector3.Lerp(m_pathOrigin.transform.position,m_pathTarget.transform.position, movementTimer));
+                m_rb.velocity = new Vector2(Mathf.Sign(m_pathTarget.transform.position.x - transform.position.x)*3, m_rb.velocity.y);
+                TryGetPath();            
             }
+            
             yield return new WaitForFixedUpdate();
         }
         m_rb.gravityScale = 1f;
