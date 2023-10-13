@@ -20,20 +20,15 @@ public class ReplayManager : MonoBehaviour
     private void Start()
     {
         //Sets the text of all buttons for the level Replay
-        int LastLevel = PlayerPrefs.GetInt("LastPlayedLevel");
+        int HighestUnlockedLevel = PlayerPrefs.GetInt("HighestUnlockedLevel");
         for (int i =1;i<=SceneManager.sceneCountInBuildSettings-2;i++)
         {
             buttonList[i - 1].m_Text.text = "Level " + i;
-            if (LastLevel <= i-1)
+            if (HighestUnlockedLevel <= i-1)
             {
                 buttonList[i - 1].m_button.interactable = false;
                 buttonList[i - 1].m_Text.text += ": Locked";
             }
-            else
-            {
-                buttonList[i - 1].m_Text.text += ": " + PlayerPrefs.GetInt($"Level {1.ToString()} Score");
-            }
-
         }
     }
 }

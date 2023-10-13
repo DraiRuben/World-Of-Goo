@@ -5,10 +5,12 @@ using UnityEngine;
 
 public class Spawner : MonoBehaviour
 {
+    private List<Spawnable> Spawn;
     [SerializeField]
-    List<Spawnable> Spawn;
+    private SpawnSettings SpawnSettings;
     void Start()
     {
+        Spawn = SpawnSettings.Spawn;
         foreach(var v in Spawn)
         {
             for(int i = 0; i < v.Amount; i++)
@@ -16,12 +18,7 @@ public class Spawner : MonoBehaviour
                 Instantiate(v.Object,transform.position, Quaternion.identity);
             }
         }
-    }
-    [Serializable]
-    struct Spawnable
-    {
-        public GameObject Object;
-        public int Amount;
+        Score.Instance.m_totalSpawnedGoos = SpawnSettings.GetTotalGooAmount();
     }
     
 }

@@ -2,19 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Goo : MonoBehaviour
 {
     public static bool s_isThereAGooSelected = false;
     public static bool s_goToFinishLine = false;
     public static GameObject s_finishLineGoo;
-    public bool move = true;
     
-    public bool m_isUsed = false;
-    private protected bool m_isSelected = false; 
+    public bool m_isUsed = false; 
+    [HideInInspector]
+    public bool m_isSelected = false; 
     [SerializeField]
     private protected bool m_isBuildableOn = true;
-
     [SerializeField]
     private protected int m_maxAllowedAnchorsAmount = 3;
     [SerializeField]
@@ -35,7 +35,8 @@ public class Goo : MonoBehaviour
     private protected List<DistanceJoint2D> m_distanceJoints;
     private protected List<GameObject> pathToEnd = null;
     private protected Rigidbody2D m_rb;
-    
+    private protected float m_movementTimer = 0;
+    private protected Coroutine m_behaviour;
     private void Start()
     {
         for (int i = 0; i < m_maxAllowedAnchorsAmount; i++) m_validAnchors.Add(null);
@@ -56,7 +57,10 @@ public class Goo : MonoBehaviour
 
         if (!m_isUsed)
         {
-            if(TryGetPath(1.5f))StartCoroutine(Behaviour());
+            if (TryGetPath(1.5f))
+            {
+                m_behaviour ??= StartCoroutine(Behaviour());
+            }
         }
     }
     private void OnJointBreak2D(Joint2D joint)
@@ -65,37 +69,8 @@ public class Goo : MonoBehaviour
         PathFinder.Instance.Structure.RemoveConnection(gameObject, joint.connectedBody.gameObject);
         PathFinder.Instance.Structure.vertices--;
     }
-    //thing done when selected and then placed
-    private bool TryGetPath(float searchRadius =0.5f)
-    {
-        var overlapping = Physics2D.OverlapCircleAll(transform.position, searchRadius,LayerMask.GetMask("GooConnection"));
-
-        foreach (var p in overlapping)
-        {
-            if (p.name.Contains("Bar"))
-            {
-                m_pathTarget = p.transform.parent.parent.gameObject;
-                m_pathOrigin = p.transform.parent.GetComponent<Connection>().m_target;
-                //don't want to be able to place a goo back on a balloon's string
-                if (m_pathTarget.GetComponent<Goo_Balloon>() != null || m_pathOrigin.GetComponent<Goo_Balloon>() != null) return false;
-                
-                DisablePreviewers();
-                m_rb.isKinematic = true;
-                m_isSelected = false;
-                s_isThereAGooSelected = false;
-                //swaps if the origin is further from the goo, so that the target is the further one
-                if (Vector2.Distance(transform.position, m_pathTarget.transform.position) < Vector2.Distance(transform.position, m_pathOrigin.transform.position))
-                {
-                    var temp = m_pathTarget;
-                    m_pathTarget = m_pathOrigin;
-                    m_pathOrigin = temp;
-                }
-                m_rb.isKinematic = true;
-                return true;
-            }
-        }
-        return false;
-    }
+    
+    
     public virtual void TryInteract()
     {
         if(m_isUsed || (s_isThereAGooSelected && !m_isSelected)) return;
@@ -105,12 +80,12 @@ public class Goo : MonoBehaviour
             //checks if the click was on top of a link between 2 goos, if yes, put the selected goo back there, otherwise just build
             if (TryGetPath())
             {
-                StartCoroutine(Behaviour());
+                m_behaviour ??= StartCoroutine(Behaviour());
                 return;
 
             }
             //Try to attach it to the structure
-            if (m_maxAllowedAnchorsAmount- m_validAnchors.Count(x=>x==null)>=m_minAllowedAnchorsAmount)
+            if (m_maxAllowedAnchorsAmount - m_validAnchors.Count(x=>x==null)>=m_minAllowedAnchorsAmount)
             {
                 Use();
                 DisablePreviewers();
@@ -118,7 +93,7 @@ public class Goo : MonoBehaviour
             else
             {
                 //drop the goo in the air
-                StartCoroutine(Behaviour());
+                m_behaviour ??= StartCoroutine(Behaviour());
                 m_isSelected = false;
                 m_rb.isKinematic = false;
                 s_isThereAGooSelected=false;
@@ -180,49 +155,81 @@ public class Goo : MonoBehaviour
     {
         while (m_isSelected)
         {
-            TryResetPreviewers();
-            var  A = Physics2D.OverlapCircleAll(transform.position, m_maxAttachDistance);
-            if(A != null)
+            var temp = m_validAnchors.ToList();
+            temp.RemoveAll(x => x == null);
+            TryResetPreviewers(temp.Count);
+            var  A = Physics2D.OverlapCircleAll(transform.position, m_maxAttachDistance, LayerMask.GetMask("Goo"));
+            A = A.Where(x => x.CompareTag("Goo") && x.GetComponent<Goo>().m_isUsed && x.GetComponent<Goo>().m_isBuildableOn) .ToArray();
+            if(!s_goToFinishLine && A != null && A.Length>=m_minAllowedAnchorsAmount)
                 foreach(var coll in A)
                 { 
-                    //checks for min distance and if it's a goo and fixed on a structure
-                    if (coll.CompareTag("Goo") && coll.GetComponent<Goo>().m_isUsed && coll.GetComponent<Goo>().m_isBuildableOn)
+                //checks for min distance and if it's a goo and fixed on a structure
+                    float Distance = Vector2.Distance(coll.transform.position, transform.position);
+                    Vector3 MousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                    if (Distance >= m_minAttachDistance
+                        && !Physics2D.Raycast(coll.transform.position,MousePos-coll.transform.position,Vector2.Distance(MousePos,coll.transform.position),LayerMask.GetMask("Default")))
                     {
-                        float Distance = Vector2.Distance(coll.transform.position, transform.position);
-                        if (Distance >= m_minAttachDistance)
+                        //display phantom connection and adds anchor in list if the distance
+                        //between this and the anchor is smaller than one of the things in the list
+                        //or if the list isn't full yet, just add it to the anchor points instead of replacing one
+                        var index = m_validAnchors.IndexOf(null);
+                        //returns -1 if it doesn't find an element that's null => if the list is full already
+                        if (index != -1 && !m_validAnchors.Contains(coll.gameObject))
                         {
-                            //display phantom connection and adds anchor in list if the distance
-                            //between this and the anchor is smaller than one of the things in the list
-                            //or if the list isn't full yet, just add it to the anchor points instead of replacing one
-                            var index = m_validAnchors.IndexOf(null);
-                            //returns -1 if it doesn't find an element that's null => if the list is full already
-                            if (index != -1 && !m_validAnchors.Contains(coll.gameObject))
+                            m_validAnchors[index] = coll.gameObject;
+                            SetupPreviewer(coll);     
+                        }
+                        else if (!m_validAnchors.Contains(coll.gameObject))
+                        {
+                            int HighestDistanceAnchorIndex = -1;
+                            for(int i =0;i<m_validAnchors.Count;i++)
                             {
-                                m_validAnchors[index] = coll.gameObject;
-                                SetupPreviewer(coll);
-                                
+                                if (Vector2.Distance(transform.position, m_validAnchors[i].transform.position) > Distance)
+                                    HighestDistanceAnchorIndex = i;
                             }
-                            else if (!m_validAnchors.Contains(coll.gameObject))
+                            //replace an existing previewer
+                            if (HighestDistanceAnchorIndex != -1)
                             {
-                                int HighestDistanceAnchorIndex = -1;
-                                for(int i =0;i<m_validAnchors.Count;i++)
-                                {
-                                    if (Vector2.Distance(transform.position, m_validAnchors[i].transform.position) > Distance)
-                                        HighestDistanceAnchorIndex = i;
-                                }
-                                //replace an existing previewer
-                                if (HighestDistanceAnchorIndex != -1)
-                                {
-                                    UpdatePreviewer(coll, HighestDistanceAnchorIndex);
-                                    m_validAnchors[HighestDistanceAnchorIndex] = coll.gameObject;
-                                }
+                                UpdatePreviewer(coll, HighestDistanceAnchorIndex);
+                                m_validAnchors[HighestDistanceAnchorIndex] = coll.gameObject;
                             }
-                            
                         }
                     }
                 }
             yield return null;
         }
+    }
+    private bool TryGetPath(float searchRadius = 0.5f)
+    {
+        var overlapping = Physics2D.OverlapCircleAll(transform.position, searchRadius, LayerMask.GetMask("GooConnection"));
+
+        foreach (var p in overlapping)
+        {
+            if (p.name.Contains("Bar"))
+            {
+                m_pathTarget = p.transform.parent.parent.gameObject;
+                m_pathOrigin = p.transform.parent.GetComponent<Connection>().m_target;
+                //don't want to be able to place a goo back on a balloon's string
+                if (m_pathTarget.GetComponent<Goo_Balloon>() != null || m_pathOrigin.GetComponent<Goo_Balloon>() != null) return false;
+
+                DisablePreviewers();
+
+                //swaps if the origin is further from the goo, so that the target is the further one
+                if (m_isSelected && Vector2.Distance(transform.position, m_pathTarget.transform.position) < Vector2.Distance(transform.position, m_pathOrigin.transform.position))
+                {
+                    var temp = m_pathTarget;
+                    m_pathTarget = m_pathOrigin;
+                    m_pathOrigin = temp;
+                }
+                m_movementTimer = Vector2.Distance(transform.position, m_pathOrigin.transform.position) / Vector2.Distance(m_pathOrigin.transform.position, m_pathTarget.transform.position);
+
+                m_isSelected = false;
+                s_isThereAGooSelected = false;
+                m_rb.isKinematic = true;
+                return true;
+            }
+        }
+        return false;
     }
     public IEnumerator Select()
     {
@@ -242,32 +249,32 @@ public class Goo : MonoBehaviour
         yield return null;
         if (m_rb.isKinematic)
         {
-            m_rb.gravityScale = 0f;
+            m_rb.gravityScale = 0f; 
         }
         else
         {
             //gets first child of the structure => bottom left goo of the starter structure
             m_pathTarget = PathFinder.Instance.transform.parent.GetChild(0).gameObject;
         }
+
         m_isSelected = false;
-        float movementTimer = Vector2.Distance(transform.position,m_pathOrigin.transform.position)/Vector2.Distance(m_pathOrigin.transform.position,m_pathTarget.transform.position);
-        
+        //fix since when I put rigidbody to kinematic, the velocity is frozen at its values before being kine
+        m_rb.velocity = new(m_rb.velocity.x,0);
         while (!m_isSelected)
         {
             //if it's on the structure it's kinematic
             if(m_rb.isKinematic)
             {
                 //normalizes so that speed doesn't change depending on the length of the connection
-                movementTimer += 2 * Time.fixedDeltaTime / Vector2.Distance(m_pathOrigin.transform.position, m_pathTarget.transform.position);
-                if (Vector2.Distance(transform.position, m_pathTarget.transform.position) < 0.2f)
+                m_movementTimer += 2 * Time.fixedDeltaTime / Vector2.Distance(m_pathOrigin.transform.position, m_pathTarget.transform.position);
+                if (Vector2.Distance(transform.position, m_pathTarget.transform.position) < 0.1f)
                 {
-                    movementTimer = 0f;
+                    m_movementTimer = 0f;
                     if (!FindNextTarget()) break;
                 }
                 else
                 {
-                    //teleports when goo enters structure by itself, TODO: Fix that shit
-                    m_rb.MovePosition(Vector3.Lerp(m_pathOrigin.transform.position, m_pathTarget.transform.position, movementTimer));
+                    m_rb.MovePosition(Vector3.Lerp(m_pathOrigin.transform.position, m_pathTarget.transform.position, m_movementTimer));
                 }
             }//otherwise it's on the ground
             else
@@ -279,9 +286,13 @@ public class Goo : MonoBehaviour
             yield return new WaitForFixedUpdate();
         }
         m_rb.gravityScale = 1f;
+        m_behaviour = null;
     }
     private bool FindNextTarget()
     {
+        //for some reason, when dropping the goo above the structure, velocity y fucks with it and the goo has some weird clipping because of it
+        m_rb.velocity = new(m_rb.velocity.x, 0);
+
         //finds next target, either random if the structure isn't connected to the exit,
         //or the next target in the shortest path towards the exit if there is one
         m_pathOrigin = m_pathTarget;
@@ -321,14 +332,14 @@ public class Goo : MonoBehaviour
         availableConnection.m_isInUse = true;
         availableConnection.enabled = true;
     }
-    private void TryResetPreviewers()
+    private void TryResetPreviewers(int ValidAnchorCount)
     {
         //clears connections for goos that were in connection preview but went too far
         for (int i = 0; i < m_validAnchors.Count; i++)
         {
             if (m_validAnchors[i] == null) continue;
             float Distance = Vector2.Distance(m_validAnchors[i].transform.position, transform.position);
-            if (!(Distance >= m_minAttachDistance && Distance <= m_maxAttachDistance))
+            if (!(Distance >= m_minAttachDistance && Distance <= m_maxAttachDistance) || ValidAnchorCount<=m_minAllowedAnchorsAmount)
             {
                 //disable preview connection thingy, then remove from list, cool since we're not changing the collection's size
                 var allChildren = transform.Cast<Transform>().Select(t => t.GetComponent<Connection>()).ToList();
@@ -361,5 +372,16 @@ public class Goo : MonoBehaviour
         var connection = Instantiate(m_connectionPrefab, transform.position, Quaternion.identity, transform);
         connection.GetComponent<Connection>().m_target = filteredAnchors[i];
         connection.GetComponent<Connection>().m_isInUse = true;
+    }
+    public IEnumerator PlanDestruction()
+    {
+        while (transform.localScale.magnitude > 0.1f)
+        {
+            transform.localScale -= transform.localScale*Time.fixedDeltaTime;
+            yield return new WaitForFixedUpdate();
+        }
+        gameObject.SetActive(false);
+        Score.Instance.m_Score++;
+
     }
 }
