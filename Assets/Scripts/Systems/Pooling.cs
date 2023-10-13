@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,7 +12,7 @@ public class Pooling : MonoBehaviour
         public string name;
         public List<UnityEngine.Object> objects;
     }
-    public Dictionary<string,List<UnityEngine.Object>> pools = new();
+    public Dictionary<string, List<UnityEngine.Object>> pools = new();
     // Start is called before the first frame update
     void Start()
     {
@@ -24,7 +23,7 @@ public class Pooling : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
     private void Awake()
     {

@@ -1,20 +1,47 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviour
 {
     private bool Pause;
-    public void PauseResume()
+
+    public void PauseResume(InputAction.CallbackContext ctx)
+    {
+        if(ctx.performed)
+        {
+            Pause = !Pause;
+            Time.timeScale = Pause ? 0f : 1f;
+            if (Pause)
+                gameObject.SetActive(true);
+            else
+                StartCoroutine(DelayedDeactivation());
+
+            GetComponent<Animator>().SetBool("ShowMenu", Pause);
+        }
+    }
+    public void PauseResumeNoCallback()
     {
         Pause = !Pause;
-        Time.timeScale = Pause?0f:1f;
-        gameObject.SetActive(Pause);
+        Time.timeScale = Pause ? 0f : 1f;
+        if (Pause)
+            gameObject.SetActive(true);
+        else
+            StartCoroutine(DelayedDeactivation());
+
+        GetComponent<Animator>().SetBool("ShowMenu", Pause);
+        
+    }
+    private IEnumerator DelayedDeactivation()
+    {
+        yield return new WaitForSeconds(1);
+        gameObject.SetActive(false);
+
     }
     public void Retry()
     {
         Time.timeScale = 1f;
-        SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().name);
+        SceneChanger.instance.ChangeSceneWithName(SceneManager.GetActiveScene().name);
     }
 }

@@ -64,7 +64,7 @@ MonoBehaviour:
       - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PauseMenu, Assembly-CSharp
         m_MethodName: PauseResume
-        m_Mode: 1
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -422,7 +422,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4018106044371928798}
   - component: {fileID: 4342222808690860413}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Previewer (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -459,6 +459,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_target: {fileID: 0}
   m_isInUse: 0
+  ScaleY: 0.3
 --- !u!1 &3657539401764262809
 GameObject:
   m_ObjectHideFlags: 0
@@ -470,8 +471,8 @@ GameObject:
   - component: {fileID: 8363258087845065263}
   - component: {fileID: 112090123618027884}
   - component: {fileID: 6297158999895370742}
-  m_Layer: 6
-  m_Name: ConnectionPreviewerBar
+  m_Layer: 9
+  m_Name: ConnectionPreviewer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -599,7 +600,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8242229812719322769}
   - component: {fileID: 7393194202699500995}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Previewer (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -636,6 +637,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_target: {fileID: 0}
   m_isInUse: 0
+  ScaleY: 0.3
 --- !u!1 &5709583444170401975
 GameObject:
   m_ObjectHideFlags: 0
@@ -647,8 +649,8 @@ GameObject:
   - component: {fileID: 3313182306479580000}
   - component: {fileID: 6835265342549920033}
   - component: {fileID: 4320495960302129170}
-  m_Layer: 6
-  m_Name: ConnectionPreviewerBar
+  m_Layer: 9
+  m_Name: ConnectionPreviewer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -776,7 +778,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6053550552624157621}
   - component: {fileID: 3562002522812270265}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Previewer (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -813,6 +815,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_target: {fileID: 0}
   m_isInUse: 0
+  ScaleY: 0.3
 --- !u!1 &6093139355140014683
 GameObject:
   m_ObjectHideFlags: 0
@@ -823,7 +826,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2366263275320723676}
   - component: {fileID: 6901243051339817540}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Previewer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -860,6 +863,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_target: {fileID: 0}
   m_isInUse: 0
+  ScaleY: 0.3
 --- !u!1 &7158087044947693885
 GameObject:
   m_ObjectHideFlags: 0
@@ -998,8 +1002,8 @@ GameObject:
   - component: {fileID: 5603362859797896901}
   - component: {fileID: 2751073044662947394}
   - component: {fileID: 7960376580077986734}
-  m_Layer: 6
-  m_Name: ConnectionPreviewerBar
+  m_Layer: 9
+  m_Name: ConnectionPreviewer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1128,8 +1132,8 @@ GameObject:
   - component: {fileID: 4946801191905327011}
   - component: {fileID: 4724768585724502788}
   - component: {fileID: 2185876282819507555}
-  m_Layer: 6
-  m_Name: ConnectionPreviewerBar
+  m_Layer: 9
+  m_Name: ConnectionPreviewer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Pipe : MonoBehaviour
@@ -25,10 +24,10 @@ public class Pipe : MonoBehaviour
             collision.GetComponent<Goo>().StartCoroutine(collision.GetComponent<Goo>().PlanDestruction());
         }
     }
-    
+
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.CompareTag("Goo") && !Goo.s_goToFinishLine && collision.GetComponent<Goo>().m_isUsed && collision.GetComponent<Goo_Balloon>()==null)
+        if (collision.CompareTag("Goo") && !Goo.s_goToFinishLine && collision.GetComponent<Goo>().m_isUsed && collision.GetComponent<Goo_Balloon>() == null)
         {
             m_vaccum.m_magnet.enabled = true;
             m_vaccum.m_finishGoo = collision.gameObject;

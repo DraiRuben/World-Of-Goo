@@ -1,11 +1,10 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using System;
 using UnityEngine;
 
 
 [Serializable]
-public class GOArrayStorage : SerializableDictionary.Storage<List<GameObject>> {}
+public class GOArrayStorage : SerializableDictionary.Storage<List<GameObject>> { }
 
 [Serializable]
-public class GOGOArrayDictionary : SerializableDictionary<GameObject, List<GameObject>, GOArrayStorage> {}
+public class GOGOArrayDictionary : SerializableDictionary<GameObject, List<GameObject>, GOArrayStorage> { }

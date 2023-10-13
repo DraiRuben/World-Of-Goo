@@ -2,24 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class Goo : MonoBehaviour
 {
     public static bool s_isThereAGooSelected = false;
     public static bool s_goToFinishLine = false;
     public static GameObject s_finishLineGoo;
-    
-    public bool m_isUsed = false; 
+
+    public bool m_isUsed = false;
     [HideInInspector]
-    public bool m_isSelected = false; 
+    public bool m_isSelected = false;
     [SerializeField]
     private protected bool m_isBuildableOn = true;
     [SerializeField]
     private protected int m_maxAllowedAnchorsAmount = 3;
     [SerializeField]
     private protected int m_minAllowedAnchorsAmount = 2;
-    private protected List<GameObject> m_validAnchors = new ();
+    private protected List<GameObject> m_validAnchors = new();
     [SerializeField]
     private protected float m_minAttachDistance = 1f;
     [SerializeField]
@@ -40,13 +39,13 @@ public class Goo : MonoBehaviour
     private void Start()
     {
         for (int i = 0; i < m_maxAllowedAnchorsAmount; i++) m_validAnchors.Add(null);
-        for(int i = GetComponents<SpringJoint2D>().Length; i < m_maxAllowedAnchorsAmount; i++)
+        for (int i = GetComponents<SpringJoint2D>().Length; i < m_maxAllowedAnchorsAmount; i++)
         {
             var temp = gameObject.AddComponent<SpringJoint2D>();
             temp.enabled = false;
             temp.frequency = 13f;
         }
-        for(int i = GetComponents<DistanceJoint2D>().Length; i < m_maxAllowedAnchorsAmount; i++)
+        for (int i = GetComponents<DistanceJoint2D>().Length; i < m_maxAllowedAnchorsAmount; i++)
         {
             var temp = gameObject.AddComponent<DistanceJoint2D>();
             temp.enabled = false;
@@ -69,11 +68,11 @@ public class Goo : MonoBehaviour
         PathFinder.Instance.Structure.RemoveConnection(gameObject, joint.connectedBody.gameObject);
         PathFinder.Instance.Structure.vertices--;
     }
-    
-    
+
+
     public virtual void TryInteract()
     {
-        if(m_isUsed || (s_isThereAGooSelected && !m_isSelected)) return;
+        if (m_isUsed || (s_isThereAGooSelected && !m_isSelected)) return;
 
         if (m_isSelected)
         {
@@ -85,7 +84,7 @@ public class Goo : MonoBehaviour
 
             }
             //Try to attach it to the structure
-            if (m_maxAllowedAnchorsAmount - m_validAnchors.Count(x=>x==null)>=m_minAllowedAnchorsAmount)
+            if (m_maxAllowedAnchorsAmount - m_validAnchors.Count(x => x == null) >= m_minAllowedAnchorsAmount)
             {
                 Use();
                 DisablePreviewers();
@@ -96,7 +95,7 @@ public class Goo : MonoBehaviour
                 m_behaviour ??= StartCoroutine(Behaviour());
                 m_isSelected = false;
                 m_rb.isKinematic = false;
-                s_isThereAGooSelected=false;
+                s_isThereAGooSelected = false;
                 DisablePreviewers();
 
             }
@@ -117,7 +116,7 @@ public class Goo : MonoBehaviour
         FilteredAnchors.RemoveAll(x => x == null);
         for (int i = 0; i < FilteredAnchors.Count; i++)
         {
-           if (i >= transform.childCount) break;
+            if (i >= transform.childCount) break;
 
             transform.GetChild(i).GetComponent<Connection>().m_isInUse = false;
         }
@@ -133,17 +132,17 @@ public class Goo : MonoBehaviour
         //manages flags
         //Places goo on structure or puts it back if close enough
         //starts coroutine that does whatever I want when it's placed on a structure like a balloon lifing up
-        
+
         //remove all null refs
         var filteredAnchors = m_validAnchors.ToList();
         filteredAnchors.RemoveAll(x => x == null);
-        for(int i = 0; i < filteredAnchors.Count; i++)
+        for (int i = 0; i < filteredAnchors.Count; i++)
         {
             PlaceConnection(filteredAnchors, i);
         }
         //creates a copy of the anchors and pass it onto the structure
         PathFinder.Instance.Structure.Connections[gameObject] = filteredAnchors.ToList();
-        foreach(var connector in filteredAnchors)
+        foreach (var connector in filteredAnchors)
         {
             PathFinder.Instance.Structure.Connections[connector].Add(gameObject);
         }
@@ -158,16 +157,16 @@ public class Goo : MonoBehaviour
             var temp = m_validAnchors.ToList();
             temp.RemoveAll(x => x == null);
             TryResetPreviewers(temp.Count);
-            var  A = Physics2D.OverlapCircleAll(transform.position, m_maxAttachDistance, LayerMask.GetMask("Goo"));
-            A = A.Where(x => x.CompareTag("Goo") && x.GetComponent<Goo>().m_isUsed && x.GetComponent<Goo>().m_isBuildableOn) .ToArray();
-            if(!s_goToFinishLine && A != null && A.Length>=m_minAllowedAnchorsAmount)
-                foreach(var coll in A)
-                { 
-                //checks for min distance and if it's a goo and fixed on a structure
+            var A = Physics2D.OverlapCircleAll(transform.position, m_maxAttachDistance, LayerMask.GetMask("Goo"));
+            A = A.Where(x => x.CompareTag("Goo") && x.GetComponent<Goo>().m_isUsed && x.GetComponent<Goo>().m_isBuildableOn).ToArray();
+            if (!s_goToFinishLine && A != null && A.Length >= m_minAllowedAnchorsAmount)
+                foreach (var coll in A)
+                {
+                    //checks for min distance and if it's a goo and fixed on a structure
                     float Distance = Vector2.Distance(coll.transform.position, transform.position);
                     Vector3 MousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                     if (Distance >= m_minAttachDistance
-                        && !Physics2D.Raycast(coll.transform.position,MousePos-coll.transform.position,Vector2.Distance(MousePos,coll.transform.position),LayerMask.GetMask("Default")))
+                        && !Physics2D.Raycast(coll.transform.position, MousePos - coll.transform.position, Vector2.Distance(MousePos, coll.transform.position), LayerMask.GetMask("Default")))
                     {
                         //display phantom connection and adds anchor in list if the distance
                         //between this and the anchor is smaller than one of the things in the list
@@ -177,12 +176,12 @@ public class Goo : MonoBehaviour
                         if (index != -1 && !m_validAnchors.Contains(coll.gameObject))
                         {
                             m_validAnchors[index] = coll.gameObject;
-                            SetupPreviewer(coll);     
+                            SetupPreviewer(coll);
                         }
                         else if (!m_validAnchors.Contains(coll.gameObject))
                         {
                             int HighestDistanceAnchorIndex = -1;
-                            for(int i =0;i<m_validAnchors.Count;i++)
+                            for (int i = 0; i < m_validAnchors.Count; i++)
                             {
                                 if (Vector2.Distance(transform.position, m_validAnchors[i].transform.position) > Distance)
                                     HighestDistanceAnchorIndex = i;
@@ -249,7 +248,7 @@ public class Goo : MonoBehaviour
         yield return null;
         if (m_rb.isKinematic)
         {
-            m_rb.gravityScale = 0f; 
+            m_rb.gravityScale = 0f;
         }
         else
         {
@@ -259,11 +258,11 @@ public class Goo : MonoBehaviour
 
         m_isSelected = false;
         //fix since when I put rigidbody to kinematic, the velocity is frozen at its values before being kine
-        m_rb.velocity = new(m_rb.velocity.x,0);
+        m_rb.velocity = new(m_rb.velocity.x, 0);
         while (!m_isSelected)
         {
             //if it's on the structure it's kinematic
-            if(m_rb.isKinematic)
+            if (m_rb.isKinematic)
             {
                 //normalizes so that speed doesn't change depending on the length of the connection
                 m_movementTimer += 2 * Time.fixedDeltaTime / Vector2.Distance(m_pathOrigin.transform.position, m_pathTarget.transform.position);
@@ -279,10 +278,10 @@ public class Goo : MonoBehaviour
             }//otherwise it's on the ground
             else
             {
-                m_rb.velocity = new Vector2(Mathf.Sign(m_pathTarget.transform.position.x - transform.position.x)*3, m_rb.velocity.y);
-                TryGetPath();            
+                m_rb.velocity = new Vector2(Mathf.Sign(m_pathTarget.transform.position.x - transform.position.x) * 3, m_rb.velocity.y);
+                TryGetPath();
             }
-            
+
             yield return new WaitForFixedUpdate();
         }
         m_rb.gravityScale = 1f;
@@ -339,7 +338,7 @@ public class Goo : MonoBehaviour
         {
             if (m_validAnchors[i] == null) continue;
             float Distance = Vector2.Distance(m_validAnchors[i].transform.position, transform.position);
-            if (!(Distance >= m_minAttachDistance && Distance <= m_maxAttachDistance) || ValidAnchorCount<=m_minAllowedAnchorsAmount)
+            if (!(Distance >= m_minAttachDistance && Distance <= m_maxAttachDistance) || ValidAnchorCount <= m_minAllowedAnchorsAmount)
             {
                 //disable preview connection thingy, then remove from list, cool since we're not changing the collection's size
                 var allChildren = transform.Cast<Transform>().Select(t => t.GetComponent<Connection>()).ToList();
@@ -363,7 +362,7 @@ public class Goo : MonoBehaviour
         Previewer.m_isInUse = true;
         Previewer.enabled = true;
     }
-    private void PlaceConnection(List<GameObject> filteredAnchors,int i)
+    private void PlaceConnection(List<GameObject> filteredAnchors, int i)
     {
         PathFinder.Instance.Structure.vertices++;
         m_springJoints[i].connectedBody = filteredAnchors[i].GetComponent<Rigidbody2D>();
@@ -375,9 +374,9 @@ public class Goo : MonoBehaviour
     }
     public IEnumerator PlanDestruction()
     {
-        while (transform.localScale.magnitude > 0.1f)
+        while (transform.localScale.magnitude > 0.4f)
         {
-            transform.localScale -= transform.localScale*Time.fixedDeltaTime;
+            transform.localScale -= transform.localScale * Time.fixedDeltaTime*2;
             yield return new WaitForFixedUpdate();
         }
         gameObject.SetActive(false);

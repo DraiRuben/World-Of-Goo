@@ -1,13 +1,11 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu]
 public class DifficultySettings : ScriptableObject
 {
     public string m_levelName;
-    [SerializeField,Range(0,1)]
+    [SerializeField, Range(0, 1)]
     private float m_easyMinPercentToGet;
     [SerializeField, Range(0, 1)]
     private float m_mediumMinPercentToGet;
@@ -17,7 +15,7 @@ public class DifficultySettings : ScriptableObject
     public Difficulty m_chosenDiff = Difficulty.Easy;
     public float GetActiveMultiplier()
     {
-        switch(m_chosenDiff)
+        switch (m_chosenDiff)
         {
             case Difficulty.Easy:
                 return m_easyMinPercentToGet;

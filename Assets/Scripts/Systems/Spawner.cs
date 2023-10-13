@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,14 +9,14 @@ public class Spawner : MonoBehaviour
     void Start()
     {
         Spawn = SpawnSettings.Spawn;
-        foreach(var v in Spawn)
+        foreach (var v in Spawn)
         {
-            for(int i = 0; i < v.Amount; i++)
+            for (int i = 0; i < v.Amount; i++)
             {
-                Instantiate(v.Object,transform.position, Quaternion.identity);
+                Instantiate(v.Object, transform.position, Quaternion.identity);
             }
         }
         Score.Instance.m_totalSpawnedGoos = SpawnSettings.GetTotalGooAmount();
     }
-    
+
 }

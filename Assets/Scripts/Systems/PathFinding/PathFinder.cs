@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -19,12 +18,12 @@ public class PathFinder : MonoBehaviour
             return Connections[Key][UnityEngine.Random.Range(0, Connections[Key].Count)];
         }
         //not correct I think, I'll need to do a recursive algorythm, so I can return a list of destinations to go to in order I think
-        
+
         public void RemovePoint(GameObject Point)
         {
             //removes the key and all references of the point/all connections to this point in the graph
             Connections.Remove(Point);
-            foreach(var Connection in Connections)
+            foreach (var Connection in Connections)
             {
                 Connection.Value.Remove(Point);
             }
@@ -32,7 +31,7 @@ public class PathFinder : MonoBehaviour
         public GameObject GetConnector(GameObject origin, GameObject destination)
         {
             var Connectors = origin.GetComponentsInChildren<Connection>();
-            foreach(var Connector in Connectors)
+            foreach (var Connector in Connectors)
             {
                 if (Connector.m_target != null && Connector.m_target == destination)
                     return Connector.gameObject;
@@ -43,7 +42,7 @@ public class PathFinder : MonoBehaviour
         {
             //removes the key and all references of the point/all connections to this point in the graph
             Connections[origin].Remove(Destination);
-            Connections[Destination].Remove(origin);     
+            Connections[Destination].Remove(origin);
         }
         public List<GameObject> GetShortestPathBetween(GameObject origin, GameObject destination)
         {

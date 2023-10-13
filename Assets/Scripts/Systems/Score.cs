@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -18,10 +16,10 @@ public class Score : MonoBehaviour
     public int m_totalSpawnedGoos = 0;
     [HideInInspector]
     public int m_minScoreForWin = 0;
-   
+
 
     private int m_score = 0;
-    public int m_Score { get { return m_score; } set { m_score = value;  m_scoreDisplay.text = $"Score: {m_score.ToString()}"; m_scoreDisplay.enabled = true; } }
+    public int m_Score { get { return m_score; } set { m_score = value; m_scoreDisplay.text = $"Score: {m_score}/{m_minScoreForWin}"; m_scoreDisplay.enabled = true; } }
     private void Awake()
     {
         if (Instance == null) Instance = this;
@@ -38,17 +36,17 @@ public class Score : MonoBehaviour
     {
         if (SceneManager.GetActiveScene().name.Contains("Level"))
         {
-            string KeyName = SceneManager.GetActiveScene().name + " Score";
+            string KeyName = SceneManager.GetActiveScene().name + "_" + m_difficulty.m_chosenDiff.ToString() + "_Score";
             if (PlayerPrefs.HasKey(KeyName))
             {
-                if(PlayerPrefs.GetInt(KeyName)<m_Score)
+                if (PlayerPrefs.GetInt(KeyName) < m_Score)
                 {
                     PlayerPrefs.SetInt(KeyName, m_Score);
                 }
             }
             else
             {
-                PlayerPrefs.SetInt(KeyName , m_Score);
+                PlayerPrefs.SetInt(KeyName, m_Score);
             }
         }
     }

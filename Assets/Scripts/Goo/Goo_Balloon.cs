@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -48,9 +47,9 @@ public class Goo_Balloon : Goo
     }
     private IEnumerator AdaptConnectionLength()
     {
-        while (Mathf.Abs(m_distanceJoints[0].distance -m_maxAttachDistance) > 0.4f)
+        while (Mathf.Abs(m_distanceJoints[0].distance - m_maxAttachDistance) > 0.4f)
         {
-            m_distanceJoints[0].distance += 2*Time.fixedDeltaTime;
+            m_distanceJoints[0].distance += 2 * Time.fixedDeltaTime;
             yield return new WaitForFixedUpdate();
         }
     }
