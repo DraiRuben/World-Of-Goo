@@ -14,7 +14,7 @@ public class CameraController : MonoBehaviour
 
     private Vector2 Offset;
     Camera cam;
-    private void Start()
+    private void Awake()
     {
         cam = Camera.main;
         //gets screen width and height in world position

@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 public class Score : MonoBehaviour
@@ -17,13 +18,14 @@ public class Score : MonoBehaviour
     [HideInInspector]
     public int m_minScoreForWin = 0;
 
-
+    public UnityEvent scoreChanged;
     private int m_score = 0;
-    public int m_Score { get { return m_score; } set { m_score = value; m_scoreDisplay.text = $"Score: {m_score}/{m_minScoreForWin}"; m_scoreDisplay.enabled = true; } }
+    public int m_Score { get { return m_score; } set { m_score = value; m_scoreDisplay.text = $"Score: {m_score}/{m_minScoreForWin}"; if(m_score>0)scoreChanged.Invoke(); } }
     private void Awake()
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
+        scoreChanged= new UnityEvent();
 
     }
     private void Start()
@@ -31,6 +33,11 @@ public class Score : MonoBehaviour
         //this start is called after spawner's start
         m_minPercentForWin = m_difficulty.GetActiveMultiplier();
         m_minScoreForWin = (int)(m_totalSpawnedGoos * m_minPercentForWin);
+        m_Score = 0;
+    }
+    public bool CanGoToNextLevel()
+    {
+        return m_score>= m_minScoreForWin;
     }
     public void SaveScore()
     {
@@ -48,6 +55,23 @@ public class Score : MonoBehaviour
             {
                 PlayerPrefs.SetInt(KeyName, m_Score);
             }
+            //unlocks next difficulty
+            if(m_difficulty.m_chosenDiff == Difficulty.Easy && !PlayerPrefs.HasKey(SceneManager.GetActiveScene().name + "_Medium_Score"))
+                PlayerPrefs.SetInt(SceneManager.GetActiveScene().name + "_Medium_Score", 0);
+            else if (m_difficulty.m_chosenDiff == Difficulty.Medium && !PlayerPrefs.HasKey(SceneManager.GetActiveScene().name + "_Hard_Score"))
+                PlayerPrefs.SetInt(SceneManager.GetActiveScene().name + "_Hard_Score", 0);
+
         }
+    }
+    public void UnlockNextLevel()
+    {
+        if(!PlayerPrefs.HasKey(DifficultyDisplayer.instance.m_settings.m_levelName + "_Easy_Score"))
+        {
+            PlayerPrefs.SetInt(DifficultyDisplayer.instance.m_settings.m_levelName + "_Easy_Score", 0);
+            if (PlayerPrefs.GetInt("HighestUnlockedLevel") < SceneManager.GetActiveScene().buildIndex+1)
+                PlayerPrefs.SetInt("HighestUnlockedLevel", SceneManager.GetActiveScene().buildIndex+1);
+        }
+
+        
     }
 }

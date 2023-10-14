@@ -22,20 +22,21 @@ public class SceneChanger : MonoBehaviour
     }
     private IEnumerator LoadLevelAsyncInt(int sceneIndex)
     {
-        gameObject.SetActive(true);
-        yield return null;
-        m_Animator.SetTrigger("Start");
-        yield return new WaitForSeconds(1.3f);
+        ReverseCurtainState();
+        yield return new WaitForSecondsRealtime(1.3f);
         SceneManager.LoadSceneAsync(sceneIndex);
 
     }
     private IEnumerator LoadLevelAsyncString(string sceneName)
     {
-        gameObject.SetActive(true);
-        yield return null;
-        m_Animator.SetTrigger("Start");
-        yield return new WaitForSeconds(1.3f);
+        ReverseCurtainState();
+        yield return new WaitForSecondsRealtime(1.3f);
         SceneManager.LoadSceneAsync(sceneName);
+    }
+    public void ReverseCurtainState()
+    {
+        gameObject.SetActive(true);
+        m_Animator.SetTrigger("Start");
     }
     public void Exit()
     {

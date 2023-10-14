@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c750d23a61c93445ac5a0d3ffc3899d, type: 3}
+  m_Name: DiffManager
+  m_EditorClassIdentifier: 
+  DifficultyDictionary:
+    m_keys: 0200000003000000
+    m_values:
+    - {fileID: 11400000, guid: 4c639f98cce900c47bc6daecb58a31ee, type: 2}
+    - {fileID: 11400000, guid: eb5079268ea6a834eb6162ab0bf62096, type: 2}

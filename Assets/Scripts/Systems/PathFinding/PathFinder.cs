@@ -50,7 +50,7 @@ public class PathFinder : MonoBehaviour
         }
     }
     [SerializeField]
-    public Graph Structure = new();
+    public Graph Structure;
     private void Awake()
     {
         if (Instance == null) Instance = this;

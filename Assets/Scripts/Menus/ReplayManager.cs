@@ -33,13 +33,17 @@ public class ReplayManager : MonoBehaviour
             }
             else
             {
-                buttonList[i - 1].m_button.onClick.AddListener(() => OpenDifficultyOptions(buttonList[i - 1].m_difficultySettings));
+                //for some reason it give the ref to i as an index, instead of the value, so it fucks everything and I need to do a local copy of it, that somehow works
+                int temp = i - 1;
+                buttonList[i - 1].m_button.onClick.AddListener(() 
+                    => OpenDifficultyOptions(buttonList[temp].m_difficultySettings));
             }
         }
     }
     private void OpenDifficultyOptions(DifficultySettings settings)
     {
-        m_difficultyDisplayer.m_settings = settings;
         m_difficultyDisplayer.gameObject.SetActive(true);
+
+        m_difficultyDisplayer.m_settings = settings;
     }
 }

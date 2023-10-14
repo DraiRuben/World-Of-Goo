@@ -40,6 +40,7 @@ public class Pipe : MonoBehaviour
         yield return new WaitForSeconds(2f); //if the structure stays in range for at least 2 sec, then it's fixed and we can trigger the level's end
         if (m_vaccum.m_magnet.enabled)
         {
+            NextLevel.instance.Appear();
             Goo.s_finishLineGoo = m_vaccum.m_finishGoo;
             Goo.s_goToFinishLine = true;
         }
