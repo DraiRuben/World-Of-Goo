@@ -66,15 +66,10 @@ public class DifficultyDisplayer : MonoBehaviour
         m_settings.m_chosenDiff = diff.Difficulty;
         StartCoroutine(ChooseLevel());
     }
-    private IEnumerator ChooseLevel()
-    {
-        m_animator.SetBool("Show", false);
-        yield return new WaitForSecondsRealtime(0.40f);
-        SceneChanger.instance.ChangeSceneWithName(m_settings.m_levelName);
-    }
+    
     public void Back()
     {
-        gameObject.SetActive(false);
+        StartCoroutine(GoBack());
     }
     public void MainMenu()
     {
@@ -85,5 +80,18 @@ public class DifficultyDisplayer : MonoBehaviour
         m_animator.SetBool("Show", false);
         yield return new WaitForSecondsRealtime(2.27f);
         SceneManager.LoadSceneAsync("MainMenu");
+    }
+    private IEnumerator GoBack()
+    {
+        m_animator.SetBool("Show", false);
+        yield return new WaitForSecondsRealtime(2.27f);
+        gameObject.SetActive(false);
+
+    }
+    private IEnumerator ChooseLevel()
+    {
+        m_animator.SetBool("Show", false);
+        yield return new WaitForSecondsRealtime(0.40f);
+        SceneChanger.instance.ChangeSceneWithName(m_settings.m_levelName);
     }
 }
