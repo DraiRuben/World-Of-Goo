@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Shredder : MonoBehaviour
@@ -11,8 +9,8 @@ public class Shredder : MonoBehaviour
             var comp = collision.collider.GetComponent<Goo>();
             if (comp.m_isUsed)
             {
-                PathFinder.Instance.Structure.RemovePoint(collision.collider.gameObject);
-                if(comp!=null)
+                comp.RemovePointFromStructure(comp);
+                if (comp != null)
                     Destroy(comp.gameObject);
             }
             else if (!comp.m_isSelected)
@@ -23,10 +21,10 @@ public class Shredder : MonoBehaviour
         else if (collision.collider.CompareTag("GooConnection"))
         {
             var comp = collision.collider.GetComponentInParent<Connection>();
-            if (comp !=null && comp.m_isInUse)
+            if (comp != null && comp.m_isInUse && !comp.m_isPreviewer)
             {
-                PathFinder.Instance.Structure.RemoveConnection(comp);
-                if(comp!=null)
+                comp.transform.parent.GetComponent<Goo>().RemoveConnectionFromStructure(comp);
+                if (comp != null)
                     Destroy(comp.gameObject);
             }
         }

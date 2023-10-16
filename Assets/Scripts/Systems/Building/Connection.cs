@@ -2,8 +2,9 @@ using UnityEngine;
 
 public class Connection : MonoBehaviour
 {
-    public GameObject m_target;
+    public Goo m_target;
     public bool m_isInUse = false;
+    public bool m_isPreviewer = false;
     public float ScaleY = 0.3f;
     //origin is parent
     // Start is called before the first frame update

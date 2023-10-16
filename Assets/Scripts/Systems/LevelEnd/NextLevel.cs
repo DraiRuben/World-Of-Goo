@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -25,7 +24,7 @@ public class NextLevel : MonoBehaviour
     }
     public void TryDisappear()
     {
-        if(Score.Instance.CanGoToNextLevel())
+        if (Score.Instance.CanGoToNextLevel())
         {
             StartCoroutine(GoToNextLevel());
         }
@@ -42,9 +41,9 @@ public class NextLevel : MonoBehaviour
         SceneChanger.instance.ReverseCurtainState();
         yield return new WaitForSecondsRealtime(1.3f);
         Score.Instance.SaveScore();
-        
+
         //checks if there's actually settings for a next level, otherwise keep the current level
-        if(DifficultyManagerHolder.instance.manager.DifficultyDictionary.ContainsKey(SceneManager.GetActiveScene().buildIndex + 1))
+        if (DifficultyManagerHolder.instance.manager.DifficultyDictionary.ContainsKey(SceneManager.GetActiveScene().buildIndex + 1))
         {
             DifficultyDisplayer.instance.m_settings = DifficultyManagerHolder.instance.manager.DifficultyDictionary[SceneManager.GetActiveScene().buildIndex + 1];
         }

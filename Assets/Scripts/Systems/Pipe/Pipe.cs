@@ -41,7 +41,7 @@ public class Pipe : MonoBehaviour
         if (m_vaccum.m_magnet.enabled)
         {
             NextLevel.instance.Appear();
-            Goo.s_finishLineGoo = m_vaccum.m_finishGoo;
+            PathFinder.Instance.SetClosenessToExit(m_vaccum.m_finishGoo.GetComponent<Goo>(), 0);
             Goo.s_goToFinishLine = true;
         }
         else

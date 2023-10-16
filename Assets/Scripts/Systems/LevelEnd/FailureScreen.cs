@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -20,7 +19,7 @@ public class FailureScreen : MonoBehaviour
     public void ShowFailScreen()
     {
         transform.GetChild(0).gameObject.SetActive(true);
-        m_animator.SetBool("Open",true);
+        m_animator.SetBool("Open", true);
         m_retryMessage.text = $"You needed to save {Score.Instance.m_minScoreForWin - Score.Instance.m_Score} more Goos to complete this level.\r\nRetry ?";
     }
     public void Retry()

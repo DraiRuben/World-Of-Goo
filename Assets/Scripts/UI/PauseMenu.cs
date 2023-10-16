@@ -9,7 +9,7 @@ public class PauseMenu : MonoBehaviour
 
     public void PauseResume(InputAction.CallbackContext ctx)
     {
-        if(ctx.performed)
+        if (ctx.performed)
         {
             Pause = !Pause;
             Time.timeScale = Pause ? 0f : 1f;
@@ -31,7 +31,7 @@ public class PauseMenu : MonoBehaviour
             StartCoroutine(DelayedDeactivation());
 
         GetComponent<Animator>().SetBool("ShowMenu", Pause);
-        
+
     }
     private IEnumerator DelayedDeactivation()
     {

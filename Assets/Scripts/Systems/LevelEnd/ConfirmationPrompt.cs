@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -21,13 +20,13 @@ public class ConfirmationPrompt : MonoBehaviour
     public void OpenPrompt()
     {
         transform.GetChild(0).gameObject.SetActive(true);
-        m_promptMessage.text = $"You still need to save {Score.Instance.m_minScoreForWin-Score.Instance.m_Score} Goos if you want to complete this level.\r\nAre you sure ?";
+        m_promptMessage.text = $"You still need to save {Score.Instance.m_minScoreForWin - Score.Instance.m_Score} Goos if you want to complete this level.\r\nAre you sure ?";
         Time.timeScale = 0f;
         m_animator.SetBool("Open", true);
     }
     private void ClosePrompt()
     {
-        m_animator.SetBool("Open",false);
+        m_animator.SetBool("Open", false);
     }
     public void Yes()
     {

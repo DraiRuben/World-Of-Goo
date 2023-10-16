@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3539772299886131474}
   m_Layer: 9
   m_Name: ConnectionPreviewerBar
-  m_TagString: Untagged
+  m_TagString: GooConnection
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -177,4 +177,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_target: {fileID: 0}
   m_isInUse: 0
+  m_isPreviewer: 0
   ScaleY: 0.3

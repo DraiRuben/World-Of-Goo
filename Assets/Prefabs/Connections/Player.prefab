@@ -459,6 +459,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_target: {fileID: 0}
   m_isInUse: 0
+  m_isPreviewer: 1
   ScaleY: 0.3
 --- !u!1 &3657539401764262809
 GameObject:
@@ -637,6 +638,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_target: {fileID: 0}
   m_isInUse: 0
+  m_isPreviewer: 1
   ScaleY: 0.3
 --- !u!1 &5709583444170401975
 GameObject:
@@ -815,6 +817,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_target: {fileID: 0}
   m_isInUse: 0
+  m_isPreviewer: 1
   ScaleY: 0.3
 --- !u!1 &6093139355140014683
 GameObject:
@@ -863,6 +866,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_target: {fileID: 0}
   m_isInUse: 0
+  m_isPreviewer: 1
   ScaleY: 0.3
 --- !u!1 &7158087044947693885
 GameObject:
@@ -892,7 +896,7 @@ Transform:
   m_GameObject: {fileID: 7158087044947693885}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 8.625914, y: -9.824339, z: -10}
+  m_LocalPosition: {x: 27.080154, y: -9.21895, z: 0.03336039}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -929,9 +933,9 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
-  far clip plane: 1000
-  field of view: 60
+  near clip plane: 0.1
+  far clip plane: 5000
+  field of view: 40
   orthographic: 1
   orthographic size: 8
   m_Depth: -1

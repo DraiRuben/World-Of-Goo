@@ -35,7 +35,7 @@ public class ReplayManager : MonoBehaviour
             {
                 //for some reason it give the ref to i as an index, instead of the value, so it fucks everything and I need to do a local copy of it, that somehow works
                 int temp = i - 1;
-                buttonList[i - 1].m_button.onClick.AddListener(() 
+                buttonList[i - 1].m_button.onClick.AddListener(()
                     => OpenDifficultyOptions(buttonList[temp].m_difficultySettings));
             }
         }

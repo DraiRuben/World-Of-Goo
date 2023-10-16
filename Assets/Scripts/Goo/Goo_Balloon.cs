@@ -32,13 +32,7 @@ public class Goo_Balloon : Goo
         filteredAnchors.RemoveAll(x => x == null);
         for (int i = 0; i < filteredAnchors.Count; i++)
         {
-            PathFinder.Instance.Structure.vertices++;
-            m_distanceJoints[i].connectedBody = filteredAnchors[i].GetComponent<Rigidbody2D>();
-            m_distanceJoints[i].enabled = true;
-            m_distanceJoints[i].autoConfigureDistance = false;
-            var connection = Instantiate(m_connectionPrefab, transform.position, Quaternion.identity, transform);
-            connection.GetComponent<Connection>().m_target = filteredAnchors[i];
-            connection.GetComponent<Connection>().m_isInUse = true;
+            PlaceConnection(filteredAnchors, i);
         }
         m_isUsed = true;
         m_isSelected = false;

@@ -66,7 +66,7 @@ public class DifficultyDisplayer : MonoBehaviour
         m_settings.m_chosenDiff = diff.Difficulty;
         StartCoroutine(ChooseLevel());
     }
-    
+
     public void Back()
     {
         StartCoroutine(GoBack());
