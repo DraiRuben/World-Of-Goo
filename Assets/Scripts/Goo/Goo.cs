@@ -152,7 +152,12 @@ public class Goo : MonoBehaviour
             TryResetPreviewers(temp.Count);
             var colliders = Physics2D.OverlapCircleAll(transform.position, m_maxAttachDistance, LayerMask.GetMask("Goo"));
             //only keep goos that can be built upon
-            colliders = colliders.Where(x => x.CompareTag("Goo") && x.GetComponent<Goo>().m_isUsed && x.GetComponent<Goo>().m_isBuildableOn).ToArray();
+            colliders = colliders.Where(
+                x => x.CompareTag("Goo") 
+                && x.GetComponent<Goo>().m_isUsed 
+                && x.GetComponent<Goo>().m_isBuildableOn
+                && Vector2.Distance(x.transform.position, transform.position) >= m_minAttachDistance
+                && !Physics2D.Raycast(x.transform.position, transform.position - x.transform.position, Vector2.Distance(transform.position, x.transform.position), LayerMask.GetMask("Default"))).ToArray();
             //simply get all goo components from the gameobjects with the colliders for clarity
             var Goos = colliders.Select(x => x.GetComponent<Goo>()).ToArray();
             if (!s_goToFinishLine && Goos != null && Goos.Length >= m_minAllowedAnchorsAmount)
@@ -160,40 +165,36 @@ public class Goo : MonoBehaviour
                 {
                     //checks for min distance and if it's a goo and fixed on a structure
                     float Distance = Vector2.Distance(Goos[i].transform.position, transform.position);
-                    Vector3 MousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                    if (Distance >= m_minAttachDistance
-                        && !Physics2D.Raycast(Goos[i].transform.position, MousePos - Goos[i].transform.position, Vector2.Distance(MousePos, Goos[i].transform.position), LayerMask.GetMask("Default")))
+                    //display phantom connection and adds anchor in list if the distance
+                    //between this and the anchor is smaller than one of the things in the list
+                    //or if the list isn't full yet, just add it to the anchor points instead of replacing one
+                    var index = m_validAnchors.IndexOf(null);
+                    //returns -1 if it doesn't find an element that's null => if the list is full already
+                    if (index != -1 && !m_validAnchors.Contains(Goos[i]))
                     {
-                        //display phantom connection and adds anchor in list if the distance
-                        //between this and the anchor is smaller than one of the things in the list
-                        //or if the list isn't full yet, just add it to the anchor points instead of replacing one
-                        var index = m_validAnchors.IndexOf(null);
-                        //returns -1 if it doesn't find an element that's null => if the list is full already
-                        if (index != -1 && !m_validAnchors.Contains(Goos[i]))
+                        m_validAnchors[index] = Goos[i];
+
+                        SetupPreviewer(Goos[i]);
+
+                    }
+                    else if (!m_validAnchors.Contains(Goos[i]))
+                    {
+                        int HighestDistanceAnchorIndex = -1;
+                        for (int u = 0; u < m_validAnchors.Count; u++)
                         {
-                            m_validAnchors[index] = Goos[i];
-
-                            SetupPreviewer(Goos[i]);
-
+                            if (Vector2.Distance(transform.position, m_validAnchors[u].transform.position) > Distance)
+                                HighestDistanceAnchorIndex = u;
                         }
-                        else if (!m_validAnchors.Contains(Goos[i]))
+                        //replace an existing previewer
+                        if (HighestDistanceAnchorIndex != -1)
                         {
-                            int HighestDistanceAnchorIndex = -1;
-                            for (int u = 0; u < m_validAnchors.Count; u++)
-                            {
-                                if (Vector2.Distance(transform.position, m_validAnchors[u].transform.position) > Distance)
-                                    HighestDistanceAnchorIndex = u;
-                            }
-                            //replace an existing previewer
-                            if (HighestDistanceAnchorIndex != -1)
-                            {
-                                UpdatePreviewer(Goos[i], HighestDistanceAnchorIndex);
+                            UpdatePreviewer(Goos[i], HighestDistanceAnchorIndex);
 
-                                m_validAnchors[HighestDistanceAnchorIndex] = Goos[i];
+                            m_validAnchors[HighestDistanceAnchorIndex] = Goos[i];
 
-                            }
                         }
                     }
+                    
                 }
 
             yield return null;
@@ -277,7 +278,8 @@ public class Goo : MonoBehaviour
                 {
                     m_rb.MovePosition(Vector3.Lerp(m_pathOrigin.transform.position, m_pathTarget.transform.position, m_movementTimer));
                 }
-                m_movementTimer += 2 * Time.fixedDeltaTime / Vector2.Distance(m_pathOrigin.transform.position, m_pathTarget.transform.position);
+                if(m_pathOrigin != null && m_pathTarget!=null) //because for some fucking reason it can happen despite the check litteraly 9 lines above
+                    m_movementTimer += 2 * Time.fixedDeltaTime / Vector2.Distance(m_pathOrigin.transform.position, m_pathTarget.transform.position);
 
             }//otherwise it's on the ground
             else
@@ -400,11 +402,16 @@ public class Goo : MonoBehaviour
             Destroy(gameObject);
 
         }
+        else
         {
             //find the joint that's connected to the thing to remove
             var result = m_springJoints.Find(x => x.connectedBody == _toRemove);
             if (result != null)
+            {
                 result.connectedBody = null;
+            }
+            m_connections.Remove(_toRemove);
+
             foreach (Transform child in transform)
             {
                 var comp = child.GetComponent<Connection>();
@@ -419,17 +426,23 @@ public class Goo : MonoBehaviour
     }
     public void RemoveConnectionFromStructure(Connection connection, bool IsParent = true)
     {
-        var spring = m_springJoints.Find(x => x.connectedBody == connection.m_target.m_rb);
-        if (spring != null)
-        {
-            spring.connectedBody = null;
-            spring.autoConfigureDistance = true;
-            spring.enabled = false;
-        }
+        
         if (IsParent)
         {
+            var spring = m_springJoints.Find(x => x.connectedBody == connection.m_target.m_rb);
+            if (spring != null)
+            {
+                spring.connectedBody = null;
+                spring.autoConfigureDistance = true;
+                spring.enabled = false;
+                m_connections.Remove(connection.m_target);
+            }
             connection.m_target.RemoveConnectionFromStructure(connection, false);
             Destroy(connection.gameObject);
+        }
+        else
+        {
+            m_connections.Remove(connection.transform.parent.GetComponent<Goo>());
         }
     }
     public IEnumerator PlanDestruction()
