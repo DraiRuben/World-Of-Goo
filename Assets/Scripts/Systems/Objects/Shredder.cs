@@ -8,21 +8,26 @@ public class Shredder : MonoBehaviour
     {
         if (collision.collider.CompareTag("Goo"))
         {
-            if (collision.collider.GetComponent<Goo>().m_isUsed)
+            var comp = collision.collider.GetComponent<Goo>();
+            if (comp.m_isUsed)
             {
                 PathFinder.Instance.Structure.RemovePoint(collision.collider.gameObject);
-
+                if(comp!=null)
+                    Destroy(comp.gameObject);
             }
-            else
+            else if (!comp.m_isSelected)
             {
                 Destroy(collision.collider.gameObject);
             }
         }
         else if (collision.collider.CompareTag("GooConnection"))
         {
-            if(collision.collider.GetComponentInParent<Connection>().m_isInUse)
+            var comp = collision.collider.GetComponentInParent<Connection>();
+            if (comp !=null && comp.m_isInUse)
             {
-
+                PathFinder.Instance.Structure.RemoveConnection(comp);
+                if(comp!=null)
+                    Destroy(comp.gameObject);
             }
         }
     }

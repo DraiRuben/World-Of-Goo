@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
+using Unity.VisualScripting;
 using UnityEngine;
 
 
@@ -18,7 +19,9 @@ public class PathFinder : MonoBehaviour
         public GOGOArrayDictionary Connections;
         public GameObject GetRandomDestination(GameObject Key)
         {
-            return Connections[Key][UnityEngine.Random.Range(0, Connections[Key].Count)];
+            if(Connections.ContainsKey(Key))
+                return Connections[Key][UnityEngine.Random.Range(0, Connections[Key].Count)];
+            else return null;
         }
         //not correct I think, I'll need to do a recursive algorythm, so I can return a list of destinations to go to in order I think
 
@@ -26,9 +29,22 @@ public class PathFinder : MonoBehaviour
         {
             //removes the key and all references of the point/all connections to this point in the graph
             Connections.Remove(Point);
+            GOGOArrayDictionary copy = new GOGOArrayDictionary(Connections);
             foreach(var Connection in Connections)
             {
-                Connections[Connection.Key] = FindAndRemovePoint(Connection,Point);
+                copy[Connection.Key] = FindAndRemovePoint(Connection,Point);
+            }
+            Connections = copy;
+            CheckConnectionsValidity();
+        }
+        private void CheckConnectionsValidity(bool destroy = false)
+        {
+            var toDestroy = Connections.Where(x => x.Value.Count < x.Key.GetComponent<Goo>().m_minAllowedAnchorsAmount).ToDictionary(x => x.Key, x => x.Value);
+            foreach (var destroyThis in toDestroy)
+            {
+                Connections.Remove(destroyThis.Key);
+                if(destroy)
+                    Destroy(destroyThis.Key);
             }
         }
         private List<GameObject> FindAndRemovePoint(KeyValuePair<GameObject,List<GameObject>> Connection,  GameObject destination)
@@ -93,14 +109,24 @@ public class PathFinder : MonoBehaviour
                 }
             }
         }
-        public void RemoveConnection(GameObject origin, GameObject destination)
+        public void RemoveConnection(GameObject origin, GameObject destination) 
         {
+            Connections[origin].Remove(destination);
+            Connections[destination].Remove(origin);
+            FindAndRemoveConnection(origin, destination);
+            FindAndRemoveConnection(destination, origin);
+            CheckConnectionsValidity();
+        }
+        public void RemoveConnection(Connection connector)
+        {
+            var origin = connector.transform.parent.gameObject;
+            var destination = connector.m_target;
             //removes the key and all references of the point/all connections to this point in the graph & between objects
             Connections[origin].Remove(destination);
             Connections[destination].Remove(origin);
             FindAndRemoveConnection(origin, destination);
             FindAndRemoveConnection(destination, origin);
-            
+            CheckConnectionsValidity();
 
         }
         public List<GameObject> GetShortestPathBetween(GameObject origin, GameObject destination)

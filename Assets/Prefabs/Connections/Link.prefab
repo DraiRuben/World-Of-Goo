@@ -142,7 +142,7 @@ GameObject:
   - component: {fileID: 4291679878599577565}
   m_Layer: 9
   m_Name: Link
-  m_TagString: Untagged
+  m_TagString: GooConnection
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

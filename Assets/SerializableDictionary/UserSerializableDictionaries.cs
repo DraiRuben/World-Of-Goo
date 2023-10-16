@@ -7,7 +7,14 @@ using UnityEngine;
 public class GOArrayStorage : SerializableDictionary.Storage<List<GameObject>> { }
 
 [Serializable]
-public class GOGOArrayDictionary : SerializableDictionary<GameObject, List<GameObject>, GOArrayStorage> { }
+public class GOGOArrayDictionary : SerializableDictionary<GameObject, List<GameObject>, GOArrayStorage>
+{
+    public GOGOArrayDictionary() { }
+
+    public GOGOArrayDictionary(IDictionary<GameObject, List<GameObject>> dict) : base(dict)
+    {
+    }
+}
 
 
 [Serializable]

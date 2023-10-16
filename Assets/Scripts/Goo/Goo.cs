@@ -16,8 +16,7 @@ public class Goo : MonoBehaviour
     private protected bool m_isBuildableOn = true;
     [SerializeField]
     private protected int m_maxAllowedAnchorsAmount = 3;
-    [SerializeField]
-    private protected int m_minAllowedAnchorsAmount = 2;
+    public int m_minAllowedAnchorsAmount = 2;
     private protected List<GameObject> m_validAnchors = new();
     [SerializeField]
     private protected float m_minAttachDistance = 1f;
@@ -267,6 +266,7 @@ public class Goo : MonoBehaviour
             if (m_rb.isKinematic)
             {
                 //normalizes so that speed doesn't change depending on the length of the connection
+                //TODO: fix null ref to either origin or target, don't know which, when the structure gets destroyed
                 m_movementTimer += 2 * Time.fixedDeltaTime / Vector2.Distance(m_pathOrigin.transform.position, m_pathTarget.transform.position);
                 if (Vector2.Distance(transform.position, m_pathTarget.transform.position) < 0.1f)
                 {
@@ -320,6 +320,15 @@ public class Goo : MonoBehaviour
         else
         {
             m_pathTarget = PathFinder.Instance.Structure.GetRandomDestination(m_pathTarget);
+            //if the target got destroyed
+            if (m_pathTarget == null)
+            {
+                m_isSelected = false;
+                m_rb.isKinematic = false;
+                m_pathTarget = PathFinder.Instance.transform.parent.GetChild(0).gameObject;
+
+            }
+
         }
         return true;
     }
