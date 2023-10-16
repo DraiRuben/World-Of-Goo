@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Reflection;
 using UnityEngine;
 
 
@@ -23,10 +26,41 @@ public class PathFinder : MonoBehaviour
         {
             //removes the key and all references of the point/all connections to this point in the graph
             Connections.Remove(Point);
-            foreach (var Connection in Connections)
+            foreach(var Connection in Connections)
             {
-                Connection.Value.Remove(Point);
+                Connections[Connection.Key] = FindAndRemovePoint(Connection,Point);
             }
+        }
+        private List<GameObject> FindAndRemovePoint(KeyValuePair<GameObject,List<GameObject>> Connection,  GameObject destination)
+        {
+            int index = Connection.Value.IndexOf(destination);
+            if (index != -1)
+            {
+                //finds joint with point as connected body and resets it
+                var connection = Connection.Value[index].GetComponents<SpringJoint2D>().ToList().Find(x => x.connectedBody == destination);
+                if (connection != null)
+                {
+                    connection.connectedBody = null;
+                    connection.autoConfigureDistance = true;
+                    connection.enabled = false;
+                }
+                //finds bar with point as connected transform and deletes it
+                if (Connection.Key.transform.childCount > 0)
+                {
+                    foreach (Transform child in Connection.Key.transform)
+                    {
+                        var comp = child.GetComponent<Connection>();
+                        if (comp != null && comp.m_target == destination)
+                        {
+                            Destroy(comp.gameObject);
+                        }
+                    }
+                }
+                //removes point from connections in the graph
+                Connection.Value.Remove(destination);
+                return Connection.Value;
+            }
+            return Connection.Value;
         }
         public GameObject GetConnector(GameObject origin, GameObject destination)
         {
@@ -38,11 +72,36 @@ public class PathFinder : MonoBehaviour
             }
             return null;
         }
-        public void RemoveConnection(GameObject origin, GameObject Destination)
+        private void FindAndRemoveConnection(GameObject origin, GameObject destination)
         {
-            //removes the key and all references of the point/all connections to this point in the graph
-            Connections[origin].Remove(Destination);
-            Connections[Destination].Remove(origin);
+            if (origin.transform.childCount > 0)
+            {
+                foreach (Transform child in origin.transform)
+                {
+                    var comp = child.GetComponent<Connection>();
+                    if (comp != null && comp.m_target == destination)
+                    {
+                        Destroy(comp.gameObject);
+                    }
+                }
+                var connection = origin.GetComponents<SpringJoint2D>().ToList().Find(x => x.connectedBody == destination);
+                if (connection != null)
+                {
+                    connection.connectedBody = null;
+                    connection.autoConfigureDistance = true;
+                    connection.enabled = false;
+                }
+            }
+        }
+        public void RemoveConnection(GameObject origin, GameObject destination)
+        {
+            //removes the key and all references of the point/all connections to this point in the graph & between objects
+            Connections[origin].Remove(destination);
+            Connections[destination].Remove(origin);
+            FindAndRemoveConnection(origin, destination);
+            FindAndRemoveConnection(destination, origin);
+            
+
         }
         public List<GameObject> GetShortestPathBetween(GameObject origin, GameObject destination)
         {

@@ -161,11 +161,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 662bcbd75bb9cde488cc847759e8febe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  move: 0
   m_isUsed: 0
+  m_isSelected: 0
   m_isBuildableOn: 1
   m_maxAllowedAnchorsAmount: 3
   m_minAllowedAnchorsAmount: 2
   m_minAttachDistance: 1
   m_maxAttachDistance: 5
+  m_attachStrength: 9
   m_connectionPrefab: {fileID: 8332312455515233139, guid: b3c0af728fd7805488d8efdfbcccfc48, type: 3}

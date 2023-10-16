@@ -23,6 +23,8 @@ public class Goo : MonoBehaviour
     private protected float m_minAttachDistance = 1f;
     [SerializeField]
     private protected float m_maxAttachDistance = 4f;
+    [SerializeField]
+    private protected float m_attachStrength = 13f;
 
     [SerializeField]
     private protected GameObject m_connectionPrefab;
@@ -43,7 +45,7 @@ public class Goo : MonoBehaviour
         {
             var temp = gameObject.AddComponent<SpringJoint2D>();
             temp.enabled = false;
-            temp.frequency = 13f;
+            temp.frequency = m_attachStrength;
         }
         for (int i = GetComponents<DistanceJoint2D>().Length; i < m_maxAllowedAnchorsAmount; i++)
         {
