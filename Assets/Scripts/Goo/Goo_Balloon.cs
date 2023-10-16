@@ -22,12 +22,7 @@ public class Goo_Balloon : Goo
     }
     public override void Use()
     {
-        //stops select and anchorpoint testing routines
-        //manages flags
-        //Places goo on structure
-        //starts coroutine that does whatever I want when it's placed on a structure like a balloon lifing up
 
-        //remove all null refs
         var filteredAnchors = m_validAnchors.ToList();
         filteredAnchors.RemoveAll(x => x == null);
         for (int i = 0; i < filteredAnchors.Count; i++)
@@ -39,6 +34,7 @@ public class Goo_Balloon : Goo
         StartCoroutine(AdaptConnectionLength());
         StartCoroutine(DoThingIfUsed());
     }
+    //already explicit enough, this just lengthens the string until the desired value
     private IEnumerator AdaptConnectionLength()
     {
         while (Mathf.Abs(m_distanceJoints[0].distance - m_maxAttachDistance) > 0.4f)

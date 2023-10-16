@@ -7,9 +7,12 @@ public class Goo : MonoBehaviour
 {
     public static bool s_isThereAGooSelected = false;
     public static bool s_goToFinishLine = false;
-    public int m_exitCloseness = -1;
-    public List<Goo> m_connections;
+
+    public int m_exitCloseness = -1; 
     public bool m_isUsed = false;
+
+    public List<Goo> m_connections;
+
     [HideInInspector]
     public bool m_isSelected = false;
     [SerializeField]
@@ -18,28 +21,29 @@ public class Goo : MonoBehaviour
     private protected int m_maxAllowedAnchorsAmount = 3;
     [SerializeField]
     private protected int m_minAllowedAnchorsAmount = 2;
-    private protected List<Goo> m_validAnchors;
     [SerializeField]
     private protected float m_minAttachDistance = 1f;
     [SerializeField]
     private protected float m_maxAttachDistance = 4f;
     [SerializeField]
     private protected float m_attachStrength = 13f;
-
-    public Goo m_closestToExit { get { int minDist = m_connections.Select(x => x.m_exitCloseness).Min(); return m_connections.FirstOrDefault(x => x.m_exitCloseness == minDist); } }
     [SerializeField]
     private protected GameObject m_connectionPrefab;
+    public Goo m_closestToExit { get { int minDist = m_connections.Select(x => x.m_exitCloseness).Min(); return m_connections.FirstOrDefault(x => x.m_exitCloseness == minDist); } }
+    
 
     private Goo m_pathOrigin;
     private Goo m_pathTarget;
 
+    private protected List<Goo> m_validAnchors;
     private protected List<SpringJoint2D> m_springJoints;
     private protected List<DistanceJoint2D> m_distanceJoints;
     private protected Rigidbody2D m_rb;
-    private protected float m_movementTimer = 0;
     private protected Coroutine m_behaviour;
+    private protected float m_movementTimer = 0;
 
-    private void Start()
+    //Initializes all useful values
+    private void Awake()
     {
         m_validAnchors = new List<Goo>();
         for (int i = 0; i < m_maxAllowedAnchorsAmount; i++) m_validAnchors.Add(null);
@@ -57,7 +61,10 @@ public class Goo : MonoBehaviour
         m_distanceJoints = GetComponents<DistanceJoint2D>().ToList();
         m_springJoints = GetComponents<SpringJoint2D>().ToList();
         m_rb = GetComponent<Rigidbody2D>();
-
+    }
+    //starts behaviour
+    private void Start()
+    {
 
         if (!m_isUsed)
         {
@@ -68,6 +75,7 @@ public class Goo : MonoBehaviour
         }
     }
 
+    //thing called when you click on a goo, virtual cuz I may make goos that have special conditions for interaction
     public virtual void TryInteract()
     {
         if (m_isUsed || (s_isThereAGooSelected && !m_isSelected)) return;
@@ -108,6 +116,7 @@ public class Goo : MonoBehaviour
             StartCoroutine(AnchorTesting());
         }
     }
+    //Used when connections get placed
     private void DisablePreviewers()
     {
         var FilteredAnchors = m_validAnchors.ToList();
@@ -120,18 +129,21 @@ public class Goo : MonoBehaviour
         }
         EmptyAnchors();
     }
+
+    //Secondary function to avoid constantly reassigning memory to this list
     private void EmptyAnchors()
     {
         for (int i = 0; i < m_validAnchors.Count; i++) m_validAnchors[i] = null;
     }
+
+    //this function does:
+    //-get all the valid anchors that are assigned a value,
+    //-connect each anchors to this goo,
+    //-lift useful flags,
+    //-could do something special when placed afterwards
     public virtual void Use()
     {
-        //stops select and anchorpoint testing routines
-        //manages flags
-        //Places goo on structure or puts it back if close enough
-        //starts coroutine that does whatever I want when it's placed on a structure like a balloon lifing up
-
-        //remove all null refs
+        
         var filteredAnchors = m_validAnchors.ToList();
         filteredAnchors.RemoveAll(x => x == null);
         for (int i = 0; i < filteredAnchors.Count; i++)
@@ -147,29 +159,27 @@ public class Goo : MonoBehaviour
     {
         while (m_isSelected)
         {
-            var temp = m_validAnchors.ToList();
-            temp.RemoveAll(x => x == null);
-            TryResetPreviewers(temp.Count);
+            //resets previewers that are too far out
+            TryResetPreviewers(m_validAnchors.Count(x => x != null));
             var colliders = Physics2D.OverlapCircleAll(transform.position, m_maxAttachDistance, LayerMask.GetMask("Goo"));
-            //only keep goos that can be built upon
+
+            //only keeps goos that can be built upon, are close enough, and not blocked by any obstacles
             colliders = colliders.Where(
                 x => x.CompareTag("Goo") 
                 && x.GetComponent<Goo>().m_isUsed 
                 && x.GetComponent<Goo>().m_isBuildableOn
                 && Vector2.Distance(x.transform.position, transform.position) >= m_minAttachDistance
                 && !Physics2D.Raycast(x.transform.position, transform.position - x.transform.position, Vector2.Distance(transform.position, x.transform.position), LayerMask.GetMask("Default"))).ToArray();
-            //simply get all goo components from the gameobjects with the colliders for clarity
+            //basically just gets all the goo components of each element in the list
             var Goos = colliders.Select(x => x.GetComponent<Goo>()).ToArray();
             if (!s_goToFinishLine && Goos != null && Goos.Length >= m_minAllowedAnchorsAmount)
                 for (int i = 0; i < Goos.Length; i++)
                 {
-                    //checks for min distance and if it's a goo and fixed on a structure
                     float Distance = Vector2.Distance(Goos[i].transform.position, transform.position);
-                    //display phantom connection and adds anchor in list if the distance
-                    //between this and the anchor is smaller than one of the things in the list
-                    //or if the list isn't full yet, just add it to the anchor points instead of replacing one
+
                     var index = m_validAnchors.IndexOf(null);
-                    //returns -1 if it doesn't find an element that's null => if the list is full already
+                    //returns -1 if it doesn't find an element that's null => if the anchor list is maxed out/full
+                    //this allows us to either add a new anchor to the list if it's not full yet, or replace the furthest anchor if the new one is closer
                     if (index != -1 && !m_validAnchors.Contains(Goos[i]))
                     {
                         m_validAnchors[index] = Goos[i];
@@ -200,22 +210,26 @@ public class Goo : MonoBehaviour
             yield return null;
         }
     }
+    //Used for:
+    //-Getting a path to follow when placed back on the structure
+    //-Getting a path to follow when close enough to the structure when on the ground
     private bool TryGetPath(float searchRadius = 0.5f)
     {
         var overlapping = Physics2D.OverlapCircleAll(transform.position, searchRadius, LayerMask.GetMask("GooConnection"));
 
-        foreach (var p in overlapping)
+        foreach (var ovlp in overlapping)
         {
-            if (p.name.Contains("Bar"))
+            if (ovlp.name.Contains("Bar"))
             {
-                m_pathTarget = p.transform.parent.parent.GetComponent<Goo>();
-                m_pathOrigin = p.transform.parent.GetComponent<Connection>().m_target;
+                m_pathTarget = ovlp.transform.parent.parent.GetComponent<Goo>();
+                m_pathOrigin = ovlp.transform.parent.GetComponent<Connection>().m_target;
                 //don't want to be able to place a goo back on a balloon's string
                 if (m_pathTarget.GetComponent<Goo_Balloon>() != null || m_pathOrigin.GetComponent<Goo_Balloon>() != null) return false;
 
+                //for when placed back onto the structure
                 DisablePreviewers();
 
-                //swaps if the origin is further from the goo, so that the target is the further one
+                //swaps if the origin is further from the goo, so that the target is the furthest one
                 if (m_isSelected && Vector2.Distance(transform.position, m_pathTarget.transform.position) < Vector2.Distance(transform.position, m_pathOrigin.transform.position))
                 {
                     var temp = m_pathTarget;
@@ -232,6 +246,7 @@ public class Goo : MonoBehaviour
         }
         return false;
     }
+    //mouse follow behaviour
     public IEnumerator Select()
     {
         transform.parent = null;
@@ -250,6 +265,7 @@ public class Goo : MonoBehaviour
         yield return null;
         if (m_rb.isKinematic)
         {
+            //don't remember why I did this but I believe it's because of some issues I had with getting out of kinematic state with some velocity that was conserved
             m_rb.gravityScale = 0f;
         }
         else
@@ -259,15 +275,15 @@ public class Goo : MonoBehaviour
         }
 
         m_isSelected = false;
-        //fix since when I put rigidbody to kinematic, the velocity is frozen at its values before being kine
+        //weird thing with kinematic is that it keeps in memory the velocity the rb had before entering kine state,
+        //and gives it back when gettings out of kinematic state, and we don't want a random impulse when falling from the structure
         m_rb.velocity = new(m_rb.velocity.x, 0);
         while (!m_isSelected)
         {
             //if it's on the structure it's kinematic
             if (m_rb.isKinematic)
             {
-                //normalizes so that speed doesn't change depending on the length of the connection
-                //TODO: fix null ref to either origin or target, don't know which, when the structure gets destroyed
+                //normalizes so that the speed is always the same regardless of the segment's length
 
                 if (m_pathTarget == null || m_pathOrigin == null || Vector2.Distance(transform.position, m_pathTarget.transform.position) < 0.1f)
                 {
@@ -278,10 +294,12 @@ public class Goo : MonoBehaviour
                 {
                     m_rb.MovePosition(Vector3.Lerp(m_pathOrigin.transform.position, m_pathTarget.transform.position, m_movementTimer));
                 }
-                if(m_pathOrigin != null && m_pathTarget!=null) //because for some fucking reason it can happen despite the check litteraly 9 lines above
+                //because for some fucking reason it can happen despite the null reference check litteraly 9 lines above
+                if (m_pathOrigin != null && m_pathTarget!=null) 
                     m_movementTimer += 2 * Time.fixedDeltaTime / Vector2.Distance(m_pathOrigin.transform.position, m_pathTarget.transform.position);
 
-            }//otherwise it's on the ground
+            }
+            //if it's not kinematic then it's on the ground
             else
             {
                 m_rb.velocity = new Vector2(Mathf.Sign(m_pathTarget.transform.position.x - transform.position.x) * 3, m_rb.velocity.y);
@@ -293,9 +311,11 @@ public class Goo : MonoBehaviour
         m_rb.gravityScale = 1f;
         m_behaviour = null;
     }
+    //I don't remember why I wanted it to return a bool, it's useless, but it works still, so might as well not touch it
     private bool FindNextTarget()
     {
         //for some reason, when dropping the goo above the structure, velocity y fucks with it and the goo has some weird clipping because of it
+        //yeah, this bug again, with kinematic keeping the velocity in memory, for fuck's sake
         m_rb.velocity = new(m_rb.velocity.x, 0);
 
         //finds next target, either random if the structure isn't connected to the exit,
@@ -309,7 +329,7 @@ public class Goo : MonoBehaviour
         {
             m_pathTarget = m_pathOrigin.m_connections[Random.Range(0, m_pathOrigin.m_connections.Count)];
 
-            //if there's still no valid target, just reset to bottom left of the starting structure
+            //if there's still no valid target, just reset to bottom left of the starting structure, otherwise idk, just grab the goo and put it back yourself
             if (m_pathTarget == null)
             {
                 m_isSelected = false;
@@ -319,13 +339,13 @@ public class Goo : MonoBehaviour
             }
         }
 
-        //if the target got destroyed
+        //if the target got destroyed, this means the connection we're on is also destroyed, so we need to fall
         if (m_pathTarget == null)
         {
             m_isSelected = false;
             m_rb.isKinematic = false;
+            m_rb.gravityScale=1f;
             m_pathTarget = PathFinder.Instance.transform.parent.GetChild(0).GetComponent<Goo>();
-            //return false;
 
         }
         return true;
@@ -334,11 +354,18 @@ public class Goo : MonoBehaviour
     {
         //gets a connection previewer that's usable and sets it up
         Connection availableConnection = (Connection)Pooling.Instance.pools["Previewers"].Find(x => !((Connection)x).m_isInUse);
-        availableConnection.transform.position = transform.position;
-        availableConnection.transform.parent = transform;
-        availableConnection.m_target = anchorPoint;
-        availableConnection.m_isInUse = true;
-        availableConnection.enabled = true;
+        if(availableConnection != null)
+        {
+            availableConnection.transform.position = transform.position;
+            availableConnection.transform.parent = transform;
+            availableConnection.m_target = anchorPoint;
+            availableConnection.m_isInUse = true;
+            availableConnection.enabled = true;
+        }
+        else
+        {
+            Debug.Log($"You only have {Pooling.Instance.pools["Previewers"].Count} previewers in the pooling system and asked to use more than that you retard");
+        }
     }
     private protected void TryResetPreviewers(int ValidAnchorCount)
     {
@@ -349,7 +376,8 @@ public class Goo : MonoBehaviour
             float Distance = Vector2.Distance(m_validAnchors[i].transform.position, transform.position);
             if (!(Distance >= m_minAttachDistance && Distance <= m_maxAttachDistance) || ValidAnchorCount <= m_minAllowedAnchorsAmount)
             {
-                //disable preview connection thingy, then remove from list, cool since we're not changing the collection's size
+                //disable preview connection thingy, then remove from list, cool since we're not changing the collection's size,
+                //tho it's kinda dumb since we create a list in local scope so there's not much diff in terms of perfs
                 var allChildren = transform.Cast<Transform>().Select(t => t.GetComponent<Connection>()).ToList();
                 //replaces the target of the previewer to replace, instead of going through the pool system which would be longer
                 var previewer = allChildren.Find(x => x.m_target == m_validAnchors[i]);
@@ -362,6 +390,7 @@ public class Goo : MonoBehaviour
             }
         }
     }
+    //replaces the target of one of the reviewers currently used
     private protected void UpdatePreviewer(Goo anchorPoint, int HighestDistanceAnchorIndex)
     {
         var allChildren = transform.Cast<Transform>().Select(t => t.GetComponent<Connection>()).ToList();
@@ -371,6 +400,7 @@ public class Goo : MonoBehaviour
         Previewer.m_isInUse = true;
         Previewer.enabled = true;
     }
+    //places both the visual line and attributes the connected rb to one of the unused spring joints
     private protected void PlaceConnection(List<Goo> filteredAnchors, int i)
     {
         m_springJoints[i].connectedBody = filteredAnchors[i].GetComponent<Rigidbody2D>();
@@ -391,6 +421,9 @@ public class Goo : MonoBehaviour
         connection.GetComponent<Connection>().m_target = filteredAnchors[i];
         connection.GetComponent<Connection>().m_isInUse = true;
     }
+
+    //fucking annoying to do, I hate it so much, but I'm such a genius for this,
+    //this is a recursive function that removes all references of one point from every concerned joints and destroys all visual lines that pointed to that point
     public void RemovePointFromStructure(Goo _toRemove)
     {
         if (this == _toRemove)
@@ -404,7 +437,7 @@ public class Goo : MonoBehaviour
         }
         else
         {
-            //find the joint that's connected to the thing to remove
+            //find the joint that's connected to the thing to remove, might need to do the check for the balloon's joint as well
             var result = m_springJoints.Find(x => x.connectedBody == _toRemove);
             if (result != null)
             {
@@ -424,6 +457,7 @@ public class Goo : MonoBehaviour
             }
         }
     }
+    //same principle as the previous one but by using a line as reference
     public void RemoveConnectionFromStructure(Connection connection, bool IsParent = true)
     {
         
@@ -445,6 +479,7 @@ public class Goo : MonoBehaviour
             m_connections.Remove(connection.transform.parent.GetComponent<Goo>());
         }
     }
+    //coroutine started when reaching the end pipe
     public IEnumerator PlanDestruction()
     {
         while (transform.localScale.magnitude > 0.4f)
