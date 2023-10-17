@@ -12,10 +12,10 @@ GameObject:
   - component: {fileID: 8389574115074914891}
   - component: {fileID: 741354093098965656}
   - component: {fileID: 3570231603850673826}
-  - component: {fileID: 1541796990499192543}
   - component: {fileID: 1480449649945016114}
+  - component: {fileID: -2279067844314132262}
   m_Layer: 6
-  m_Name: Goo
+  m_Name: Goo_Electric
   m_TagString: Goo
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -77,7 +77,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: 9196d11fa3a42244c8a751362b224eb7, type: 3}
+  m_Sprite: {fileID: 21300000, guid: b756585d0ccf3314b9c09d065275efc3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -150,31 +150,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
---- !u!114 &1541796990499192543
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 527057930320455668}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 662bcbd75bb9cde488cc847759e8febe, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_exitCloseness: -1
-  m_stayIdle: 0
-  m_isUsed: 0
-  m_connections: []
-  m_isSelected: 0
-  m_rb: {fileID: 0}
-  m_isBuildableOn: 1
-  m_maxAllowedAnchorsAmount: 3
-  m_minAllowedAnchorsAmount: 2
-  m_minAttachDistance: 1
-  m_maxAttachDistance: 6
-  m_attachStrength: 20
-  m_connectionPrefab: {fileID: 8332312455515233139, guid: b3c0af728fd7805488d8efdfbcccfc48, type: 3}
 --- !u!95 &1480449649945016114
 Animator:
   serializedVersion: 5
@@ -196,3 +171,28 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &-2279067844314132262
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 527057930320455668}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce601140f98a5a5469d4c67efe292ee4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_exitCloseness: -1
+  m_stayIdle: 0
+  m_isUsed: 0
+  m_connections: []
+  m_isSelected: 0
+  m_rb: {fileID: 0}
+  m_isBuildableOn: 1
+  m_maxAllowedAnchorsAmount: 3
+  m_minAllowedAnchorsAmount: 2
+  m_minAttachDistance: 1
+  m_maxAttachDistance: 5
+  m_attachStrength: 20.1
+  m_connectionPrefab: {fileID: 8332312455515233139, guid: b3c0af728fd7805488d8efdfbcccfc48, type: 3}

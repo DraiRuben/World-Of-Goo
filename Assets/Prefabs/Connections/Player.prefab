@@ -107,6 +107,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: ec68a876-2002-45f7-adcc-d92a7bd15d92
     m_ActionName: Game/Select[/Mouse/leftButton]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3039844503233824986}
+        m_TargetAssemblyTypeName: CameraController, Assembly-CSharp
+        m_MethodName: Zoom
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 5767bc7d-31ed-4870-ab17-715f21864a0e
+    m_ActionName: Game/Zoom[/Mouse/scroll/down,/Mouse/scroll/up]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Game
@@ -126,7 +142,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CinemachineFollowTarget: {fileID: 0}
   boundingBox: {fileID: 841298810882576876}
+  vcam: {fileID: 4926416782410653565}
   CameraSpeed: 10
+  m_zoomSpeed: 4
+  m_minZoom: 3
+  m_maxZoom: 15
 --- !u!114 &2520058232468519513
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -202,7 +222,7 @@ Transform:
   m_GameObject: {fileID: 537928292412557311}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 8.624152, y: -10.03, z: -10}
+  m_LocalPosition: {x: 7.31, y: -9.97, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -231,7 +251,7 @@ MonoBehaviour:
   m_Follow: {fileID: 0}
   m_Lens:
     FieldOfView: 60
-    OrthographicSize: 8
+    OrthographicSize: 10
     NearClipPlane: 0.3
     FarClipPlane: 1000
     Dutch: 0
@@ -406,11 +426,10 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: -22.517624, y: 18.556114}
-      - {x: -22.514547, y: 14.811897}
-      - {x: -22.151276, y: -9.96873}
-      - {x: 48.294624, y: -10.159555}
-      - {x: 48.276237, y: 18.81927}
+    - - {x: -23.957832, y: 20.550257}
+      - {x: -23.923843, y: -13.624654}
+      - {x: 46.854412, y: -14.147837}
+      - {x: 46.836025, y: 20.481054}
   m_UseDelaunayMesh: 0
 --- !u!1 &3191443408693612241
 GameObject:
@@ -896,7 +915,7 @@ Transform:
   m_GameObject: {fileID: 7158087044947693885}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 27.080154, y: -9.21895, z: 0.03336039}
+  m_LocalPosition: {x: 7.3410683, y: 4.9184895, z: 0.03336039}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 741354093098965656}
   - component: {fileID: 3570231603850673826}
   - component: {fileID: -1169484135486000720}
+  - component: {fileID: 3108915893436072490}
   m_Layer: 6
   m_Name: Goo_Sticky
   m_TagString: Goo
@@ -76,8 +77,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 0.09490919, g: 0.8113208, b: 0.320074, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 46aeb45af607fda4bab29d08bb950833, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -174,3 +175,24 @@ MonoBehaviour:
   m_maxAttachDistance: 5
   m_attachStrength: 20
   m_connectionPrefab: {fileID: 8332312455515233139, guid: b3c0af728fd7805488d8efdfbcccfc48, type: 3}
+--- !u!95 &3108915893436072490
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 527057930320455668}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 0c56c08a4755e6a47b5a1ea3993c7d0d, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

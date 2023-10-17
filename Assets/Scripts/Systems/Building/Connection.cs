@@ -17,7 +17,7 @@ public class Connection : MonoBehaviour
     {
         if (m_isInUse)
         {
-            transform.localScale = new(Vector2.Distance(transform.position, m_target.transform.position), ScaleY, 1);
+            transform.localScale = new(Vector2.Distance(transform.position, m_target.transform.position)/transform.parent.localScale.x, ScaleY, 1);
             float angle = Mathf.Atan2(m_target.transform.position.y - transform.position.y, m_target.transform.position.x - transform.position.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.Euler(0, 0, angle);
         }

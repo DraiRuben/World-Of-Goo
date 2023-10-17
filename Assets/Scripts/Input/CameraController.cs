@@ -1,3 +1,4 @@
+using Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -7,10 +8,19 @@ public class CameraController : MonoBehaviour
     private Rigidbody2D CinemachineFollowTarget;
     [SerializeField]
     private PolygonCollider2D boundingBox;
+    [SerializeField]
+    private CinemachineVirtualCamera vcam;
 
     private Vector2 MovementInput;
     [SerializeField]
     private float CameraSpeed = 5f;
+    [SerializeField]
+    private float m_zoomSpeed = 4f;
+    [SerializeField]
+    private float m_minZoom = 3f;
+    [SerializeField]
+    private float m_maxZoom = 15f;
+
 
     private Vector2 Offset;
     Camera cam;
@@ -19,6 +29,15 @@ public class CameraController : MonoBehaviour
         cam = Camera.main;
         //gets screen width and height in world position
         Offset = new(cam.orthographicSize * cam.aspect, cam.orthographicSize);
+    }
+    public void Zoom(InputAction.CallbackContext ctx)
+    {
+        if(ctx.performed)
+        {
+            float modifier = ctx.ReadValue<float>()/120;
+            vcam.m_Lens.OrthographicSize -= modifier * m_zoomSpeed/10f;
+            vcam.m_Lens.OrthographicSize = Mathf.Clamp(vcam.m_Lens.OrthographicSize, m_minZoom, m_maxZoom);
+        }
     }
     public void CameraControls(InputAction.CallbackContext ctx)
     {

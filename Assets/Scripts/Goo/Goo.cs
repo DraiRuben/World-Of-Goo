@@ -45,6 +45,7 @@ public class Goo : MonoBehaviour
     private protected List<DistanceJoint2D> m_distanceJoints;
     private protected Coroutine m_behaviour;
     private protected float m_movementTimer = 0;
+    private protected Animator m_animator;
 
     //Initializes all useful values
     private void Awake()
@@ -65,6 +66,7 @@ public class Goo : MonoBehaviour
         m_distanceJoints = GetComponents<DistanceJoint2D>().ToList();
         m_springJoints = GetComponents<SpringJoint2D>().ToList();
         m_rb = GetComponent<Rigidbody2D>();
+        m_animator = GetComponent<Animator>();
     }
     //starts behaviour
     private void Start()
@@ -159,7 +161,7 @@ public class Goo : MonoBehaviour
         {
             PlaceConnection(filteredAnchors, i);
         }
-
+        m_animator.enabled = false;
         m_isUsed = true;
         m_isSelected = false;
         StartCoroutine(DoThingIfUsed());
@@ -470,6 +472,13 @@ public class Goo : MonoBehaviour
                 }
             }
         }
+        //if all connections to this point were destroyed, we want it to switch to being like the unplaced goos
+        if(m_connections == null || m_connections.Count <= 0)
+        {
+            m_isUsed = false;
+            m_animator.enabled = true;
+            MoveOutOfStructure();
+        }
     }
     //same principle as the previous one but by using a line as reference
     public void RemoveConnectionFromStructure(Connection connection, bool IsParent = true)
@@ -492,6 +501,12 @@ public class Goo : MonoBehaviour
         {
             m_connections.Remove(connection.transform.parent.GetComponent<Goo>());
         }
+        if (m_connections == null || m_connections.Count <= 0)
+        {
+            m_isUsed = false;
+            m_animator.enabled = true;
+            MoveOutOfStructure();
+        }
     }
     //coroutine started when reaching the end pipe
     public List<Goo> GetFilteredConnections()
@@ -504,15 +519,14 @@ public class Goo : MonoBehaviour
     }
     private IEnumerator PlanDestruction()
     {
-        while (transform.localScale.magnitude > 0.4f)
-        {
-            transform.localScale -= transform.localScale * Time.fixedDeltaTime * 2;
-            yield return new WaitForFixedUpdate();
-        }
+        m_animator.SetBool("Die", true);
+        yield return new WaitWhile(IsAlive);
+        
         gameObject.SetActive(false);
         Score.Instance.m_Score++;
 
     }
+    private bool IsAlive() { return transform.localScale.x > 0f; }
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.collider.CompareTag("Ground"))
