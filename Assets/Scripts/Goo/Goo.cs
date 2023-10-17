@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Timeline;
 
 public class Goo : MonoBehaviour
 {
@@ -249,6 +250,7 @@ public class Goo : MonoBehaviour
                 m_isSelected = false;
                 s_isThereAGooSelected = false;
                 m_rb.isKinematic = true;
+                m_stayIdle = false;
                 return true;
             }
         }
@@ -418,7 +420,6 @@ public class Goo : MonoBehaviour
     {
         m_springJoints[i].connectedBody = filteredAnchors[i].GetComponent<Rigidbody2D>();
         m_springJoints[i].enabled = true;
-        m_springJoints[i].autoConfigureDistance = false;
         Goo filteredGoo = filteredAnchors[i].GetComponent<Goo>();
         if (m_connections.Count < i + 1)
         {

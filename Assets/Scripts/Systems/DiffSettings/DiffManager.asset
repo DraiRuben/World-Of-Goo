@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: DiffManager
   m_EditorClassIdentifier: 
   DifficultyDictionary:
-    m_keys: 02000000030000000400000005000000
+    m_keys: 0200000003000000040000000500000006000000
     m_values:
     - {fileID: 11400000, guid: f9ba30a9274f3c742b7ca7de6874732c, type: 2}
     - {fileID: 11400000, guid: 4c639f98cce900c47bc6daecb58a31ee, type: 2}
     - {fileID: 11400000, guid: eb5079268ea6a834eb6162ab0bf62096, type: 2}
     - {fileID: 11400000, guid: 469269ca27cc51642bf40a9ae426d438, type: 2}
+    - {fileID: 11400000, guid: 76f9b45e61b2adf499cd39a991b8a5b7, type: 2}
