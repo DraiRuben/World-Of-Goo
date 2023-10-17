@@ -162,13 +162,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7938d65120f7ba499a2d5c546553dbd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  move: 1
+  m_exitCloseness: -1
+  m_stayIdle: 0
   m_isUsed: 0
+  m_connections: []
+  m_isSelected: 0
+  m_rb: {fileID: 0}
   m_isBuildableOn: 0
   m_maxAllowedAnchorsAmount: 1
   m_minAllowedAnchorsAmount: 1
   m_minAttachDistance: 1
   m_maxAttachDistance: 4
+  m_attachStrength: 20
   m_connectionPrefab: {fileID: 8332312455515233139, guid: 311285963af29214ea9cf42769e4298f, type: 3}
   LiftStrength: 1.5
 --- !u!232 &2061474863357524971

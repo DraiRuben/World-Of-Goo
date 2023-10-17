@@ -1267,7 +1267,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2273865219623278353
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1310,6 +1310,7 @@ MonoBehaviour:
   m_easy: {fileID: 5052832049599051912}
   m_medium: {fileID: 4446388277895708742}
   m_hard: {fileID: 4011661397887177227}
+  m_disableOnLoad: 1
 --- !u!95 &6728689079869887823
 Animator:
   serializedVersion: 5

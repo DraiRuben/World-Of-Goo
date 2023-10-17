@@ -30,7 +30,7 @@ public class Score : MonoBehaviour
     }
     private void Start()
     {
-        //this start is called after spawner's start
+        //this start is called after spawner's & cannon start
         m_minPercentForWin = m_difficulty.GetActiveMultiplier();
         m_minScoreForWin = (int)(m_totalSpawnedGoos * m_minPercentForWin);
         m_Score = 0;

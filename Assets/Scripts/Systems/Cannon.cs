@@ -11,11 +11,20 @@ public class Cannon : MonoBehaviour
     [SerializeField]
     private float m_shootStrength = 20f;
     [SerializeField]
+    private SpawnSettings m_toLaunchSettings;
     private List<Spawnable> m_toLaunch;
-
+    [SerializeField]
+    private Transform m_cannonTransform;
+    private bool m_flip;
+    private void Awake()
+    {
+        m_toLaunch = new List<Spawnable>(m_toLaunchSettings.Spawn);
+        m_flip = transform.rotation.eulerAngles.x == -180;
+    }
     private void Start()
     {
         StartCoroutine(Shoot());
+        Score.Instance.m_totalSpawnedGoos += m_toLaunchSettings.GetTotalGooAmount();
     }
     private IEnumerator Shoot()
     {
@@ -27,7 +36,7 @@ public class Cannon : MonoBehaviour
             GameObject goo = Instantiate(m_toLaunch[0].Object, transform.position, Quaternion.identity);
             Goo comp = goo.GetComponent<Goo>();
             comp.MoveOutOfStructure();
-            Vector3 rotatedVector = (Quaternion.AngleAxis(45, Vector3.forward) * transform.right);
+            Vector3 rotatedVector = (Quaternion.AngleAxis(m_flip?45:-45, Vector3.forward) * m_cannonTransform.right);
             comp.m_rb.velocity = rotatedVector.normalized * m_shootStrength;
             toSpawn.Amount--;
             m_toLaunch[0] = toSpawn;

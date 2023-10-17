@@ -24,17 +24,17 @@ public class ReplayManager : MonoBehaviour
         //Sets the text of all buttons for the level Replay
         int HighestUnlockedLevel = PlayerPrefs.GetInt("HighestUnlockedLevel");
         for (int i = 1; i <= SceneManager.sceneCountInBuildSettings - 2; i++)
-        {
-            buttonList[i - 1].m_Text.text = "Level " + i;
+        { 
             if (HighestUnlockedLevel <= i - 1)
             {
                 buttonList[i - 1].m_button.interactable = false;
-                buttonList[i - 1].m_Text.text += ": Locked";
+                buttonList[i - 1].m_Text.text += "Locked";
             }
             else
             {
                 //for some reason it give the ref to i as an index, instead of the value, so it fucks everything and I need to do a local copy of it, that somehow works
                 int temp = i - 1;
+                buttonList[i - 1].m_Text.text = buttonList[temp].m_difficultySettings.m_levelName;
                 buttonList[i - 1].m_button.onClick.AddListener(()
                     => OpenDifficultyOptions(buttonList[temp].m_difficultySettings));
             }
@@ -42,8 +42,9 @@ public class ReplayManager : MonoBehaviour
     }
     private void OpenDifficultyOptions(DifficultySettings settings)
     {
+        m_difficultyDisplayer.m_settings = settings;
+
         m_difficultyDisplayer.gameObject.SetActive(true);
 
-        m_difficultyDisplayer.m_settings = settings;
     }
 }

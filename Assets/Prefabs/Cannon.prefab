@@ -133,9 +133,8 @@ MonoBehaviour:
   m_intialWaitTime: 2
   m_shootCooldown: 2
   m_shootStrength: 30
-  m_toLaunch:
-  - Object: {fileID: 527057930320455668, guid: fead8e44c2408c14fa02a1e579fd6c81, type: 3}
-    Amount: 10
+  m_toLaunch: {fileID: 11400000, guid: 48ce42221afc3bb4299731c5b55b0dd8, type: 2}
+  m_cannonTransform: {fileID: 2457453993356144369}
 --- !u!1 &7939291435231816631
 GameObject:
   m_ObjectHideFlags: 0

@@ -18,12 +18,15 @@ public class DifficultyDisplayer : MonoBehaviour
     private TextMeshProUGUI m_hard;
 
     private Animator m_animator;
+    [SerializeField]
+    private bool m_disableOnLoad = true;
     private void Awake()
     {
         if (instance == null) instance = this;
         else Destroy(gameObject);
         m_animator = GetComponent<Animator>();
-        gameObject.SetActive(false);
+        if(m_disableOnLoad)
+            gameObject.SetActive(false);
     }
     private void OnEnable()
     {
@@ -84,7 +87,7 @@ public class DifficultyDisplayer : MonoBehaviour
     private IEnumerator GoBack()
     {
         m_animator.SetBool("Show", false);
-        yield return new WaitForSecondsRealtime(2.27f);
+        yield return new WaitForSecondsRealtime(0.40f);
         gameObject.SetActive(false);
 
     }
