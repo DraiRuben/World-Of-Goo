@@ -8,7 +8,7 @@ public class PathFinder : MonoBehaviour
     public void SetClosenessToExit(Goo originPoint, int offset)
     {
         originPoint.m_exitCloseness = offset;
-        foreach (var con in originPoint.m_connections)
+        foreach (Goo con in originPoint.m_connections)
         {
             if (con.m_exitCloseness == -1)
             {

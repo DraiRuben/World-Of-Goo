@@ -23,7 +23,7 @@ public class Goo_Balloon : Goo
     public override void Use()
     {
 
-        var filteredAnchors = m_validAnchors.ToList();
+        System.Collections.Generic.List<Goo> filteredAnchors = m_validAnchors.ToList();
         filteredAnchors.RemoveAll(x => x == null);
         for (int i = 0; i < filteredAnchors.Count; i++)
         {

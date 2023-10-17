@@ -20,6 +20,6 @@ public class Pooling : MonoBehaviour
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
         //faster with keys than going through an entire list
-        foreach (var pool in Pools) { pools.Add(pool.name, pool.objects); }
+        foreach (ObjectPool pool in Pools) { pools.Add(pool.name, pool.objects); }
     }
 }

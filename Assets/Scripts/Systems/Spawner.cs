@@ -9,7 +9,7 @@ public class Spawner : MonoBehaviour
     void Start()
     {
         Spawn = SpawnSettings.Spawn;
-        foreach (var v in Spawn)
+        foreach (Spawnable v in Spawn)
         {
             for (int i = 0; i < v.Amount; i++)
             {

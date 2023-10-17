@@ -21,7 +21,7 @@ public class Pipe : MonoBehaviour
         //suck goos that aren't on the structure and adds them to the score
         else if (collision.CompareTag("Goo") && Goo.s_goToFinishLine && !collision.GetComponent<Goo>().m_isUsed && !collision.GetComponent<Goo>().m_isSelected)
         {
-            collision.GetComponent<Goo>().StartCoroutine(collision.GetComponent<Goo>().PlanDestruction());
+            collision.GetComponent<Goo>().Die();
         }
     }
 

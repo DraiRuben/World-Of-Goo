@@ -8,7 +8,7 @@ public class SpawnSettings : ScriptableObject
     public int GetTotalGooAmount()
     {
         int total = 0;
-        foreach (var v in Spawn)
+        foreach (Spawnable v in Spawn)
             total += v.Amount;
 
         return total;
