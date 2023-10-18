@@ -1,14 +1,14 @@
+using System.Collections;
+using UnityEngine;
+
 public class Goo_Electric : Goo
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField]
+    private GameObject m_electricityZone;
+    public override IEnumerator DoThingIfUsed()
     {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
+        m_electricityZone.SetActive(true);
+        yield return null;
+        s_isThereAGooSelected = false;
     }
 }

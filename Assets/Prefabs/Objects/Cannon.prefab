@@ -72,7 +72,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: -1
   m_Sprite: {fileID: 21300000, guid: 0a935f0c1ca5b8e4e85db1808dafd313, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -133,8 +133,9 @@ MonoBehaviour:
   m_intialWaitTime: 2
   m_shootCooldown: 2
   m_shootStrength: 30
-  m_toLaunch: {fileID: 11400000, guid: 48ce42221afc3bb4299731c5b55b0dd8, type: 2}
+  m_toLaunchSettings: {fileID: 0}
   m_cannonTransform: {fileID: 2457453993356144369}
+  m_flip: 0
 --- !u!1 &7939291435231816631
 GameObject:
   m_ObjectHideFlags: 0
@@ -207,7 +208,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -2
   m_Sprite: {fileID: 21300000, guid: 722848cf963705b4e9d382842be4e015, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

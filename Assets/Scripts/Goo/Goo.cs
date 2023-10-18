@@ -135,8 +135,12 @@ public class Goo : MonoBehaviour
         for (int i = 0; i < FilteredAnchors.Count; i++)
         {
             if (i >= transform.childCount) break;
-
-            transform.GetChild(i).GetComponent<Connection>().m_isInUse = false;
+            var comp = transform.GetChild(i).GetComponent<Connection>();
+            if (comp != null)
+            {
+                comp.m_isInUse = false;
+            }
+            
         }
         EmptyAnchors();
     }
@@ -396,6 +400,7 @@ public class Goo : MonoBehaviour
                 //disable preview connection thingy, then remove from list, cool since we're not changing the collection's size,
                 //tho it's kinda dumb since we create a list in local scope so there's not much diff in terms of perfs
                 List<Connection> allChildren = transform.Cast<Transform>().Select(t => t.GetComponent<Connection>()).ToList();
+                allChildren.RemoveAll(x => x == null);
                 //replaces the target of the previewer to replace, instead of going through the pool system which would be longer
                 Connection previewer = allChildren.Find(x => x.m_target == m_validAnchors[i]);
                 previewer.m_target = null;
@@ -411,6 +416,7 @@ public class Goo : MonoBehaviour
     private protected void UpdatePreviewer(Goo anchorPoint, int HighestDistanceAnchorIndex)
     {
         List<Connection> allChildren = transform.Cast<Transform>().Select(t => t.GetComponent<Connection>()).ToList();
+        allChildren.RemoveAll(x => x == null);
         //replaces the target of the previewer to replace, instead of going through the pool system which would be longer
         Connection Previewer = allChildren.Find(x => x.m_target == m_validAnchors[HighestDistanceAnchorIndex]);
         Previewer.m_target = anchorPoint;
@@ -438,8 +444,6 @@ public class Goo : MonoBehaviour
         connection.GetComponent<Connection>().m_isInUse = true;
     }
 
-    //fucking annoying to do, I hate it so much, but I'm such a genius for this,
-    //this is a recursive function that removes all references of one point from every concerned joints and destroys all visual lines that pointed to that point
     public void RemovePointFromStructure(Goo _toRemove)
     {
         if (this == _toRemove)
