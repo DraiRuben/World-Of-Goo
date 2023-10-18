@@ -211,9 +211,9 @@ GameObject:
   - component: {fileID: 8302649688288243308}
   - component: {fileID: 5831079270828275021}
   - component: {fileID: 5617145450496297785}
-  m_Layer: 6
+  m_Layer: 2
   m_Name: ElectricZone
-  m_TagString: Untagged
+  m_TagString: Goo
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

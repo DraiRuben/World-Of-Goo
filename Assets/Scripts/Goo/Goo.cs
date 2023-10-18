@@ -6,7 +6,7 @@ using UnityEngine.Timeline;
 
 public class Goo : MonoBehaviour
 {
-    public static bool s_isThereAGooSelected = false;
+    public static bool s_isThereAGooSelected;
     public static bool s_goToFinishLine = false;
 
     public int m_exitCloseness = -1;
@@ -96,7 +96,7 @@ public class Goo : MonoBehaviour
 
             }
             //Try to attach it to the structure
-            if (m_maxAllowedAnchorsAmount - m_validAnchors.Count(x => x == null) >= m_minAllowedAnchorsAmount)
+            else if (m_maxAllowedAnchorsAmount - m_validAnchors.Count(x => x == null) >= m_minAllowedAnchorsAmount)
             {
                 DisablePreviewers();
                 Use();
@@ -106,7 +106,6 @@ public class Goo : MonoBehaviour
             {
                 //drop the goo in the air
                 MoveOutOfStructure();
-
             }
 
         }
@@ -130,7 +129,7 @@ public class Goo : MonoBehaviour
         EmptyAnchors();
     }
     //Used when connections get placed
-    private void DisablePreviewers()
+    private protected virtual void DisablePreviewers()
     {
         List<Goo> FilteredAnchors = m_validAnchors.ToList();
         FilteredAnchors.RemoveAll(x => x == null);
@@ -146,7 +145,7 @@ public class Goo : MonoBehaviour
     }
 
     //Secondary function to avoid constantly reassigning memory to this list
-    private void EmptyAnchors()
+    private protected void EmptyAnchors()
     {
         for (int i = 0; i < m_validAnchors.Count; i++) m_validAnchors[i] = null;
     }
@@ -229,7 +228,7 @@ public class Goo : MonoBehaviour
     //Used for:
     //-Getting a path to follow when placed back on the structure
     //-Getting a path to follow when close enough to the structure when on the ground
-    private bool TryGetPath(float searchRadius = 1f)
+    private protected bool TryGetPath(float searchRadius = 0.5f)
     {
         Collider2D[] overlapping = Physics2D.OverlapCircleAll(transform.position, searchRadius, LayerMask.GetMask("GooConnection"));
 
@@ -240,14 +239,16 @@ public class Goo : MonoBehaviour
                 m_pathTarget = ovlp.transform.parent.parent.GetComponent<Goo>();
                 m_pathOrigin = ovlp.transform.parent.GetComponent<Connection>().m_target;
                 //don't want to be able to place a goo back on a balloon's string
-                if (m_pathTarget.GetComponent<Goo_Balloon>() != null || m_pathOrigin.GetComponent<Goo_Balloon>() != null) return false;
+                if (m_pathTarget.GetComponent<Goo_Balloon>() != null || m_pathOrigin.GetComponent<Goo_Balloon>() != null) continue;
 
                 //for when placed back onto the structure
                 if (m_isSelected)
                 {
                     DisablePreviewers();
                     EmptyAnchors();
+                    StartCoroutine(SetSelectableLate());
                 }
+
 
                 //swaps if the origin is further from the goo, so that the target is the furthest one
                 if (m_isSelected && Vector2.Distance(transform.position, m_pathTarget.transform.position) < Vector2.Distance(transform.position, m_pathOrigin.transform.position))
@@ -259,10 +260,7 @@ public class Goo : MonoBehaviour
                 m_movementTimer = Vector2.Distance(transform.position, m_pathOrigin.transform.position) / Vector2.Distance(m_pathOrigin.transform.position, m_pathTarget.transform.position);
 
                 
-                m_isSelected = false;
-                StartCoroutine(SetSelectableLate());
-                
-                
+                m_isSelected = false;              
                 m_rb.isKinematic = true;
                 m_stayIdle = false;
                 return true;
@@ -282,7 +280,7 @@ public class Goo : MonoBehaviour
         }
     }
     //clears the selected goo flag only 1 frame later so that if the player places a goo on another one, it doesn't select that previous goo as well during the same frame
-    public virtual IEnumerator DoThingIfUsed() { yield return null; s_isThereAGooSelected = false; }
+    public virtual IEnumerator DoThingIfUsed() { StartCoroutine(SetSelectableLate()); yield return null; }
 
     public IEnumerator Behaviour()
     {
@@ -339,7 +337,7 @@ public class Goo : MonoBehaviour
         m_behaviour = null;
     }
     //I don't remember why I wanted it to return a bool, it's useless, but it works still, so might as well not touch it
-    private bool FindNextTarget()
+    private protected bool FindNextTarget()
     {
         //for some reason, when dropping the goo above the structure, velocity y fucks with it and the goo has some weird clipping because of it
         //yeah, this bug again, with kinematic keeping the velocity in memory, for fuck's sake
@@ -539,9 +537,10 @@ public class Goo : MonoBehaviour
     private protected IEnumerator SetSelectableLate()
     {
         yield return new WaitForFixedUpdate();
+        yield return new WaitForFixedUpdate();
         s_isThereAGooSelected = false;
     }
-    private IEnumerator PlanDestruction()
+    private protected IEnumerator PlanDestruction()
     {
         m_animator.SetBool("Die", true);
         yield return new WaitWhile(IsAlive);
@@ -550,7 +549,7 @@ public class Goo : MonoBehaviour
         Score.Instance.m_Score++;
 
     }
-    private bool IsAlive() { return transform.localScale.x > 0f; }
+    private protected bool IsAlive() { return transform.localScale.x > 0f; }
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.collider.CompareTag("Ground"))

@@ -27,7 +27,6 @@ public class Connection : MonoBehaviour
     }
     private void ReturnToPool()
     {
-        Debug.Log("returned");
         m_target = null;
         transform.parent = Pooling.Instance.transform;
         transform.localPosition = Vector3.zero;

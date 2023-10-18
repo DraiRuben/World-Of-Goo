@@ -23,12 +23,13 @@ public class Goo_Balloon : Goo
     public override void Use()
     {
 
-        System.Collections.Generic.List<Goo> filteredAnchors = m_validAnchors.ToList();
+        List<Goo> filteredAnchors = m_validAnchors.ToList();
         filteredAnchors.RemoveAll(x => x == null);
         for (int i = 0; i < filteredAnchors.Count; i++)
         {
             PlaceConnection(filteredAnchors, i);
         }
+        m_animator.enabled = false;
         m_isUsed = true;
         m_isSelected = false;
         StartCoroutine(AdaptConnectionLength());
@@ -37,22 +38,22 @@ public class Goo_Balloon : Goo
 
     private protected override void PlaceConnection(List<Goo> filteredAnchors, int i)
     {
-        m_distanceJoints[i].connectedBody = filteredAnchors[i].GetComponent<Rigidbody2D>();
+        m_distanceJoints[i].connectedBody = filteredAnchors[i].m_rb;
         m_distanceJoints[i].enabled = true;
-        Goo filteredGoo = filteredAnchors[i].GetComponent<Goo>();
         if (m_connections.Count < i + 1)
         {
-            m_connections.Add(filteredGoo);
-            filteredGoo.m_connections.Add(this);
+            m_connections.Add(filteredAnchors[i]);
+            filteredAnchors[i].m_connections.Add(this);
         }
         else
         {
-            m_connections[i] = filteredGoo;
-            filteredGoo.m_connections.Add(this);
+            m_connections[i] = filteredAnchors[i];
+            filteredAnchors[i].m_connections.Add(this);
         }
         GameObject connection = Instantiate(m_connectionPrefab, transform.position, Quaternion.identity, transform);
-        connection.GetComponent<Connection>().m_target = filteredAnchors[i];
         connection.GetComponent<Connection>().m_IsInUse = true;
+        connection.transform.parent = transform;
+        connection.GetComponent<Connection>().m_target = filteredAnchors[i];
     }
     //already explicit enough, this just lengthens the string until the desired value
     private IEnumerator AdaptConnectionLength()
