@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -10,8 +11,7 @@ public class Goo_Balloon : Goo
 
     public override IEnumerator DoThingIfUsed()
     {
-        yield return null;
-        s_isThereAGooSelected = false;
+        StartCoroutine(SetSelectableLate());
         while (m_isUsed)
         {
             m_rb.velocity += new Vector2(0, LiftStrength);
@@ -33,6 +33,26 @@ public class Goo_Balloon : Goo
         m_isSelected = false;
         StartCoroutine(AdaptConnectionLength());
         StartCoroutine(DoThingIfUsed());
+    }
+
+    private protected override void PlaceConnection(List<Goo> filteredAnchors, int i)
+    {
+        m_distanceJoints[i].connectedBody = filteredAnchors[i].GetComponent<Rigidbody2D>();
+        m_distanceJoints[i].enabled = true;
+        Goo filteredGoo = filteredAnchors[i].GetComponent<Goo>();
+        if (m_connections.Count < i + 1)
+        {
+            m_connections.Add(filteredGoo);
+            filteredGoo.m_connections.Add(this);
+        }
+        else
+        {
+            m_connections[i] = filteredGoo;
+            filteredGoo.m_connections.Add(this);
+        }
+        GameObject connection = Instantiate(m_connectionPrefab, transform.position, Quaternion.identity, transform);
+        connection.GetComponent<Connection>().m_target = filteredAnchors[i];
+        connection.GetComponent<Connection>().m_IsInUse = true;
     }
     //already explicit enough, this just lengthens the string until the desired value
     private IEnumerator AdaptConnectionLength()

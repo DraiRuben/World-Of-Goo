@@ -8,7 +8,8 @@ public class Goo_Electric : Goo
     public override IEnumerator DoThingIfUsed()
     {
         m_electricityZone.SetActive(true);
+        StartCoroutine(SetSelectableLate());
         yield return null;
-        s_isThereAGooSelected = false;
+
     }
 }
