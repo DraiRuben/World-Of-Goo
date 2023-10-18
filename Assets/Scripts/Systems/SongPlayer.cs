@@ -4,7 +4,9 @@ using UnityEngine.UI;
 public class SongPlayer : MonoBehaviour
 {
     [SerializeField]
-    private Slider VolumeSlider;
+    private Slider m_volumeSlider;
+
+    private float m_volume;
     private void Awake()
     {
         DontDestroyOnLoad(gameObject);
@@ -13,17 +15,18 @@ public class SongPlayer : MonoBehaviour
     {
         if (PlayerPrefs.HasKey("MainVolume"))
         {
-            float Volume = PlayerPrefs.GetFloat("MainVolume");
-            GetComponent<AudioSource>().volume = Volume;
-            VolumeSlider.value = Volume;
+            m_volume = PlayerPrefs.GetFloat("MainVolume");
+            GetComponent<AudioSource>().volume = m_volume;
+            m_volumeSlider.value = m_volume;
         }
     }
     public void ChangeVolume()
     {
-        GetComponent<AudioSource>().volume = VolumeSlider.value;
+        m_volume = m_volumeSlider.value;
+        GetComponent<AudioSource>().volume = m_volume;
     }
     private void OnApplicationQuit()
     {
-        PlayerPrefs.SetFloat("MainVolume", VolumeSlider.value);
+        PlayerPrefs.SetFloat("MainVolume", m_volume);
     }
 }

@@ -439,6 +439,8 @@ public class Goo : MonoBehaviour
     private protected virtual void PlaceConnection(List<Goo> filteredAnchors, int i)
     {
         m_springJoints[i].connectedBody = filteredAnchors[i].m_rb;
+        m_springJoints[i].autoConfigureDistance = false;
+        m_springJoints[i].distance = Vector2.Distance(transform.position, filteredAnchors[i].transform.position);
         m_springJoints[i].enabled = true;
 
         if (m_connections.Count < i + 1)

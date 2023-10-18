@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6631112639897900785}
-  m_Layer: 2
+  m_Layer: 11
   m_Name: FinishLine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -44,7 +44,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1370612125024877910}
   - component: {fileID: 8323073560293197298}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: cm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: 1232202223951335844}
   - component: {fileID: 7257547658645137243}
   - component: {fileID: 7677558151163235186}
-  m_Layer: 2
+  m_Layer: 11
   m_Name: Pipe
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -299,7 +299,7 @@ GameObject:
   - component: {fileID: 6375662259391483177}
   - component: {fileID: 575733181701059179}
   - component: {fileID: 711896223077410104}
-  m_Layer: 2
+  m_Layer: 11
   m_Name: CutsceneCam
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -400,7 +400,7 @@ GameObject:
   - component: {fileID: 3022178267621922284}
   - component: {fileID: 4057204003270121668}
   - component: {fileID: 3032003688981006865}
-  m_Layer: 2
+  m_Layer: 11
   m_Name: Vaccum
   m_TagString: Untagged
   m_Icon: {fileID: 0}

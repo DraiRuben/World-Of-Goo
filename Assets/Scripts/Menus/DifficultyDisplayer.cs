@@ -87,14 +87,14 @@ public class DifficultyDisplayer : MonoBehaviour
     private IEnumerator GoBack()
     {
         m_animator.SetBool("Show", false);
-        yield return new WaitForSecondsRealtime(0.40f);
+        yield return new WaitForSecondsRealtime(0.667f);
         gameObject.SetActive(false);
 
     }
     private IEnumerator ChooseLevel()
     {
         m_animator.SetBool("Show", false);
-        yield return new WaitForSecondsRealtime(0.40f);
+        yield return new WaitForSecondsRealtime(0.667f);
         SceneChanger.instance.ChangeSceneWithName(m_settings.m_levelName);
     }
 }

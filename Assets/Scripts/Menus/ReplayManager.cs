@@ -28,7 +28,8 @@ public class ReplayManager : MonoBehaviour
             if (HighestUnlockedLevel <= i - 1)
             {
                 buttonList[i - 1].m_button.interactable = false;
-                buttonList[i - 1].m_Text.text += "Locked";
+
+                buttonList[i - 1].m_Text.text = buttonList[i-1].m_difficultySettings.m_levelName + " Locked";
             }
             else
             {

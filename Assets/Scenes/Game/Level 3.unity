@@ -8217,7 +8217,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb402e8fab116f14a9877110c230b650, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  VolumeSlider: {fileID: 1744821868077474883}
+  m_volumeSlider: {fileID: 1744821868077474883}
 --- !u!1001 &1198149309
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -6125,7 +6125,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb402e8fab116f14a9877110c230b650, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  VolumeSlider: {fileID: 1744821868077474883}
+  m_volumeSlider: {fileID: 1744821868077474883}
 --- !u!1001 &1198149309
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10541,6 +10541,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 9943500234274064, guid: 160f5307152bb554383bca2aa877bd8a, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9943500234274064, guid: 160f5307152bb554383bca2aa877bd8a, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9943500234274064, guid: 160f5307152bb554383bca2aa877bd8a, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1234757606809830006, guid: 160f5307152bb554383bca2aa877bd8a, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -10625,6 +10637,14 @@ PrefabInstance:
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 769189149}
+    - target: {fileID: 4716627513491707804, guid: 160f5307152bb554383bca2aa877bd8a, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4716627513491707804, guid: 160f5307152bb554383bca2aa877bd8a, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7022727255375750802, guid: 160f5307152bb554383bca2aa877bd8a, type: 3}
       propertyPath: m_difficulty
       value: 
