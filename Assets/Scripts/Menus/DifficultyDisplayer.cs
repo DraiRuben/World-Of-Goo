@@ -31,7 +31,7 @@ public class DifficultyDisplayer : MonoBehaviour
     private void OnEnable()
     {
         m_animator.SetBool("Show", true);
-        m_levelName.text = m_settings.m_levelName + " Difficulty";
+        m_levelName.text = m_settings.m_levelName;
         string keyname = m_settings.m_levelName + "_Easy_Score";
         if (PlayerPrefs.HasKey(keyname))
         {

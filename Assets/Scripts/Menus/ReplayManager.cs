@@ -25,7 +25,7 @@ public class ReplayManager : MonoBehaviour
         int HighestUnlockedLevel = PlayerPrefs.GetInt("HighestUnlockedLevel");
         for (int i = 1; i <= SceneManager.sceneCountInBuildSettings - 2; i++)
         { 
-            if (HighestUnlockedLevel <= i - 1)
+            if (HighestUnlockedLevel <= i)
             {
                 buttonList[i - 1].m_button.interactable = false;
 

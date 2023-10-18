@@ -45,6 +45,7 @@ public class Goo : MonoBehaviour
     private protected List<DistanceJoint2D> m_distanceJoints;
     private protected Coroutine m_behaviour;
     private protected float m_movementTimer = 0;
+    private protected bool m_arrivedAtEnd = false;
     private protected Animator m_animator;
 
     //Initializes all useful values
@@ -349,7 +350,12 @@ public class Goo : MonoBehaviour
         m_pathOrigin = m_pathTarget;
         if (s_goToFinishLine)
         {
-            m_pathTarget = m_pathOrigin.m_closestToExit;
+            //stop moving if we reached the end of the path
+            if(!m_arrivedAtEnd)
+                m_pathTarget = m_pathOrigin.m_closestToExit;
+
+            if(m_pathTarget.m_exitCloseness<=0f)
+                m_arrivedAtEnd = true;
         }
         else
         {

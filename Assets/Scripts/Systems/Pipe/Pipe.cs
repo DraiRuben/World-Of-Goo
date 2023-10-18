@@ -43,7 +43,7 @@ public class Pipe : MonoBehaviour
             NextLevel.instance.Appear();
             Goo comp = m_vaccum.m_finishGoo.GetComponent<Goo>();
             PathFinder.Instance.SetClosenessToExit(comp, 0);
-            comp.m_rb.isKinematic = true;
+            comp.m_rb.constraints = RigidbodyConstraints2D.FreezeAll;
             Goo.s_goToFinishLine = true;
         }
         else
