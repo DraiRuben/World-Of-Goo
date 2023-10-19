@@ -8,6 +8,8 @@ using UnityEngine;
 [RequireComponent(typeof(AudioSource))]
 public class Goo : MonoBehaviour
 {
+    //This script is the fattest one in the entire game, however everything is commented and properly arranged,
+    //I shall make multiple scripts for each function when I'll have up to the 7th level and the reusable goos since this would take a lot of time with the special goos inheriting from this
     public static bool s_isThereAGooSelected;
     public static bool s_goToFinishLine = false;
 
@@ -139,6 +141,8 @@ public class Goo : MonoBehaviour
             StartCoroutine(AnchorTesting());
         }
     }
+
+    //used to make a goo move out of the structure
     public void MoveOutOfStructure(bool wasSelected = true)
     {
         m_stayIdle = true;
@@ -167,11 +171,7 @@ public class Goo : MonoBehaviour
         }
     }
 
-    //Secondary function to avoid constantly reassigning memory to this list
-    private protected void EmptyAnchors()
-    {
-        for (int i = 0; i < m_validAnchors.Count; i++) m_validAnchors[i] = null;
-    }
+
 
     //this function does:
     //-get all the valid anchors that are assigned a value,
@@ -193,6 +193,7 @@ public class Goo : MonoBehaviour
         m_spriteRenderer.renderingLayerMask = 1;
         StartCoroutine(DoThingIfUsed());
     }
+    //-Used to find points to attach the previewers and the definitive connectors when used
     public IEnumerator AnchorTesting()
     {
         while (m_isSelected)
@@ -252,6 +253,7 @@ public class Goo : MonoBehaviour
     //Used for:
     //-Getting a path to follow when placed back on the structure
     //-Getting a path to follow when close enough to the structure when on the ground
+    //Notes: goo cannot be placed back on structure if there are too many goos on the connection, despite the layer counteracting this and all
     private protected bool TryGetPath(float searchRadius = 0.5f)
     {
         Collider2D[] overlapping = Physics2D.OverlapCircleAll(transform.position, searchRadius, LayerMask.GetMask("GooConnection"));
@@ -302,8 +304,7 @@ public class Goo : MonoBehaviour
             yield return new WaitForFixedUpdate();
         }
     }
-    //clears the selected goo flag only 1 frame later so that if the player places a goo on another one, it doesn't select that previous goo as well during the same frame
-    public virtual IEnumerator DoThingIfUsed() { StartCoroutine(SetSelectableLate()); yield return null; }
+
 
     public IEnumerator Behaviour()
     {
@@ -361,7 +362,7 @@ public class Goo : MonoBehaviour
         m_rb.gravityScale = 1f;
         m_behaviour = null;
     }
-    //I don't remember why I wanted it to return a bool, it's useless, but it works still, so might as well not touch it
+    //I don't remember why I wanted it to return a bool, it might be useless, but it works still, so might as well not touch it
     private protected bool FindNextTarget()
     {
         //for some reason, when dropping the goo above the structure, velocity y fucks with it and the goo has some weird clipping because of it
@@ -428,7 +429,7 @@ public class Goo : MonoBehaviour
     }
     private protected void TryResetPreviewers(int ValidAnchorCount)
     {
-        //clears connections for goos that were in connection preview but went too far
+        //clears connections for goos that were in connection preview but went too far or got blocked by an obstacle
         for (int i = 0; i < m_validAnchors.Count; i++)
         {
             if (m_validAnchors[i] == null) continue;
@@ -494,6 +495,7 @@ public class Goo : MonoBehaviour
         m_buildAudio.Play();
     }
 
+    //explicit enough
     public void RemovePointFromStructure(Goo _toRemove)
     {
         if (this == _toRemove)
@@ -538,6 +540,7 @@ public class Goo : MonoBehaviour
         }
     }
     //same principle as the previous one but by using a line as reference
+
     public void RemoveConnectionFromStructure(Connection connection, bool IsParent = true)
     {
 
@@ -565,24 +568,9 @@ public class Goo : MonoBehaviour
             MoveOutOfStructure(false);
         }
     }
-    //coroutine started when reaching the end pipe
     public List<Goo> GetFilteredConnections()
     {
         return m_connections.Where(x => x.GetComponent<Goo_Balloon>() == null).ToList();
-    }
-    public void Absorb()
-    {
-        StartCoroutine(PlanDestruction());
-    }
-    public void Die()
-    {
-        StartCoroutine(PlanDestruction(false));
-    }
-    private protected IEnumerator SetSelectableLate()
-    {
-        yield return new WaitForFixedUpdate();
-        yield return new WaitForFixedUpdate();
-        s_isThereAGooSelected = false;
     }
     private protected IEnumerator PlanDestruction(bool giveScore = true)
     {
@@ -604,15 +592,39 @@ public class Goo : MonoBehaviour
             Destroy(gameObject);
         }
     }
-
-    private bool FinishedDying()
-    {
-        return m_deathAudio.isPlaying;
-    }
-    private protected bool IsAlive() { return transform.localScale.x > 0f; }
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.collider.CompareTag("Ground"))
             m_stayIdle = false;
     }
+    //Some extension like methods
+    //used for end of level
+    public void Absorb()
+    {
+        StartCoroutine(PlanDestruction());
+    }
+    //used for death
+    public void Die()
+    {
+        StartCoroutine(PlanDestruction(false));
+    }
+    //To avoid constantly reassigning memory to this list multiple times per frame per goo
+    private protected void EmptyAnchors()
+    {
+        for (int i = 0; i < m_validAnchors.Count; i++) m_validAnchors[i] = null;
+    }
+    private bool FinishedDying()
+    {
+        return m_deathAudio.isPlaying;
+    }
+    private protected bool IsAlive() { return transform.localScale.x > 0f; }
+    public virtual IEnumerator DoThingIfUsed() { StartCoroutine(SetSelectableLate()); yield return null; }
+
+    //clears the selected goo flag only 1 frame later so that if the player places a goo on another one, it doesn't select that previous goo as well during the same frame
+    private protected IEnumerator SetSelectableLate()
+    {
+        yield return new WaitForFixedUpdate();
+        s_isThereAGooSelected = false;
+    }
+
 }

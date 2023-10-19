@@ -5,7 +5,7 @@ using UnityEngine;
 public class ConfirmationPrompt : MonoBehaviour
 {
     private Animator m_animator;
-    //always avoiding direct references if possible
+    //always avoiding direct references if possible, don't want scripts to reference each other, this would be a mess on who compiles first lol
     public static ConfirmationPrompt instance;
 
     [SerializeField]

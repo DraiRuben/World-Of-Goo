@@ -8,7 +8,7 @@ public class Goo_Balloon : Goo
     [SerializeField]
     private float LiftStrength = 1.0f;
 
-
+    //constantly applies an upward force when placed
     public override IEnumerator DoThingIfUsed()
     {
         StartCoroutine(SetSelectableLate());
@@ -20,6 +20,7 @@ public class Goo_Balloon : Goo
             yield return new WaitForFixedUpdate();
         }
     }
+    //only difference with parent's one is the coroutine call
     public override void Use()
     {
 
@@ -36,7 +37,7 @@ public class Goo_Balloon : Goo
         StartCoroutine(DoThingIfUsed());
         m_buildAudio.Play();
     }
-
+    //only difference with the parent one is the type of joint used
     private protected override void PlaceConnection(List<Goo> filteredAnchors, int i)
     {
         m_distanceJoints[i].connectedBody = filteredAnchors[i].m_rb;

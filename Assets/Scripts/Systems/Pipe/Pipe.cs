@@ -24,7 +24,7 @@ public class Pipe : MonoBehaviour
             collision.GetComponent<Goo>().Absorb();
         }
     }
-
+    //same thing as previous one, useful only because trigger enter doesn't detect a goo that spawns directly in the collider
     private void OnTriggerStay2D(Collider2D collision)
     {
         if (collision.CompareTag("Goo") && !Goo.s_goToFinishLine && collision.GetComponent<Goo>().m_isUsed && collision.GetComponent<Goo_Balloon>() == null)
@@ -35,6 +35,7 @@ public class Pipe : MonoBehaviour
 
         }
     }
+    //disable vaccuum if the goo in range disappears
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.CompareTag("Goo")
@@ -51,7 +52,8 @@ public class Pipe : MonoBehaviour
     }
     private IEnumerator TryEndLevel()
     {
-        yield return new WaitForSeconds(0.2f); //if the structure stays in range for at least 2 sec, then it's fixed and we can trigger the level's end
+        //if the structure stays in range for at least 2 sec, then it's fixed and we can trigger the level's end
+        yield return new WaitForSeconds(0.2f); 
         if (m_vaccum.m_magnet.enabled)
         {
             NextLevel.instance.Appear();

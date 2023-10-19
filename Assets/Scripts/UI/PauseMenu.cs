@@ -6,7 +6,11 @@ using UnityEngine.SceneManagement;
 public class PauseMenu : MonoBehaviour
 {
     private bool m_pause;
-
+    private Animator m_animator;
+    private void Awake()
+    {
+        m_animator = GetComponent<Animator>();
+    }
     public void OpenPauseMenu()
     {
         m_pause = !m_pause;
@@ -16,8 +20,9 @@ public class PauseMenu : MonoBehaviour
         else
             StartCoroutine(DelayedDeactivation());
 
-        GetComponent<Animator>().SetBool("ShowMenu", m_pause);
+        m_animator.SetBool("ShowMenu", m_pause);
     }
+    //for ESC press
     public void PauseResume(InputAction.CallbackContext ctx)
     {
         if (ctx.performed)
@@ -25,6 +30,7 @@ public class PauseMenu : MonoBehaviour
             OpenPauseMenu();
         }
     }
+    //used by on screen button in the UI
     public void PauseResumeNoCallback()
     {
         m_pause = !m_pause;
@@ -34,9 +40,10 @@ public class PauseMenu : MonoBehaviour
         else
             StartCoroutine(DelayedDeactivation());
 
-        GetComponent<Animator>().SetBool("ShowMenu", m_pause);
+        m_animator.SetBool("ShowMenu", m_pause);
 
     }
+    //so that it can play its animation
     private IEnumerator DelayedDeactivation()
     {
         yield return new WaitForSeconds(1);

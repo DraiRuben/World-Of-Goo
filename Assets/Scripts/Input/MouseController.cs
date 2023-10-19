@@ -3,6 +3,7 @@ using UnityEngine.InputSystem;
 
 public class MouseController : MonoBehaviour
 {
+    //tries to find a goo under mouse and interact with it
     public void Click(InputAction.CallbackContext ctx)
     {
         if (ctx.performed)

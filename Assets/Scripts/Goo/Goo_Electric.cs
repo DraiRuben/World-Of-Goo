@@ -10,7 +10,7 @@ public class Goo_Electric : Goo
     [SerializeField]
     private GameObject m_electricityZone;
 
-
+    //only difference is the electric zone
     public override IEnumerator DoThingIfUsed()
     {
         m_electricityZone.SetActive(true);

@@ -20,7 +20,19 @@ public class Score : MonoBehaviour
 
     public UnityEvent scoreChanged;
     private int m_score = 0;
-    public int m_Score { get { return m_score; } set { m_score = value; m_scoreDisplay.text = $"Score: {m_score}/{m_minScoreForWin}"; if (m_score > 0) scoreChanged.Invoke(); } }
+    public int m_Score 
+    { 
+        get 
+        { 
+            return m_score; 
+        } 
+        set 
+        { 
+            m_score = value;
+            m_scoreDisplay.text = $"Score: {m_score}/{m_minScoreForWin}"; 
+            if (m_score > 0) scoreChanged.Invoke(); 
+        }
+    }
     private void Awake()
     {
         if (Instance == null) Instance = this;

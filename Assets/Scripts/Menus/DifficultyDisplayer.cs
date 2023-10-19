@@ -111,6 +111,7 @@ public class DifficultyDisplayer : MonoBehaviour
     }
     private IEnumerator PlaySounds()
     {
+        //this is as synchronised as I could make, this is hard af wtf
         yield return new WaitForSecondsRealtime(1.20f);
         m_audioSource.clip = m_woodHigh;
         m_audioSource.Play();

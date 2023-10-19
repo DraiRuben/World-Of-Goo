@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class Shredder : MonoBehaviour
 {
+    //explicit enough
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.collider.CompareTag("Goo"))

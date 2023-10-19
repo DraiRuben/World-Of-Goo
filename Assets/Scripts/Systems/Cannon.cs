@@ -26,6 +26,7 @@ public class Cannon : MonoBehaviour
         StartCoroutine(Shoot());
         Score.Instance.m_totalSpawnedGoos += m_toLaunchSettings.GetTotalGooAmount();
     }
+    //basically just instantiate next goo in list and launches it at the angle the cannon is oriented, I won't be doing a line per line comment on this one
     private IEnumerator Shoot()
     {
         yield return new WaitForSeconds(m_intialWaitTime);

@@ -27,10 +27,16 @@ public class SceneChanger : MonoBehaviour
     {
         m_audioSource.Play();
     }
+    //don't know how to do one function that can take either an int or a string, don't care enough to lose time on this
     public void ChangeSceneWithIndex(int sceneIndex)
     {
         StartCoroutine(LoadLevelAsyncInt((sceneIndex)));
     }
+    public void ChangeSceneWithName(string sceneName)
+    {
+        StartCoroutine(LoadLevelAsyncString((sceneName)));
+    }
+    //resets everything saved except the main volume, TODO: prompt asking the player if he wants to reset
     public void NewGame(string sceneName)
     {
         StartCoroutine(LoadLevelAsyncString((sceneName)));
@@ -43,10 +49,7 @@ public class SceneChanger : MonoBehaviour
         PlayerPrefs.SetFloat("MainVolume", volume);
 
     }
-    public void ChangeSceneWithName(string sceneName)
-    {
-        StartCoroutine(LoadLevelAsyncString((sceneName)));
-    }
+    
     private IEnumerator LoadLevelAsyncInt(int sceneIndex)
     {
         ReverseCurtainState();

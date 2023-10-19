@@ -26,6 +26,7 @@ public class VolumeButton : MonoBehaviour
 
         m_slider.onValueChanged.AddListener(delegate { UpdateSprite(); });
     }
+    //mute & unmute, keeping last volume and putting it back on unmuting
     public void Click()
     {
         m_isMuted = !m_isMuted;
