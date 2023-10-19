@@ -112,15 +112,12 @@ public class DifficultyDisplayer : MonoBehaviour
     private IEnumerator PlaySounds()
     {
         yield return new WaitForSecondsRealtime(1.20f);
-        m_audioSource.Stop();
         m_audioSource.clip = m_woodHigh;
         m_audioSource.Play();
         yield return new WaitForSecondsRealtime(0.35f);
-        m_audioSource.Stop();
         m_audioSource.clip = m_woodMedium;
         m_audioSource.Play();
         yield return new WaitForSecondsRealtime(0.35f);
-        m_audioSource.Stop();
         m_audioSource.clip = m_woodLow;
         m_audioSource.Play();
     }
