@@ -6,7 +6,11 @@ using UnityEngine;
 public class Goo_Electric : Goo
 {
     [SerializeField]
+    private AudioSource m_electricity;
+    [SerializeField]
     private GameObject m_electricityZone;
+
+
     public override IEnumerator DoThingIfUsed()
     {
         m_electricityZone.SetActive(true);

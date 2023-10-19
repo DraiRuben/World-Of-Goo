@@ -21,7 +21,7 @@ public class Pipe : MonoBehaviour
         //suck goos that aren't on the structure and adds them to the score
         else if (collision.CompareTag("Goo") && Goo.s_goToFinishLine && !collision.GetComponent<Goo>().m_isUsed && !collision.GetComponent<Goo>().m_isSelected)
         {
-            collision.GetComponent<Goo>().Die();
+            collision.GetComponent<Goo>().Absorb();
         }
     }
 
@@ -35,15 +35,29 @@ public class Pipe : MonoBehaviour
 
         }
     }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Goo") 
+            && Goo.s_goToFinishLine 
+            && collision.GetComponent<Goo>().m_isUsed 
+            && collision.GetComponent<Goo_Balloon>() == null
+            && collision.gameObject == m_vaccum.m_finishGoo)
+        {
+            m_vaccum.m_finishGoo = null;
+            Goo.s_goToFinishLine = false;
+            m_vaccum.m_magnet.enabled = false;
+
+        }
+    }
     private IEnumerator TryEndLevel()
     {
-        yield return new WaitForSeconds(2f); //if the structure stays in range for at least 2 sec, then it's fixed and we can trigger the level's end
+        yield return new WaitForSeconds(0.2f); //if the structure stays in range for at least 2 sec, then it's fixed and we can trigger the level's end
         if (m_vaccum.m_magnet.enabled)
         {
             NextLevel.instance.Appear();
             Goo comp = m_vaccum.m_finishGoo.GetComponent<Goo>();
             PathFinder.Instance.SetClosenessToExit(comp, 0);
-            comp.m_rb.constraints = RigidbodyConstraints2D.FreezeAll;
+            //comp.m_rb.constraints = RigidbodyConstraints2D.FreezeAll;
             Goo.s_goToFinishLine = true;
         }
         else

@@ -10,12 +10,11 @@ public class Shredder : MonoBehaviour
             if (comp.m_isUsed)
             {
                 comp.RemovePointFromStructure(comp);
-                if (comp != null)
-                    Destroy(comp.gameObject);
+                
             }
             else if (!comp.m_isSelected)
             {
-                Destroy(collision.collider.gameObject);
+                comp.Die();
             }
         }
         else if (collision.collider.CompareTag("GooConnection"))
@@ -24,8 +23,7 @@ public class Shredder : MonoBehaviour
             if (comp != null && comp.m_IsInUse && !comp.m_isPreviewer)
             {
                 comp.transform.parent.GetComponent<Goo>().RemoveConnectionFromStructure(comp);
-                if (comp != null)
-                    Destroy(comp.gameObject);
+                
             }
         }
     }

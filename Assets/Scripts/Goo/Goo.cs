@@ -4,6 +4,9 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Timeline;
 
+[RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(AudioSource))]
 public class Goo : MonoBehaviour
 {
     public static bool s_isThereAGooSelected;
@@ -33,7 +36,15 @@ public class Goo : MonoBehaviour
     [SerializeField]
     private protected float m_attachStrength = 13f;
     [SerializeField]
+    private protected float m_movementSpeed = 1f;
+    [SerializeField]
+    private protected float m_movementSpeedOnLevelEnd = 2f;
+    [SerializeField]
     private protected GameObject m_connectionPrefab;
+    [SerializeField]
+    private protected AudioSource m_deathAudio;
+    [SerializeField]
+    private protected AudioSource m_buildAudio;
     public Goo m_closestToExit { get { int minDist = m_connections.Select(x => x.m_exitCloseness).Min(); return m_connections.FirstOrDefault(x => x.m_exitCloseness == minDist); } }
 
 
@@ -47,6 +58,7 @@ public class Goo : MonoBehaviour
     private protected float m_movementTimer = 0;
     private protected bool m_arrivedAtEnd = false;
     private protected Animator m_animator;
+    private protected SpriteRenderer m_spriteRenderer;
 
     //Initializes all useful values
     private void Awake()
@@ -68,6 +80,7 @@ public class Goo : MonoBehaviour
         m_springJoints = GetComponents<SpringJoint2D>().ToList();
         m_rb = GetComponent<Rigidbody2D>();
         m_animator = GetComponent<Animator>();
+        m_spriteRenderer = GetComponent<SpriteRenderer>();
     }
     //starts behaviour
     private void Start()
@@ -136,7 +149,7 @@ public class Goo : MonoBehaviour
         FilteredAnchors.RemoveAll(x => x == null);
         for (int i = 0; i < FilteredAnchors.Count; i++)
         {
-            if (transform.childCount<=0) break;
+            if (transform.childCount <= 0) break;
             var comp = transform.GetChild(0).GetComponent<Connection>();
             if (comp != null)
             {
@@ -168,6 +181,7 @@ public class Goo : MonoBehaviour
         m_animator.enabled = false;
         m_isUsed = true;
         m_isSelected = false;
+        m_spriteRenderer.renderingLayerMask = 1;
         StartCoroutine(DoThingIfUsed());
     }
     public IEnumerator AnchorTesting()
@@ -192,7 +206,7 @@ public class Goo : MonoBehaviour
                 for (int i = 0; i < Goos.Length; i++)
                 {
                     float Distance = Vector2.Distance(Goos[i].transform.position, transform.position);
-                    if (Distance > m_maxAttachDistance || Distance<m_minAttachDistance) continue;
+                    if (Distance > m_maxAttachDistance || Distance < m_minAttachDistance) continue;
                     int index = m_validAnchors.IndexOf(null);
                     //returns -1 if it doesn't find an element that's null => if the anchor list is maxed out/full
                     //this allows us to either add a new anchor to the list if it's not full yet, or replace the furthest anchor if the new one is closer
@@ -260,8 +274,8 @@ public class Goo : MonoBehaviour
                 }
                 m_movementTimer = Vector2.Distance(transform.position, m_pathOrigin.transform.position) / Vector2.Distance(m_pathOrigin.transform.position, m_pathTarget.transform.position);
 
-                
-                m_isSelected = false;              
+
+                m_isSelected = false;
                 m_rb.isKinematic = true;
                 m_stayIdle = false;
                 return true;
@@ -274,6 +288,7 @@ public class Goo : MonoBehaviour
     {
         transform.parent = null;
         m_rb.isKinematic = false;
+        m_rb.velocity = Vector2.zero;
         while (m_isSelected)
         {
             m_rb.MovePosition((Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition));
@@ -321,14 +336,16 @@ public class Goo : MonoBehaviour
                 }
                 //because for some fucking reason it can happen despite the null reference check litteraly 9 lines above
                 if (m_pathOrigin != null && m_pathTarget != null)
-                    m_movementTimer += 2 * Time.fixedDeltaTime / Vector2.Distance(m_pathOrigin.transform.position, m_pathTarget.transform.position);
+                    m_movementTimer += 2 * Time.fixedDeltaTime 
+                        / Vector2.Distance(m_pathOrigin.transform.position, m_pathTarget.transform.position)
+                        *(s_goToFinishLine ? m_movementSpeedOnLevelEnd : m_movementSpeed);
 
             }
             //if it's not kinematic then it's on the ground
             else
             {
                 if (!m_stayIdle)
-                    m_rb.velocity = new Vector2(Mathf.Sign(m_pathTarget.transform.position.x - transform.position.x) * 3, m_rb.velocity.y);
+                    m_rb.velocity = new Vector2(Mathf.Sign(m_pathTarget.transform.position.x - transform.position.x) * 3 * m_movementSpeed, m_rb.velocity.y);
                 TryGetPath();
             }
 
@@ -348,14 +365,16 @@ public class Goo : MonoBehaviour
         //finds next target, either random if the structure isn't connected to the exit,
         //or the next target in the shortest path towards the exit if there is one
         m_pathOrigin = m_pathTarget;
+
         if (s_goToFinishLine)
         {
             //stop moving if we reached the end of the path
-            if(!m_arrivedAtEnd)
+            if (!m_arrivedAtEnd)
                 m_pathTarget = m_pathOrigin.m_closestToExit;
 
-            if(m_pathTarget.m_exitCloseness<=0f)
+            if (m_pathTarget.m_exitCloseness <= 0f)
                 m_arrivedAtEnd = true;
+
         }
         else
         {
@@ -407,7 +426,9 @@ public class Goo : MonoBehaviour
         {
             if (m_validAnchors[i] == null) continue;
             float Distance = Vector2.Distance(m_validAnchors[i].transform.position, transform.position);
-            if (!(Distance >= m_minAttachDistance && Distance <= m_maxAttachDistance) || ValidAnchorCount < m_minAllowedAnchorsAmount)
+            if (!(Distance >= m_minAttachDistance && Distance <= m_maxAttachDistance)
+                || ValidAnchorCount < m_minAllowedAnchorsAmount
+                || Physics2D.Raycast(m_validAnchors[i].transform.position, transform.position - m_validAnchors[i].transform.position, Vector2.Distance(transform.position, m_validAnchors[i].transform.position), LayerMask.GetMask("Default")))
             {
                 //disable preview connection thingy, then remove from list, cool since we're not changing the collection's size,
                 //tho it's kinda dumb since we create a list in local scope so there's not much diff in terms of perfs
@@ -415,14 +436,14 @@ public class Goo : MonoBehaviour
                 allChildren.RemoveAll(x => x == null);
                 //replaces the target of the previewer to replace, instead of going through the pool system which would be longer
                 Connection previewer = allChildren.Find(x => x.m_target == m_validAnchors[i]);
-                if(previewer != null)
+                if (previewer != null)
                 {
                     previewer.m_target = null;
                     previewer.m_IsInUse = false;
                     previewer.enabled = false;
                     m_validAnchors[i] = null;
                 }
-                
+
             }
         }
     }
@@ -433,13 +454,13 @@ public class Goo : MonoBehaviour
         allChildren.RemoveAll(x => x == null);
         //replaces the target of the previewer to replace, instead of going through the pool system which would be longer
         Connection Previewer = allChildren.Find(x => x.m_target == m_validAnchors[HighestDistanceAnchorIndex]);
-        if(Previewer != null )
+        if (Previewer != null)
         {
             Previewer.m_target = anchorPoint;
             Previewer.m_IsInUse = true;
             Previewer.enabled = true;
         }
-        
+
     }
     //places both the visual line and attributes the connected rb to one of the unused spring joints
     private protected virtual void PlaceConnection(List<Goo> filteredAnchors, int i)
@@ -463,6 +484,7 @@ public class Goo : MonoBehaviour
         connection.GetComponent<Connection>().m_IsInUse = true;
         connection.transform.parent = transform;
         connection.GetComponent<Connection>().m_target = filteredAnchors[i];
+        m_buildAudio.Play();
     }
 
     public void RemovePointFromStructure(Goo _toRemove)
@@ -473,7 +495,10 @@ public class Goo : MonoBehaviour
             {
                 connected.RemovePointFromStructure(this);
             }
-            Destroy(gameObject);
+            foreach (var spr in m_springJoints)
+                spr.enabled = false;
+            Die();
+
 
         }
         else
@@ -498,7 +523,7 @@ public class Goo : MonoBehaviour
             }
         }
         //if all connections to this point were destroyed, we want it to switch to being like the unplaced goos
-        if(m_connections == null || m_connections.Count <= 0)
+        if (m_connections == null || m_connections.Count <= 0)
         {
             m_isUsed = false;
             m_animator.enabled = true;
@@ -538,9 +563,13 @@ public class Goo : MonoBehaviour
     {
         return m_connections.Where(x => x.GetComponent<Goo_Balloon>() == null).ToList();
     }
-    public void Die()
+    public void Absorb()
     {
         StartCoroutine(PlanDestruction());
+    }
+    public void Die()
+    {
+        StartCoroutine(PlanDestruction(false));
     }
     private protected IEnumerator SetSelectableLate()
     {
@@ -548,14 +577,30 @@ public class Goo : MonoBehaviour
         yield return new WaitForFixedUpdate();
         s_isThereAGooSelected = false;
     }
-    private protected IEnumerator PlanDestruction()
+    private protected IEnumerator PlanDestruction(bool giveScore = true)
     {
-        m_animator.SetBool("Die", true);
-        yield return new WaitWhile(IsAlive);
-        
-        gameObject.SetActive(false);
-        Score.Instance.m_Score++;
+        if (giveScore)
+        {
+            m_animator.SetBool("Die", true);
 
+            yield return new WaitWhile(IsAlive);
+
+            gameObject.SetActive(false);
+            Score.Instance.m_Score++;
+        }
+        else
+        {
+            GetComponent<SpriteRenderer>().enabled = false;
+            GetComponent<CircleCollider2D>().enabled = false;
+            m_deathAudio.Play();
+            yield return new WaitWhile(FinishedDying);
+            Destroy(gameObject);
+        }
+    }
+
+    private bool FinishedDying()
+    {
+        return m_deathAudio.isPlaying;
     }
     private protected bool IsAlive() { return transform.localScale.x > 0f; }
     private void OnCollisionEnter2D(Collision2D collision)

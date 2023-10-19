@@ -34,6 +34,7 @@ public class Goo_Balloon : Goo
         m_isSelected = false;
         StartCoroutine(AdaptConnectionLength());
         StartCoroutine(DoThingIfUsed());
+        m_buildAudio.Play();
     }
 
     private protected override void PlaceConnection(List<Goo> filteredAnchors, int i)

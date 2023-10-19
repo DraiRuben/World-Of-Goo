@@ -2,15 +2,30 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+[RequireComponent(typeof(AudioSource))]
 public class SceneChanger : MonoBehaviour
 {
     [SerializeField]
     private Animator m_Animator;
+
+    private AudioSource m_audioSource;
+
+    [SerializeField]
+    private AudioClip m_Open;
+    [SerializeField]
+    private AudioClip m_Close;
+
     public static SceneChanger instance;
     private void Awake()
     {
         if (instance == null) instance = this;
         else Destroy(gameObject);
+        m_audioSource = GetComponent<AudioSource>();
+        m_audioSource.clip = m_Open;
+    }
+    private void Start()
+    {
+        m_audioSource.Play();
     }
     public void ChangeSceneWithIndex(int sceneIndex)
     {
@@ -36,6 +51,8 @@ public class SceneChanger : MonoBehaviour
     {
         ReverseCurtainState();
         SaveLastPlayedLevel();
+        m_audioSource.clip = m_Close;
+        m_audioSource.Play();
         yield return new WaitForSecondsRealtime(1.3f);
         SceneManager.LoadSceneAsync(sceneIndex);
 
@@ -44,6 +61,8 @@ public class SceneChanger : MonoBehaviour
     {
         ReverseCurtainState();
         SaveLastPlayedLevel();
+        m_audioSource.clip = m_Close;
+        m_audioSource.Play();
         yield return new WaitForSecondsRealtime(1.3f);
         SceneManager.LoadSceneAsync(sceneName);
     }
@@ -51,6 +70,8 @@ public class SceneChanger : MonoBehaviour
     {
         gameObject.SetActive(true);
         m_Animator.SetTrigger("Start");
+        m_audioSource.Play();
+
     }
     public void Exit()
     {
