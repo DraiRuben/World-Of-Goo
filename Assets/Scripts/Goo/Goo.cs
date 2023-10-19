@@ -44,7 +44,15 @@ public class Goo : MonoBehaviour
     private protected AudioSource m_deathAudio;
     [SerializeField]
     private protected AudioSource m_buildAudio;
-    public Goo ClosestToExit { get { int minDist = m_connections.Select(x => x.m_exitCloseness).Min(); return m_connections.FirstOrDefault(x => x.m_exitCloseness == minDist); } }
+
+    public Goo ClosestToExit
+    {
+        get
+        {
+            int minDist = m_connections.Select(x => x.m_exitCloseness).Min();
+            return m_connections.FirstOrDefault(x => x.m_exitCloseness == minDist);
+        }
+    }
 
 
     private Goo m_pathOrigin;

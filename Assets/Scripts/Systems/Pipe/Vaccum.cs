@@ -35,11 +35,11 @@ public class Vaccum : MonoBehaviour
     }
     private void Update()
     {
-        if(NextLevel.instance.m_isInWaitScreen && m_magnet.enabled)
+        if (NextLevel.instance.m_isInWaitScreen && m_magnet.enabled)
             DisableVaccuum();
-        else if (!NextLevel.instance.m_isInWaitScreen && Time.timeScale==0)
+        else if (!NextLevel.instance.m_isInWaitScreen && Time.timeScale == 0)
             m_audioSource.Pause();
-        else if(m_magnet.enabled && Time.timeScale==1 && !m_audioSource.isPlaying)
+        else if (m_magnet.enabled && Time.timeScale == 1 && !m_audioSource.isPlaying)
             m_audioSource.UnPause();
     }
     public void ActivateVaccuum()
@@ -69,5 +69,5 @@ public class Vaccum : MonoBehaviour
             m_audioSource.Play();
         }
     }
-    private bool isPlaying() { return m_magnet.enabled&&m_audioSource.isPlaying; }
+    private bool isPlaying() { return m_magnet.enabled && m_audioSource.isPlaying; }
 }
