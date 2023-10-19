@@ -17,12 +17,12 @@ public class SongPlayer : MonoBehaviour
         {
             m_volume = PlayerPrefs.GetFloat("MainVolume");
             GetComponent<AudioSource>().volume = m_volume;
-            m_volumeSlider.value = m_volume;
+            m_volumeSlider.value = m_volume*5;
         }
     }
     public void ChangeVolume()
     {
-        m_volume = m_volumeSlider.value;
+        m_volume = m_volumeSlider.value*0.25f;
         GetComponent<AudioSource>().volume = m_volume;
     }
     private void OnApplicationQuit()

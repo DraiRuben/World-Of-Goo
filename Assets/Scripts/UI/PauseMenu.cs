@@ -7,18 +7,22 @@ public class PauseMenu : MonoBehaviour
 {
     private bool Pause;
 
+    public void OpenPauseMenu()
+    {
+        Pause = !Pause;
+        Time.timeScale = Pause ? 0f : 1f;
+        if (Pause)
+            gameObject.SetActive(true);
+        else
+            StartCoroutine(DelayedDeactivation());
+
+        GetComponent<Animator>().SetBool("ShowMenu", Pause);
+    }
     public void PauseResume(InputAction.CallbackContext ctx)
     {
         if (ctx.performed)
         {
-            Pause = !Pause;
-            Time.timeScale = Pause ? 0f : 1f;
-            if (Pause)
-                gameObject.SetActive(true);
-            else
-                StartCoroutine(DelayedDeactivation());
-
-            GetComponent<Animator>().SetBool("ShowMenu", Pause);
+            OpenPauseMenu();
         }
     }
     public void PauseResumeNoCallback()
