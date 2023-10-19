@@ -23,6 +23,8 @@ public class DifficultySettings : ScriptableObject
                 return m_mediumMinPercentToGet;
             case Difficulty.Hard:
                 return m_hardMinPercentToGet;
+            default:
+                break;
         }
         return 1f;
     }

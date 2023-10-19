@@ -25,12 +25,12 @@ public class ReplayManager : MonoBehaviour
         //Sets the text of all buttons for the level Replay
         int HighestUnlockedLevel = PlayerPrefs.GetInt("HighestUnlockedLevel");
         for (int i = 1; i <= SceneManager.sceneCountInBuildSettings - 2; i++)
-        { 
+        {
             if (HighestUnlockedLevel <= i)
             {
                 buttonList[i - 1].m_button.interactable = false;
 
-                buttonList[i - 1].m_Text.text = buttonList[i-1].m_difficultySettings.m_levelName + " Locked";
+                buttonList[i - 1].m_Text.text = buttonList[i - 1].m_difficultySettings.m_levelName + " Locked";
             }
             else
             {

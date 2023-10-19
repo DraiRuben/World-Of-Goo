@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Timeline;
 
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(Rigidbody2D))]
@@ -45,7 +44,7 @@ public class Goo : MonoBehaviour
     private protected AudioSource m_deathAudio;
     [SerializeField]
     private protected AudioSource m_buildAudio;
-    public Goo m_closestToExit { get { int minDist = m_connections.Select(x => x.m_exitCloseness).Min(); return m_connections.FirstOrDefault(x => x.m_exitCloseness == minDist); } }
+    public Goo ClosestToExit { get { int minDist = m_connections.Select(x => x.m_exitCloseness).Min(); return m_connections.FirstOrDefault(x => x.m_exitCloseness == minDist); } }
 
 
     private Goo m_pathOrigin;
@@ -132,15 +131,18 @@ public class Goo : MonoBehaviour
             StartCoroutine(AnchorTesting());
         }
     }
-    public void MoveOutOfStructure()
+    public void MoveOutOfStructure(bool wasSelected = true)
     {
         m_stayIdle = true;
         m_behaviour ??= StartCoroutine(Behaviour());
-        m_isSelected = false;
         m_rb.isKinematic = false;
-        StartCoroutine(SetSelectableLate());
-        DisablePreviewers();
-        EmptyAnchors();
+        if (wasSelected)
+        {
+            StartCoroutine(SetSelectableLate());
+            DisablePreviewers();
+            EmptyAnchors();
+        }
+        m_isSelected = false;
     }
     //Used when connections get placed
     private protected virtual void DisablePreviewers()
@@ -150,10 +152,9 @@ public class Goo : MonoBehaviour
         for (int i = 0; i < FilteredAnchors.Count; i++)
         {
             if (transform.childCount <= 0) break;
-            var comp = transform.GetChild(0).GetComponent<Connection>();
-            if (comp != null)
+            if (transform.GetChild(0).TryGetComponent(out Connection comp))
             {
-                comp.m_IsInUse = false;
+                comp.IsInUse = false;
             }
         }
     }
@@ -268,9 +269,7 @@ public class Goo : MonoBehaviour
                 //swaps if the origin is further from the goo, so that the target is the furthest one
                 if (m_isSelected && Vector2.Distance(transform.position, m_pathTarget.transform.position) < Vector2.Distance(transform.position, m_pathOrigin.transform.position))
                 {
-                    Goo temp = m_pathTarget;
-                    m_pathTarget = m_pathOrigin;
-                    m_pathOrigin = temp;
+                    (m_pathOrigin, m_pathTarget) = (m_pathTarget, m_pathOrigin);
                 }
                 m_movementTimer = Vector2.Distance(transform.position, m_pathOrigin.transform.position) / Vector2.Distance(m_pathOrigin.transform.position, m_pathTarget.transform.position);
 
@@ -336,9 +335,9 @@ public class Goo : MonoBehaviour
                 }
                 //because for some fucking reason it can happen despite the null reference check litteraly 9 lines above
                 if (m_pathOrigin != null && m_pathTarget != null)
-                    m_movementTimer += 2 * Time.fixedDeltaTime 
+                    m_movementTimer += 2 * Time.fixedDeltaTime
                         / Vector2.Distance(m_pathOrigin.transform.position, m_pathTarget.transform.position)
-                        *(s_goToFinishLine ? m_movementSpeedOnLevelEnd : m_movementSpeed);
+                        * (s_goToFinishLine ? m_movementSpeedOnLevelEnd : m_movementSpeed);
 
             }
             //if it's not kinematic then it's on the ground
@@ -370,7 +369,7 @@ public class Goo : MonoBehaviour
         {
             //stop moving if we reached the end of the path
             if (!m_arrivedAtEnd)
-                m_pathTarget = m_pathOrigin.m_closestToExit;
+                m_pathTarget = m_pathOrigin.ClosestToExit;
 
             if (m_pathTarget.m_exitCloseness <= 0f)
                 m_arrivedAtEnd = true;
@@ -405,13 +404,13 @@ public class Goo : MonoBehaviour
     private protected void SetupPreviewer(Goo anchorPoint)
     {
         //gets a connection previewer that's usable and sets it up
-        Connection availableConnection = (Connection)Pooling.Instance.pools["Previewers"].Find(x => !((Connection)x).m_IsInUse);
+        Connection availableConnection = (Connection)Pooling.Instance.pools["Previewers"].Find(x => !((Connection)x).IsInUse);
         if (availableConnection != null)
         {
             availableConnection.transform.position = transform.position;
             availableConnection.transform.parent = transform;
             availableConnection.m_target = anchorPoint;
-            availableConnection.m_IsInUse = true;
+            availableConnection.IsInUse = true;
             availableConnection.enabled = true;
         }
         else
@@ -439,7 +438,7 @@ public class Goo : MonoBehaviour
                 if (previewer != null)
                 {
                     previewer.m_target = null;
-                    previewer.m_IsInUse = false;
+                    previewer.IsInUse = false;
                     previewer.enabled = false;
                     m_validAnchors[i] = null;
                 }
@@ -457,7 +456,7 @@ public class Goo : MonoBehaviour
         if (Previewer != null)
         {
             Previewer.m_target = anchorPoint;
-            Previewer.m_IsInUse = true;
+            Previewer.IsInUse = true;
             Previewer.enabled = true;
         }
 
@@ -481,7 +480,7 @@ public class Goo : MonoBehaviour
             filteredAnchors[i].m_connections.Add(this);
         }
         GameObject connection = Instantiate(m_connectionPrefab, transform.position, Quaternion.identity);
-        connection.GetComponent<Connection>().m_IsInUse = true;
+        connection.GetComponent<Connection>().IsInUse = true;
         connection.transform.parent = transform;
         connection.GetComponent<Connection>().m_target = filteredAnchors[i];
         m_buildAudio.Play();
@@ -495,7 +494,7 @@ public class Goo : MonoBehaviour
             {
                 connected.RemovePointFromStructure(this);
             }
-            foreach (var spr in m_springJoints)
+            foreach (SpringJoint2D spr in m_springJoints)
                 spr.enabled = false;
             Die();
 
@@ -555,7 +554,7 @@ public class Goo : MonoBehaviour
         {
             m_isUsed = false;
             m_animator.enabled = true;
-            MoveOutOfStructure();
+            MoveOutOfStructure(false);
         }
     }
     //coroutine started when reaching the end pipe

@@ -174,7 +174,7 @@ MonoBehaviour:
   m_maxAllowedAnchorsAmount: 5
   m_minAllowedAnchorsAmount: 2
   m_minAttachDistance: 1
-  m_maxAttachDistance: 6
+  m_maxAttachDistance: 10
   m_attachStrength: 20
   m_movementSpeed: 1
   m_movementSpeedOnLevelEnd: 2

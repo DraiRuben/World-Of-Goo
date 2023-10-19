@@ -37,7 +37,7 @@ public class SceneChanger : MonoBehaviour
         float volume = 1f;
         if (PlayerPrefs.HasKey("MainVolume"))
         {
-             volume = PlayerPrefs.GetFloat("MainVolume");
+            volume = PlayerPrefs.GetFloat("MainVolume");
         }
         PlayerPrefs.DeleteAll();
         PlayerPrefs.SetFloat("MainVolume", volume);
@@ -62,7 +62,9 @@ public class SceneChanger : MonoBehaviour
         ReverseCurtainState();
         SaveLastPlayedLevel();
         m_audioSource.clip = m_Close;
-        m_audioSource.Play();
+        if(!SceneManager.GetActiveScene().name.Contains("Level"))
+            m_audioSource.Play();
+
         yield return new WaitForSecondsRealtime(1.3f);
         SceneManager.LoadSceneAsync(sceneName);
     }
@@ -70,7 +72,8 @@ public class SceneChanger : MonoBehaviour
     {
         gameObject.SetActive(true);
         m_Animator.SetTrigger("Start");
-        m_audioSource.Play();
+        if (!SceneManager.GetActiveScene().name.Contains("Level"))
+            m_audioSource.Play();
 
     }
     public void Exit()

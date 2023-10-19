@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -31,12 +29,12 @@ public class VolumeButton : MonoBehaviour
     public void Click()
     {
         m_isMuted = !m_isMuted;
-        m_currentSprite.sprite = !m_isMuted && m_volumeBeforeMute!=0 ? m_full:m_mute;
-        if(m_isMuted)
+        m_currentSprite.sprite = !m_isMuted && m_volumeBeforeMute != 0 ? m_full : m_mute;
+        if (m_isMuted)
             m_volumeBeforeMute = m_slider.value;
-        m_slider.value = m_isMuted ?0:m_volumeBeforeMute;
+        m_slider.value = m_isMuted ? 0 : m_volumeBeforeMute;
         m_slider.onValueChanged.Invoke(0);
-       
+
     }
     public void UpdateSprite()
     {

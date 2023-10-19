@@ -52,7 +52,7 @@ public class Goo_Balloon : Goo
             filteredAnchors[i].m_connections.Add(this);
         }
         GameObject connection = Instantiate(m_connectionPrefab, transform.position, Quaternion.identity, transform);
-        connection.GetComponent<Connection>().m_IsInUse = true;
+        connection.GetComponent<Connection>().IsInUse = true;
         connection.transform.parent = transform;
         connection.GetComponent<Connection>().m_target = filteredAnchors[i];
     }

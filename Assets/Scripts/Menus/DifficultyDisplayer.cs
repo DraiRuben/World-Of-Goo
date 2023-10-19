@@ -25,7 +25,7 @@ public class DifficultyDisplayer : MonoBehaviour
         if (instance == null) instance = this;
         else Destroy(gameObject);
         m_animator = GetComponent<Animator>();
-        if(m_disableOnLoad)
+        if (m_disableOnLoad)
             gameObject.SetActive(false);
     }
     private void OnEnable()

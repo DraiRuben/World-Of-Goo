@@ -37,9 +37,9 @@ public class Pipe : MonoBehaviour
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.CompareTag("Goo") 
-            && Goo.s_goToFinishLine 
-            && collision.GetComponent<Goo>().m_isUsed 
+        if (collision.CompareTag("Goo")
+            && Goo.s_goToFinishLine
+            && collision.GetComponent<Goo>().m_isUsed
             && collision.GetComponent<Goo_Balloon>() == null
             && collision.gameObject == m_vaccum.m_finishGoo)
         {

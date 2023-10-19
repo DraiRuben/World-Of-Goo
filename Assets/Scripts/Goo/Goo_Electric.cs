@@ -26,12 +26,11 @@ public class Goo_Electric : Goo
         {
             //the electric goo always has at least 1 child (electric field)
             if (transform.childCount <= 1) break;
-            var comp = transform.GetChild(1).GetComponent<Connection>();
-            if (comp != null)
+            if (transform.GetChild(1).TryGetComponent<Connection>(out Connection comp))
             {
-                comp.m_IsInUse = false;
+                comp.IsInUse = false;
             }
         }
     }
-   
+
 }

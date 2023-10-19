@@ -14,7 +14,7 @@ public class Spawner : MonoBehaviour
             for (int i = 0; i < v.Amount; i++)
             {
                 GameObject goo = Instantiate(v.Object, transform.position, Quaternion.identity);
-                goo.GetComponent<Goo>().MoveOutOfStructure();
+                goo.GetComponent<Goo>().MoveOutOfStructure(false);
             }
         }
         Score.Instance.m_totalSpawnedGoos = SpawnSettings.GetTotalGooAmount();
