@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-
+[RequireComponent(typeof(AudioSource))]
 public class DifficultyDisplayer : MonoBehaviour
 {
     public static DifficultyDisplayer instance;
@@ -17,6 +17,14 @@ public class DifficultyDisplayer : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI m_hard;
 
+    [SerializeField]
+    private AudioClip m_woodLow;
+    [SerializeField]
+    private AudioClip m_woodMedium;
+    [SerializeField]
+    private AudioClip m_woodHigh;
+
+    private AudioSource m_audioSource;
     private Animator m_animator;
     [SerializeField]
     private bool m_disableOnLoad = true;
@@ -25,8 +33,11 @@ public class DifficultyDisplayer : MonoBehaviour
         if (instance == null) instance = this;
         else Destroy(gameObject);
         m_animator = GetComponent<Animator>();
+        m_audioSource = GetComponent<AudioSource>();
         if (m_disableOnLoad)
             gameObject.SetActive(false);
+
+
     }
     private void OnEnable()
     {
@@ -62,6 +73,7 @@ public class DifficultyDisplayer : MonoBehaviour
             m_hard.text = "Locked";
             m_hard.transform.parent.GetComponent<Button>().interactable = false;
         }
+        StartCoroutine(PlaySounds());
     }
 
     public void LoadLevel(EnumWorkaround diff)
@@ -96,5 +108,20 @@ public class DifficultyDisplayer : MonoBehaviour
         m_animator.SetBool("Show", false);
         yield return new WaitForSecondsRealtime(0.667f);
         SceneChanger.instance.ChangeSceneWithName(m_settings.m_levelName);
+    }
+    private IEnumerator PlaySounds()
+    {
+        yield return new WaitForSecondsRealtime(1.20f);
+        m_audioSource.Stop();
+        m_audioSource.clip = m_woodHigh;
+        m_audioSource.Play();
+        yield return new WaitForSecondsRealtime(0.35f);
+        m_audioSource.Stop();
+        m_audioSource.clip = m_woodMedium;
+        m_audioSource.Play();
+        yield return new WaitForSecondsRealtime(0.35f);
+        m_audioSource.Stop();
+        m_audioSource.clip = m_woodLow;
+        m_audioSource.Play();
     }
 }
