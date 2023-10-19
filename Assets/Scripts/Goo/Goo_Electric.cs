@@ -14,6 +14,7 @@ public class Goo_Electric : Goo
     public override IEnumerator DoThingIfUsed()
     {
         m_electricityZone.SetActive(true);
+        m_electricity.Play();
         StartCoroutine(SetSelectableLate());
         yield return null;
 
