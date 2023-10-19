@@ -14,7 +14,7 @@ public class Pipe : MonoBehaviour
         //suck closest goo from structure if close enough and tell remaining goos to come to the exit
         if (collision.CompareTag("Goo") && !Goo.s_goToFinishLine && collision.GetComponent<Goo>().m_isUsed && collision.GetComponent<Goo_Balloon>() == null)
         {
-            m_vaccum.m_magnet.enabled = true;
+            m_vaccum.ActivateVaccuum();
             m_vaccum.m_finishGoo = collision.gameObject;
             m_coroutine ??= StartCoroutine(TryEndLevel());
         }
@@ -29,7 +29,7 @@ public class Pipe : MonoBehaviour
     {
         if (collision.CompareTag("Goo") && !Goo.s_goToFinishLine && collision.GetComponent<Goo>().m_isUsed && collision.GetComponent<Goo_Balloon>() == null)
         {
-            m_vaccum.m_magnet.enabled = true;
+            m_vaccum.ActivateVaccuum();
             m_vaccum.m_finishGoo = collision.gameObject;
             m_coroutine ??= StartCoroutine(TryEndLevel());
 
@@ -45,7 +45,7 @@ public class Pipe : MonoBehaviour
         {
             m_vaccum.m_finishGoo = null;
             Goo.s_goToFinishLine = false;
-            m_vaccum.m_magnet.enabled = false;
+            m_vaccum.DisableVaccuum();
 
         }
     }

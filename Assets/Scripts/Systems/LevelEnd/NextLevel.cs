@@ -6,6 +6,7 @@ public class NextLevel : MonoBehaviour
 {
     // Start is called before the first frame update
     private Animator m_animator;
+    public bool m_isInWaitScreen = false;
     public static NextLevel instance;
     private void Awake()
     {
@@ -27,6 +28,9 @@ public class NextLevel : MonoBehaviour
         if (Score.Instance.CanGoToNextLevel())
         {
             StartCoroutine(GoToNextLevel());
+            Time.timeScale = 0f;
+            m_isInWaitScreen = true;
+
         }
         else
         {
@@ -42,11 +46,6 @@ public class NextLevel : MonoBehaviour
         yield return new WaitForSecondsRealtime(1.3f);
         Score.Instance.SaveScore();
 
-        //checks if there's actually settings for a next level, otherwise keep the current level
-        if (DifficultyManagerHolder.instance.manager.DifficultyDictionary.ContainsKey(SceneManager.GetActiveScene().buildIndex + 1))
-        {
-            DifficultyDisplayer.instance.m_settings = DifficultyManagerHolder.instance.manager.DifficultyDictionary[SceneManager.GetActiveScene().buildIndex + 1];
-        }
         Score.Instance.UnlockNextLevel();
         DifficultyDisplayer.instance.gameObject.SetActive(true);
 

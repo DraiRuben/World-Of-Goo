@@ -52,7 +52,9 @@ public class SceneChanger : MonoBehaviour
         ReverseCurtainState();
         SaveLastPlayedLevel();
         m_audioSource.clip = m_Close;
-        m_audioSource.Play();
+        if (!SceneManager.GetActiveScene().name.Contains("Level"))
+            m_audioSource.Play();
+        Time.timeScale = 1f;
         yield return new WaitForSecondsRealtime(1.3f);
         SceneManager.LoadSceneAsync(sceneIndex);
 
@@ -62,7 +64,8 @@ public class SceneChanger : MonoBehaviour
         ReverseCurtainState();
         SaveLastPlayedLevel();
         m_audioSource.clip = m_Close;
-        if(!SceneManager.GetActiveScene().name.Contains("Level"))
+        Time.timeScale = 1f;
+        if (!SceneManager.GetActiveScene().name.Contains("Level"))
             m_audioSource.Play();
 
         yield return new WaitForSecondsRealtime(1.3f);
