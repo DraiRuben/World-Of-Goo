@@ -8295,6 +8295,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 48ce42221afc3bb4299731c5b55b0dd8, type: 2}
     - target: {fileID: 8413980659118632331, guid: 05ecd6544c9e3b347884bf1fa7a455dd, type: 3}
+      propertyPath: m_intialWaitTime
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8413980659118632331, guid: 05ecd6544c9e3b347884bf1fa7a455dd, type: 3}
       propertyPath: m_toLaunchSettings
       value: 
       objectReference: {fileID: 11400000, guid: 48ce42221afc3bb4299731c5b55b0dd8, type: 2}

@@ -35,6 +35,7 @@ public class SceneChanger : MonoBehaviour
     private IEnumerator LoadLevelAsyncInt(int sceneIndex)
     {
         ReverseCurtainState();
+        SaveLastPlayedLevel();
         yield return new WaitForSecondsRealtime(1.3f);
         SceneManager.LoadSceneAsync(sceneIndex);
 
@@ -42,6 +43,7 @@ public class SceneChanger : MonoBehaviour
     private IEnumerator LoadLevelAsyncString(string sceneName)
     {
         ReverseCurtainState();
+        SaveLastPlayedLevel();
         yield return new WaitForSecondsRealtime(1.3f);
         SceneManager.LoadSceneAsync(sceneName);
     }
@@ -55,6 +57,10 @@ public class SceneChanger : MonoBehaviour
         Application.Quit();
     }
     private void OnApplicationQuit()
+    {
+        SaveLastPlayedLevel();
+    }
+    private void SaveLastPlayedLevel()
     {
         //Save current level to playerprefs
         if (SceneManager.GetActiveScene().name.Contains("Level"))

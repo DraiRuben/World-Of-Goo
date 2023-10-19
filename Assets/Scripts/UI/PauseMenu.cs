@@ -5,18 +5,18 @@ using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviour
 {
-    private bool Pause;
+    private bool m_pause;
 
     public void OpenPauseMenu()
     {
-        Pause = !Pause;
-        Time.timeScale = Pause ? 0f : 1f;
-        if (Pause)
+        m_pause = !m_pause;
+        Time.timeScale = m_pause ? 0f : 1f;
+        if (m_pause)
             gameObject.SetActive(true);
         else
             StartCoroutine(DelayedDeactivation());
 
-        GetComponent<Animator>().SetBool("ShowMenu", Pause);
+        GetComponent<Animator>().SetBool("ShowMenu", m_pause);
     }
     public void PauseResume(InputAction.CallbackContext ctx)
     {
@@ -27,14 +27,14 @@ public class PauseMenu : MonoBehaviour
     }
     public void PauseResumeNoCallback()
     {
-        Pause = !Pause;
-        Time.timeScale = Pause ? 0f : 1f;
-        if (Pause)
+        m_pause = !m_pause;
+        Time.timeScale = m_pause ? 0f : 1f;
+        if (m_pause)
             gameObject.SetActive(true);
         else
             StartCoroutine(DelayedDeactivation());
 
-        GetComponent<Animator>().SetBool("ShowMenu", Pause);
+        GetComponent<Animator>().SetBool("ShowMenu", m_pause);
 
     }
     private IEnumerator DelayedDeactivation()
