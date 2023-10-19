@@ -1770,7 +1770,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 730063702}
         m_TargetAssemblyTypeName: SceneChanger, Assembly-CSharp
-        m_MethodName: ChangeSceneWithName
+        m_MethodName: NewGame
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

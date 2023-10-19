@@ -21,7 +21,7 @@ public class CameraController : MonoBehaviour
     [SerializeField]
     private float m_maxZoom = 15f;
 
-
+    private CinemachineConfiner2D m_confiner;
     private Vector2 Offset;
     Camera cam;
     private void Awake()
@@ -29,6 +29,10 @@ public class CameraController : MonoBehaviour
         cam = Camera.main;
         //gets screen width and height in world position
         Offset = new(cam.orthographicSize * cam.aspect, cam.orthographicSize);
+    }
+    private void Start()
+    {
+        m_confiner = vcam.GetComponent<CinemachineConfiner2D>();
     }
     public void Zoom(InputAction.CallbackContext ctx)
     {
@@ -46,9 +50,13 @@ public class CameraController : MonoBehaviour
     private void Update()
     {
         //changes offset if the viewport is resized, either from screen resize or a screen change
-        if (Offset.x != cam.orthographicSize * cam.aspect || Offset.y != cam.orthographicSize)
+        //for some fucking reason, the comparison doesn't work and returns the inverse of the condition,
+        //which is why I need to reverse the conditions, ffs
+        if (!(Offset.x != (cam.orthographicSize * cam.aspect) )
+            || (Offset.y != cam.orthographicSize))
         {
             Offset = new(cam.orthographicSize * cam.aspect, cam.orthographicSize);
+            m_confiner.InvalidateCache();
         }
     }
     private void FixedUpdate()

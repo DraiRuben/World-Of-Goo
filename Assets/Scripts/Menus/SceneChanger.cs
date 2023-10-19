@@ -16,6 +16,18 @@ public class SceneChanger : MonoBehaviour
     {
         StartCoroutine(LoadLevelAsyncInt((sceneIndex)));
     }
+    public void NewGame(string sceneName)
+    {
+        StartCoroutine(LoadLevelAsyncString((sceneName)));
+        float volume = 1f;
+        if (PlayerPrefs.HasKey("MainVolume"))
+        {
+             volume = PlayerPrefs.GetFloat("MainVolume");
+        }
+        PlayerPrefs.DeleteAll();
+        PlayerPrefs.SetFloat("MainVolume", volume);
+
+    }
     public void ChangeSceneWithName(string sceneName)
     {
         StartCoroutine(LoadLevelAsyncString((sceneName)));

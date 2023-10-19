@@ -15,6 +15,7 @@ public class ReplayManager : MonoBehaviour
         public Button m_button;
         public TextMeshProUGUI m_Text;
         public DifficultySettings m_difficultySettings;
+
     }
     [SerializeField]
     private List<ReplayButton> buttonList;
