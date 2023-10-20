@@ -195,7 +195,7 @@ public class Goo : MonoBehaviour
     {
 
         List<Goo> filteredAnchors = m_validAnchors.ToList();
-        filteredAnchors.RemoveAll(x => x == null);
+        filteredAnchors.RemoveAll(x => x == null|| x.isDying);
         for (int i = 0; i < filteredAnchors.Count; i++)
         {
             PlaceConnection(filteredAnchors, i);
@@ -455,11 +455,10 @@ public class Goo : MonoBehaviour
                 || Physics2D.Raycast(m_validAnchors[i].transform.position, transform.position - m_validAnchors[i].transform.position, Vector2.Distance(transform.position, m_validAnchors[i].transform.position), LayerMask.GetMask("Default")))
             {
                 //disable preview connection thingy, then remove from list, cool since we're not changing the collection's size,
-                //tho it's kinda dumb since we create a list in local scope so there's not much diff in terms of perfs
                 List<Connection> allChildren = transform.Cast<Transform>().Select(t => t.GetComponent<Connection>()).ToList();
                 allChildren.RemoveAll(x => x == null);
                 //replaces the target of the previewer to replace, instead of going through the pool system which would be longer
-                Connection previewer = allChildren.Find(x => x.m_target == m_validAnchors[i]);
+                Connection previewer = allChildren.Find(x => x.m_target == m_validAnchors[i] ||x.m_target.isDying);
                 if (previewer != null)
                 {
                     previewer.m_target = null;
@@ -609,7 +608,7 @@ public class Goo : MonoBehaviour
     }
     public List<Goo> GetFilteredConnections()
     {
-        return m_connections.Where(x => x.GetComponent<Goo_Balloon>() == null).ToList();
+        return m_connections.Where(x => x!=null && x.GetComponent<Goo_Balloon>() == null).ToList();
     }
     private protected IEnumerator PlanDestruction(bool giveScore = true)
     {
