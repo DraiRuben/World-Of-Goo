@@ -36,7 +36,8 @@ public class Cannon : MonoBehaviour
 
             GameObject goo = Instantiate(m_toLaunch[0].Object, transform.position, Quaternion.identity);
             Goo comp = goo.GetComponent<Goo>();
-            comp.MoveOutOfStructure(false);
+            comp.MoveOutOfStructure();
+
             Vector3 rotatedVector = (Quaternion.AngleAxis(m_flip ? -45 : 45, Vector3.forward) * m_cannonTransform.right);
             comp.m_rb.velocity = rotatedVector.normalized * m_shootStrength;
             toSpawn.Amount--;

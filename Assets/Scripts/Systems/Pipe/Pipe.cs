@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using static Unity.Burst.Intrinsics.X86.Avx;
 
 public class Pipe : MonoBehaviour
 {
@@ -12,11 +13,18 @@ public class Pipe : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         //suck closest goo from structure if close enough and tell remaining goos to come to the exit
-        if (collision.CompareTag("Goo") && !Goo.s_goToFinishLine && collision.GetComponent<Goo>().m_isUsed && collision.GetComponent<Goo_Balloon>() == null)
+        if (collision.CompareTag("Goo") && collision.GetComponent<Goo>().m_isUsed && collision.GetComponent<Goo_Balloon>() == null)
         {
-            m_vaccum.ActivateVaccuum();
-            m_vaccum.m_finishGoo = collision.gameObject;
-            m_coroutine ??= StartCoroutine(TryEndLevel());
+            if (!Goo.s_goToFinishLine)
+            {
+                m_vaccum.ActivateVaccuum();
+                m_vaccum.m_finishGoo = collision.gameObject;
+                m_coroutine ??= StartCoroutine(TryEndLevel());
+            }
+            else //if we detected a new target
+            {
+                PathFinder.Instance.SetClosenessToExit(collision.GetComponent<Goo>(), 0);
+            }
         }
         //suck goos that aren't on the structure and adds them to the score
         else if (collision.CompareTag("Goo") && Goo.s_goToFinishLine && !collision.GetComponent<Goo>().m_isUsed && !collision.GetComponent<Goo>().m_isSelected)
@@ -27,11 +35,19 @@ public class Pipe : MonoBehaviour
     //same thing as previous one, useful only because trigger enter doesn't detect a goo that spawns directly in the collider
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.CompareTag("Goo") && !Goo.s_goToFinishLine && collision.GetComponent<Goo>().m_isUsed && collision.GetComponent<Goo_Balloon>() == null)
+        if (collision.CompareTag("Goo") && collision.GetComponent<Goo>().m_isUsed && collision.GetComponent<Goo_Balloon>() == null)
         {
-            m_vaccum.ActivateVaccuum();
-            m_vaccum.m_finishGoo = collision.gameObject;
-            m_coroutine ??= StartCoroutine(TryEndLevel());
+            if (!Goo.s_goToFinishLine)
+            {
+                m_vaccum.ActivateVaccuum();
+                m_vaccum.m_finishGoo = collision.gameObject;
+                m_coroutine ??= StartCoroutine(TryEndLevel());
+            }
+            else //if we detected a new target
+            {
+                PathFinder.Instance.SetClosenessToExit(collision.GetComponent<Goo>(), 0);
+            }
+
 
         }
     }
@@ -52,8 +68,8 @@ public class Pipe : MonoBehaviour
     }
     private IEnumerator TryEndLevel()
     {
-        //if the structure stays in range for at least 2 sec, then it's fixed and we can trigger the level's end
-        yield return new WaitForSeconds(0.2f); 
+        //if the structure stays in range for at least 0.2 sec, then it's fixed and we can trigger the level's end
+        yield return new WaitForSeconds(0.2f);
         if (m_vaccum.m_magnet.enabled)
         {
             NextLevel.instance.Appear();
@@ -62,10 +78,7 @@ public class Pipe : MonoBehaviour
             //comp.m_rb.constraints = RigidbodyConstraints2D.FreezeAll;
             Goo.s_goToFinishLine = true;
         }
-        else
-        {
-            m_coroutine = null;
-        }
+        m_coroutine = null;
     }
 
 

@@ -67,7 +67,7 @@ public class Goo : MonoBehaviour
     private protected List<Goo> m_validAnchors;
     private protected List<SpringJoint2D> m_springJoints;
     private protected List<DistanceJoint2D> m_distanceJoints;
-    private protected Coroutine m_behaviour;
+    private protected Coroutine m_behaviour = null;
     private protected float m_movementTimer = 0;
     private protected bool m_arrivedAtEnd = false;
     private protected Animator m_animator;
@@ -132,7 +132,7 @@ public class Goo : MonoBehaviour
             else
             {
                 //drop the goo in the air
-                MoveOutOfStructure();
+                MoveOutOfStructure(true);
             }
 
         }
@@ -141,6 +141,8 @@ public class Goo : MonoBehaviour
             //make it follow the mouse
             s_isThereAGooSelected = true;
             m_isSelected = true;
+            m_animator.enabled = true;
+
             if (m_isUsed && m_isReusable)
             {
                 RemovePointFromStructure(this, false);
@@ -155,7 +157,7 @@ public class Goo : MonoBehaviour
     }
 
     //used to make a goo move out of the structure
-    public void MoveOutOfStructure(bool wasSelected = true)
+    public void MoveOutOfStructure(bool wasSelected = false)
     {
         m_stayIdle = true;
         m_behaviour ??= StartCoroutine(Behaviour());
@@ -163,6 +165,7 @@ public class Goo : MonoBehaviour
         m_rb.gravityScale = m_gravity;
         if (wasSelected)
         {
+            m_animator.enabled = true;
             StartCoroutine(SetSelectableLate());
             DisablePreviewers();
             EmptyAnchors();
@@ -344,6 +347,8 @@ public class Goo : MonoBehaviour
             //if it's on the structure it's kinematic
             if (m_rb.isKinematic)
             {
+                //find a new target if we don't have one, don't have a valid one anymore, if the origin point was destroyed
+                //or if we arrived at destination
                 if (m_pathTarget == null || m_pathTarget.isDying ||m_pathTarget.m_isSelected
                     || m_pathOrigin == null || m_pathOrigin.isDying || m_pathOrigin.m_isSelected
                     || Vector2.Distance(transform.position, m_pathTarget.transform.position) < 0.1f)
@@ -355,7 +360,7 @@ public class Goo : MonoBehaviour
                 {
                     m_rb.MovePosition(Vector3.Lerp(m_pathOrigin.transform.position, m_pathTarget.transform.position, m_movementTimer));
                 }
-                //because for some fucking reason it can happen despite the null reference check litteraly 9 lines above
+                //because for some fucking reason it can happen despite the null reference check a few lines above
                 if (m_pathOrigin != null && m_pathTarget != null)
                     m_movementTimer += 2 * Time.fixedDeltaTime
                         / Vector2.Distance(m_pathOrigin.transform.position, m_pathTarget.transform.position)
@@ -365,7 +370,7 @@ public class Goo : MonoBehaviour
             //if it's not kinematic then it's on the ground
             else
             {
-                if (!m_stayIdle && m_pathOrigin != null && m_pathTarget != null)
+                if (!m_stayIdle && m_pathTarget != null)
                     m_rb.velocity = new Vector2(Mathf.Sign(m_pathTarget.transform.position.x - transform.position.x) * 3 * m_movementSpeed, m_rb.velocity.y);
                 TryGetPath();
             }
@@ -403,25 +408,26 @@ public class Goo : MonoBehaviour
             {
                 List<Goo> valid = m_pathOrigin.GetFilteredConnections();
                 if (valid.Count > 0)
-                m_pathTarget = valid[Random.Range(0, valid.Count-1)];
+                    m_pathTarget = valid[Random.Range(0, valid.Count - 1)];
             }
             
 
             //if there's still no valid target, just reset to bottom left of the starting structure, otherwise idk, just grab the goo and put it back yourself
-            /*if (m_pathTarget == null)
+            if (m_pathTarget == null)
             {
                 m_isSelected = false;
                 m_rb.isKinematic = false;
                 m_pathTarget = PathFinder.Instance.transform.parent.GetChild(0).GetComponent<Goo>();
 
-            }*/
+            }
         }
         //if the target got destroyed or selected, this means the connection we're on is invalid, so we need to fall
         if (m_pathTarget == null || m_pathTarget.isDying || m_pathTarget.m_isSelected
             || m_pathOrigin == null||m_pathOrigin.isDying||m_pathOrigin.m_isSelected)
         {
-            MoveOutOfStructure(false);
             m_pathTarget = PathFinder.Instance.transform.parent.GetChild(0).GetComponent<Goo>();
+            MoveOutOfStructure();
+
         }
 
         return true;
@@ -574,7 +580,7 @@ public class Goo : MonoBehaviour
         {
             m_isUsed = false;
             m_animator.enabled = true;
-            MoveOutOfStructure(false);
+            MoveOutOfStructure();
         }
     }
     //same principle as the previous one but by using a line as reference
@@ -603,7 +609,7 @@ public class Goo : MonoBehaviour
         {
             m_isUsed = false;
             m_animator.enabled = true;
-            MoveOutOfStructure(false);
+            MoveOutOfStructure();
         }
     }
     public List<Goo> GetFilteredConnections()

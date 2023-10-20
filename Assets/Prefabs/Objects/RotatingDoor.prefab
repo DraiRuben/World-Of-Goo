@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4769390865564800667}
   - component: {fileID: 3928459205332040970}
   - component: {fileID: 768243355807540947}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: RotatingDoor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -102,7 +102,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3079621495035398124}
   - component: {fileID: 4897870728181190463}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Square
   m_TagString: Untagged
   m_Icon: {fileID: 0}

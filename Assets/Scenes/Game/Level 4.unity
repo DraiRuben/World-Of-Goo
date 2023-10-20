@@ -5921,7 +5921,7 @@ PrefabInstance:
     - target: {fileID: 8413980659118632331, guid: 05ecd6544c9e3b347884bf1fa7a455dd, type: 3}
       propertyPath: m_toLaunchSettings
       value: 
-      objectReference: {fileID: 11400000, guid: 48ce42221afc3bb4299731c5b55b0dd8, type: 2}
+      objectReference: {fileID: 11400000, guid: 2ad2fc3c13b813148aba81bb9be63d40, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -6152,7 +6152,7 @@ PrefabInstance:
     - target: {fileID: 8413980659118632331, guid: 05ecd6544c9e3b347884bf1fa7a455dd, type: 3}
       propertyPath: m_toLaunchSettings
       value: 
-      objectReference: {fileID: 11400000, guid: 48ce42221afc3bb4299731c5b55b0dd8, type: 2}
+      objectReference: {fileID: 11400000, guid: 2ad2fc3c13b813148aba81bb9be63d40, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -10339,6 +10339,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: 6.180251
       objectReference: {fileID: 0}
+    - target: {fileID: 3508791197014780679, guid: 49b1e51320fea344e84e4da3f5e8ac66, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.03336039
+      objectReference: {fileID: 0}
     - target: {fileID: 4926416782410653565, guid: 49b1e51320fea344e84e4da3f5e8ac66, type: 3}
       propertyPath: m_Follow
       value: 
@@ -10426,6 +10430,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 768243355807540947, guid: 554bb59140b885d4d94029d816fe77b9, type: 3}
+      propertyPath: m_Size.x
+      value: 14.218737
+      objectReference: {fileID: 0}
+    - target: {fileID: 768243355807540947, guid: 554bb59140b885d4d94029d816fe77b9, type: 3}
+      propertyPath: m_Offset.x
+      value: -6.6093683
+      objectReference: {fileID: 0}
+    - target: {fileID: 3079621495035398124, guid: 554bb59140b885d4d94029d816fe77b9, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -6.5
+      objectReference: {fileID: 0}
     - target: {fileID: 3868412424710182533, guid: 554bb59140b885d4d94029d816fe77b9, type: 3}
       propertyPath: m_Name
       value: RotatingDoor
@@ -10469,6 +10485,10 @@ PrefabInstance:
     - target: {fileID: 4769390865564800667, guid: 554bb59140b885d4d94029d816fe77b9, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4897870728181190463, guid: 554bb59140b885d4d94029d816fe77b9, type: 3}
+      propertyPath: m_Size.x
+      value: 14.54
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -10798,9 +10818,25 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4024252744051089538, guid: 155b8a391387ced4592dd34ea81cbeca, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.05
+      objectReference: {fileID: 0}
     - target: {fileID: 5971026219445340491, guid: 155b8a391387ced4592dd34ea81cbeca, type: 3}
       propertyPath: m_Name
       value: ShrinkingDoor
+      objectReference: {fileID: 0}
+    - target: {fileID: 8106221891762046345, guid: 155b8a391387ced4592dd34ea81cbeca, type: 3}
+      propertyPath: m_Size.x
+      value: 18.823229
+      objectReference: {fileID: 0}
+    - target: {fileID: 8106221891762046345, guid: 155b8a391387ced4592dd34ea81cbeca, type: 3}
+      propertyPath: m_Offset.x
+      value: -0.038386345
+      objectReference: {fileID: 0}
+    - target: {fileID: 8524819332161998018, guid: 155b8a391387ced4592dd34ea81cbeca, type: 3}
+      propertyPath: m_Size.x
+      value: 18.73
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
