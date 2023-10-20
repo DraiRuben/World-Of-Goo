@@ -168,6 +168,7 @@ MonoBehaviour:
   m_exitCloseness: -1
   m_stayIdle: 0
   m_isUsed: 0
+  m_isReusable: 1
   m_connections: []
   m_isSelected: 0
   m_rb: {fileID: 0}

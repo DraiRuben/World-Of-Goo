@@ -16,6 +16,7 @@ public class Goo : MonoBehaviour
     public int m_exitCloseness = -1;
     public bool m_stayIdle = false;
     public bool m_isUsed = false;
+    public bool m_isReusable = false;
 
     public List<Goo> m_connections;
 
@@ -107,7 +108,7 @@ public class Goo : MonoBehaviour
     //thing called when you click on a goo, virtual cuz I may make goos that have special conditions for interaction
     public virtual void TryInteract()
     {
-        if (m_isUsed || (s_isThereAGooSelected && !m_isSelected)) return;
+        if (m_isUsed && !m_isReusable|| (s_isThereAGooSelected && !m_isSelected)) return;
 
         if (m_isSelected)
         {
@@ -137,6 +138,14 @@ public class Goo : MonoBehaviour
             //make it follow the mouse
             s_isThereAGooSelected = true;
             m_isSelected = true;
+            if (m_isUsed && m_isReusable)
+            {
+                RemovePointFromStructure(this, false);
+                EmptyAnchors();
+
+            }
+
+            m_isUsed = false;
             StartCoroutine(Select());
             StartCoroutine(AnchorTesting());
         }
@@ -450,6 +459,15 @@ public class Goo : MonoBehaviour
                     previewer.IsInUse = false;
                     previewer.enabled = false;
                     m_validAnchors[i] = null;
+                }//if the list is empty and there's still somehow a connection
+                else if (m_validAnchors.Count == 0)
+                {
+                    foreach(var child in allChildren)
+                    {
+                        child.m_target = null;
+                        child.IsInUse = false;
+                        child.enabled = false;
+                    }
                 }
 
             }
@@ -496,7 +514,7 @@ public class Goo : MonoBehaviour
     }
 
     //explicit enough
-    public void RemovePointFromStructure(Goo _toRemove)
+    public void RemovePointFromStructure(Goo _toRemove,bool destroyAfter = true)
     {
         if (this == _toRemove)
         {
@@ -506,7 +524,19 @@ public class Goo : MonoBehaviour
             }
             foreach (SpringJoint2D spr in m_springJoints)
                 spr.enabled = false;
-            Die();
+            foreach (DistanceJoint2D dist in m_distanceJoints)
+                dist.enabled = false;
+
+            if(destroyAfter)
+                Die();
+            else
+            {
+                List<Connection> allChildren = transform.Cast<Transform>().Select(t => t.GetComponent<Connection>()).ToList();
+                allChildren.RemoveAll(x => x == null);
+
+                foreach(var connector in allChildren)
+                    Destroy(connector.gameObject);
+            }
 
 
         }
@@ -525,7 +555,7 @@ public class Goo : MonoBehaviour
                 Connection comp = child.GetComponent<Connection>();
                 if (comp != null && comp.m_target == _toRemove)
                 {
-                    //D E S T R O Y   T H E  C H I L D
+                    //O B L I T E R A T E   T H E  C H I L D
                     Destroy(child.gameObject);
                     break;
                 }

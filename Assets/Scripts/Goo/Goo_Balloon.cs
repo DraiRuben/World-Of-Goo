@@ -60,7 +60,7 @@ public class Goo_Balloon : Goo
     //already explicit enough, this just lengthens the string until the desired value
     private IEnumerator AdaptConnectionLength()
     {
-        while (Mathf.Abs(m_distanceJoints[0].distance - m_maxAttachDistance) > 0.4f)
+        while (m_isUsed && Mathf.Abs(m_distanceJoints[0].distance - m_maxAttachDistance) > 0.4f)
         {
             m_distanceJoints[0].distance += 2 * Time.fixedDeltaTime;
             yield return new WaitForFixedUpdate();

@@ -56,6 +56,7 @@ public class CameraController : MonoBehaviour
             || (Offset.y != cam.orthographicSize))
         {
             Offset = new(cam.orthographicSize * cam.aspect, cam.orthographicSize);
+            Cursor.instance.UpdateSizeWithZoom(cam.orthographicSize);
             m_confiner.InvalidateCache();
         }
     }
