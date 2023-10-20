@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 4872066418050884476}
   - component: {fileID: 5629574587953321934}
   m_Layer: 6
-  m_Name: Goo
+  m_Name: Goo_Reusable
   m_TagString: Goo
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -79,7 +79,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 2
-  m_Sprite: {fileID: 21300000, guid: 9196d11fa3a42244c8a751362b224eb7, type: 3}
+  m_Sprite: {fileID: 21300000, guid: f22553d93e6206a469fe93838732735e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -167,7 +167,7 @@ MonoBehaviour:
   m_exitCloseness: -1
   m_stayIdle: 0
   m_isUsed: 0
-  m_isReusable: 0
+  m_isReusable: 1
   m_connections: []
   m_isSelected: 0
   m_rb: {fileID: 0}
