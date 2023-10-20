@@ -5,7 +5,7 @@ using static Unity.Burst.Intrinsics.X86.Avx;
 public class Pipe : MonoBehaviour
 {
     [SerializeField]
-    private Vaccum m_vaccum;
+    private Vaccuum m_vaccum;
     [SerializeField]
     private BoxCollider2D m_detectionCollider;
 

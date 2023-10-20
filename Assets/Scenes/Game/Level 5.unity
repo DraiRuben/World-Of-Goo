@@ -6367,7 +6367,7 @@ PrefabInstance:
     - target: {fileID: 4151033219683337322, guid: 8353b6e7df762a644b58d535e43b0d49, type: 3}
       propertyPath: m_settings
       value: 
-      objectReference: {fileID: 11400000, guid: 76f9b45e61b2adf499cd39a991b8a5b7, type: 2}
+      objectReference: {fileID: 11400000, guid: 7e76aaa8515f2314bac23493de5e5ceb, type: 2}
     - target: {fileID: 5930334780021740560, guid: 8353b6e7df762a644b58d535e43b0d49, type: 3}
       propertyPath: m_Name
       value: DifficultySelectionLevel

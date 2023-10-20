@@ -2,8 +2,9 @@ using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(AudioSource))]
-public class Vaccum : MonoBehaviour
+public class Vaccuum : MonoBehaviour
 {
+    public static Vaccuum instance;
     [HideInInspector]
     public PointEffector2D m_magnet;
     [HideInInspector]
@@ -20,6 +21,8 @@ public class Vaccum : MonoBehaviour
     private AudioClip m_vaccuum;
     private void Awake()
     {
+        if (instance == null) instance = this;
+        else Destroy(gameObject);
         m_magnet = GetComponent<PointEffector2D>();
         m_spriteRenderer = GetComponent<SpriteRenderer>();
         m_audioSource = GetComponent<AudioSource>();

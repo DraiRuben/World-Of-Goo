@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static Unity.Burst.Intrinsics.X86.Avx;
 
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(Rigidbody2D))]
@@ -550,6 +551,8 @@ public class Goo : MonoBehaviour
 
                 foreach(var connector in allChildren)
                     Destroy(connector.gameObject);
+
+                PathFinder.Instance.SetClosenessToExit(Vaccuum.instance.m_finishGoo.GetComponent<Goo>(), 0);
             }
 
 
