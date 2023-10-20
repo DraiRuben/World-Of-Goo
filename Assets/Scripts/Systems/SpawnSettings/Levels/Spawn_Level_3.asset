@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Spawn:
   - Object: {fileID: 527057930320455668, guid: fead8e44c2408c14fa02a1e579fd6c81, type: 3}
-    Amount: 20
+    Amount: 10
   - Object: {fileID: 527057930320455668, guid: 3b9a300319c977b4a8d9ac53c4bcf0cd, type: 3}
     Amount: 10
   - Object: {fileID: 527057930320455668, guid: a8fced6d0ccd3134eaa6d40492b32ae4, type: 3}
