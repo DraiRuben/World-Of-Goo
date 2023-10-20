@@ -31,6 +31,7 @@ public class Vaccum : MonoBehaviour
             Goo.s_goToFinishLine = false;
             m_finishGoo = null;
             m_magnet.enabled = false;
+            DisableVaccuum();
         }
     }
     private void Update()

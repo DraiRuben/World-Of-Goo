@@ -178,6 +178,7 @@ MonoBehaviour:
   m_minAttachDistance: 1
   m_maxAttachDistance: 4
   m_attachStrength: 20
+  m_gravity: 0.2
   m_movementSpeed: 1
   m_movementSpeedOnLevelEnd: 2
   m_connectionPrefab: {fileID: 8332312455515233139, guid: 311285963af29214ea9cf42769e4298f, type: 3}

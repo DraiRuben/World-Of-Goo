@@ -24,7 +24,8 @@ public class Goo : MonoBehaviour
     public bool m_isSelected = false;
     [HideInInspector]
     public Rigidbody2D m_rb;
-
+    [HideInInspector]
+    public bool isDying = false;
     [SerializeField]
     private protected bool m_isBuildableOn = true;
     [SerializeField]
@@ -37,6 +38,8 @@ public class Goo : MonoBehaviour
     private protected float m_maxAttachDistance = 4f;
     [SerializeField]
     private protected float m_attachStrength = 13f;
+    [SerializeField]
+    private protected float m_gravity = 1f;
     [SerializeField]
     private protected float m_movementSpeed = 1f;
     [SerializeField]
@@ -157,6 +160,7 @@ public class Goo : MonoBehaviour
         m_stayIdle = true;
         m_behaviour ??= StartCoroutine(Behaviour());
         m_rb.isKinematic = false;
+        m_rb.gravityScale = m_gravity;
         if (wasSelected)
         {
             StartCoroutine(SetSelectableLate());
@@ -340,14 +344,14 @@ public class Goo : MonoBehaviour
             //if it's on the structure it's kinematic
             if (m_rb.isKinematic)
             {
-                //normalizes so that the speed is always the same regardless of the segment's length
-
-                if (m_pathTarget == null || m_pathOrigin == null || Vector2.Distance(transform.position, m_pathTarget.transform.position) < 0.1f)
+                if (m_pathTarget == null || m_pathTarget.isDying ||m_pathTarget.m_isSelected
+                    || m_pathOrigin == null || m_pathOrigin.isDying || m_pathOrigin.m_isSelected
+                    || Vector2.Distance(transform.position, m_pathTarget.transform.position) < 0.1f)
                 {
                     m_movementTimer = 0f;
                     if (!FindNextTarget()) break;
                 }
-                else
+                else if (!m_pathOrigin.isDying && !m_pathTarget.isDying)
                 {
                     m_rb.MovePosition(Vector3.Lerp(m_pathOrigin.transform.position, m_pathTarget.transform.position, m_movementTimer));
                 }
@@ -361,14 +365,14 @@ public class Goo : MonoBehaviour
             //if it's not kinematic then it's on the ground
             else
             {
-                if (!m_stayIdle)
+                if (!m_stayIdle && m_pathOrigin != null && m_pathTarget != null)
                     m_rb.velocity = new Vector2(Mathf.Sign(m_pathTarget.transform.position.x - transform.position.x) * 3 * m_movementSpeed, m_rb.velocity.y);
                 TryGetPath();
             }
 
             yield return new WaitForFixedUpdate();
         }
-        m_rb.gravityScale = 1f;
+        m_rb.gravityScale = m_gravity;
         m_behaviour = null;
     }
     //I don't remember why I wanted it to return a bool, it might be useless, but it works still, so might as well not touch it
@@ -395,28 +399,31 @@ public class Goo : MonoBehaviour
         }
         else
         {
-            List<Goo> valid = m_pathOrigin.GetFilteredConnections();
-            m_pathTarget = valid[Random.Range(0, valid.Count)];
+            if (m_pathOrigin != null)
+            {
+                List<Goo> valid = m_pathOrigin.GetFilteredConnections();
+                if (valid.Count > 0)
+                m_pathTarget = valid[Random.Range(0, valid.Count-1)];
+            }
+            
 
             //if there's still no valid target, just reset to bottom left of the starting structure, otherwise idk, just grab the goo and put it back yourself
-            if (m_pathTarget == null)
+            /*if (m_pathTarget == null)
             {
                 m_isSelected = false;
                 m_rb.isKinematic = false;
                 m_pathTarget = PathFinder.Instance.transform.parent.GetChild(0).GetComponent<Goo>();
 
-            }
+            }*/
         }
-
-        //if the target got destroyed, this means the connection we're on is also destroyed, so we need to fall
-        if (m_pathTarget == null)
+        //if the target got destroyed or selected, this means the connection we're on is invalid, so we need to fall
+        if (m_pathTarget == null || m_pathTarget.isDying || m_pathTarget.m_isSelected
+            || m_pathOrigin == null||m_pathOrigin.isDying||m_pathOrigin.m_isSelected)
         {
-            m_isSelected = false;
-            m_rb.isKinematic = false;
-            m_rb.gravityScale = 1f;
+            MoveOutOfStructure(false);
             m_pathTarget = PathFinder.Instance.transform.parent.GetChild(0).GetComponent<Goo>();
-
         }
+
         return true;
     }
     private protected void SetupPreviewer(Goo anchorPoint)
@@ -527,8 +534,10 @@ public class Goo : MonoBehaviour
             foreach (DistanceJoint2D dist in m_distanceJoints)
                 dist.enabled = false;
 
-            if(destroyAfter)
+            if (destroyAfter)
+            {
                 Die();
+            }
             else
             {
                 List<Connection> allChildren = transform.Cast<Transform>().Select(t => t.GetComponent<Connection>()).ToList();
@@ -543,10 +552,11 @@ public class Goo : MonoBehaviour
         else
         {
             //find the joint that's connected to the thing to remove, might need to do the check for the balloon's joint as well
-            SpringJoint2D result = m_springJoints.Find(x => x.connectedBody == _toRemove);
+            SpringJoint2D result = m_springJoints.Find(x => x.connectedBody == _toRemove.m_rb);
             if (result != null)
             {
                 result.connectedBody = null;
+                result.enabled = false;
             }
             m_connections.Remove(_toRemove);
 
@@ -557,7 +567,6 @@ public class Goo : MonoBehaviour
                 {
                     //O B L I T E R A T E   T H E  C H I L D
                     Destroy(child.gameObject);
-                    break;
                 }
             }
         }
@@ -566,7 +575,7 @@ public class Goo : MonoBehaviour
         {
             m_isUsed = false;
             m_animator.enabled = true;
-            MoveOutOfStructure();
+            MoveOutOfStructure(false);
         }
     }
     //same principle as the previous one but by using a line as reference
@@ -604,6 +613,7 @@ public class Goo : MonoBehaviour
     }
     private protected IEnumerator PlanDestruction(bool giveScore = true)
     {
+        isDying = true;
         if (giveScore)
         {
             m_animator.SetBool("Die", true);
@@ -615,6 +625,10 @@ public class Goo : MonoBehaviour
         }
         else
         {
+            //destroys all connections
+            foreach (Transform child in transform)
+                Destroy(child.gameObject);
+
             GetComponent<SpriteRenderer>().enabled = false;
             GetComponent<CircleCollider2D>().enabled = false;
             m_deathAudio.Play();
@@ -625,7 +639,9 @@ public class Goo : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.collider.CompareTag("Ground"))
+        {
             m_stayIdle = false;
+        }
     }
     //Some extension like methods
     //used for end of level
