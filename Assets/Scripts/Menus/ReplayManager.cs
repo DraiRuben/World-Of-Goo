@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -20,33 +22,42 @@ public class ReplayManager : MonoBehaviour
     [SerializeField]
     private List<ReplayButton> buttonList;
 
+    private JsonDataService m_saver = new();
+
     private void Start()
     {
         //Sets the text of all buttons for the level Replay
-        int HighestUnlockedLevel = PlayerPrefs.GetInt("HighestUnlockedLevel");
-        for (int i = 1; i <= SceneManager.sceneCountInBuildSettings - 2; i++)
+        string path = Application.persistentDataPath + "/UnlockedLevels.json";
+        int HighestUnlockedLevel = 3;
+        if (File.Exists(path))
         {
-            if (HighestUnlockedLevel <= i)
+            HighestUnlockedLevel = m_saver.LoadData<UnlockedLevels>("UnlockedLevels").m_easy.Last();
+        }
+        for (int i = 0; i < SceneManager.sceneCountInBuildSettings - 2; i++)
+        {
+            if (i+3>HighestUnlockedLevel)
             {
-                buttonList[i - 1].m_button.interactable = false;
+                buttonList[i].m_button.interactable = false;
 
-                buttonList[i - 1].m_Text.text = buttonList[i - 1].m_difficultySettings.m_levelName + " Locked";
+                buttonList[i].m_Text.text = buttonList[i].m_difficultySettings.m_levelName + " Locked";
             }
             else
             {
-                //for some reason it give the ref to i as an index, instead of the value, so it fucks everything and I need to do a local copy of it, that somehow works
-                int temp = i - 1;
-                buttonList[i - 1].m_Text.text = buttonList[temp].m_difficultySettings.m_levelName;
-                buttonList[i - 1].m_button.onClick.AddListener(()
-                    => OpenDifficultyOptions(buttonList[temp].m_difficultySettings));
+                buttonList[i].m_Text.text = buttonList[i].m_difficultySettings.m_levelName;
+                int iBis = i;
+                buttonList[i].m_button.onClick.AddListener(()
+                    => OpenDifficultyOptions(buttonList[iBis].m_difficultySettings));
             }
         }
     }
-    private void OpenDifficultyOptions(DifficultySettings settings)
+    public void OpenDifficultyOptions(DifficultySettings settings)
     {
-        m_difficultyDisplayer.m_settings = settings;
+        if (!DifficultyDisplayer.instance.enabled)
+        {
+            m_difficultyDisplayer.m_settings = settings;
+            m_difficultyDisplayer.gameObject.SetActive(true);
+        }
 
-        m_difficultyDisplayer.gameObject.SetActive(true);
 
     }
 }

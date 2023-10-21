@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static Unity.Burst.Intrinsics.X86.Avx;
 
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(Rigidbody2D))]
@@ -13,6 +12,7 @@ public class Goo : MonoBehaviour
     //I shall make multiple scripts for each function when I'll have up to the 7th level and the reusable goos since this would take a lot of time with the special goos inheriting from this
     public static bool s_isThereAGooSelected;
     public static bool s_goToFinishLine = false;
+    public static int s_moves = 0;
 
     public int m_exitCloseness = -1;
     public bool m_stayIdle = false;
@@ -148,6 +148,8 @@ public class Goo : MonoBehaviour
             {
                 RemovePointFromStructure(this, false);
                 EmptyAnchors();
+                s_moves++;
+
 
             }
 
@@ -204,6 +206,7 @@ public class Goo : MonoBehaviour
         {
             PlaceConnection(filteredAnchors, i);
         }
+        s_moves++;
         m_animator.enabled = false;
         m_isUsed = true;
         m_isSelected = false;
@@ -552,6 +555,7 @@ public class Goo : MonoBehaviour
                 foreach(var connector in allChildren)
                     Destroy(connector.gameObject);
 
+                if(s_goToFinishLine)
                 PathFinder.Instance.SetClosenessToExit(Vaccuum.instance.m_finishGoo.GetComponent<Goo>(), 0);
             }
 

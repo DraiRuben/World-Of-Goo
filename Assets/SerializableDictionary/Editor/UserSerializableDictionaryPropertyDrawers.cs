@@ -1,9 +1,9 @@
 ﻿using UnityEditor;
 [CustomPropertyDrawer(typeof(IndexDiffDictionary))]
-[CustomPropertyDrawer(typeof(GOGOArrayDictionary))]
+[CustomPropertyDrawer(typeof(IndexSpawnDictionary))]
 public class AnySerializableDictionaryPropertyDrawer : SerializableDictionaryPropertyDrawer { }
 
 
 
-[CustomPropertyDrawer(typeof(GOArrayStorage))]
+
 public class AnySerializableDictionaryStoragePropertyDrawer : SerializableDictionaryStoragePropertyDrawer { }

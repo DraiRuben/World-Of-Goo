@@ -1,4 +1,5 @@
 using System.Collections;
+using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -16,6 +17,8 @@ public class SceneChanger : MonoBehaviour
     private AudioClip m_Close;
 
     public static SceneChanger instance;
+
+    private JsonDataService m_saver = new();
     private void Awake()
     {
         if (instance == null) instance = this;
@@ -40,16 +43,24 @@ public class SceneChanger : MonoBehaviour
     public void NewGame(string sceneName)
     {
         StartCoroutine(LoadLevelAsyncString((sceneName)));
-        float volume = 1f;
-        if (PlayerPrefs.HasKey("MainVolume"))
+        string path = Application.persistentDataPath + "/Level ";
+
+        //deletes every score & unlocked levels from memory
+        for (int i = 0; i < SceneManager.sceneCount - 2; i++)
         {
-            volume = PlayerPrefs.GetFloat("MainVolume");
+            if (!File.Exists(path + i+".json"))
+                File.Delete(path + i);
         }
-        PlayerPrefs.DeleteAll();
-        PlayerPrefs.SetFloat("MainVolume", volume);
+        path = Application.persistentDataPath + "/UnlockedLevels.json";
+        if (!File.Exists(path))
+            File.Delete(path);
+
+        UnlockedLevels unlocked = new();
+        unlocked.m_easy.Add(3);
+        m_saver.SaveData("UnlockedLevels", unlocked);
 
     }
-    
+
     private IEnumerator LoadLevelAsyncInt(int sceneIndex)
     {
         ReverseCurtainState();
