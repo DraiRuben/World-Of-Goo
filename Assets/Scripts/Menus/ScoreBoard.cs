@@ -20,12 +20,18 @@ public class ScoreBoard : MonoBehaviour
     private Scrollbar m_scrollbar;
 
     private JsonDataService m_saver = new();
+    private Animator m_animator;
 
     public DifficultySettings m_chosenLevelDifficulty;
 
     private LevelStats m_levelStats;
+    private void Awake()
+    {
+        m_animator = GetComponent<Animator>();
+    }
     private void OnEnable()
     {
+        m_animator.SetBool("Show", true);
         EventSystem.current.SetSelectedGameObject(m_scrollbar.gameObject);
         m_levelNameText.text = m_chosenLevelDifficulty.m_levelName + " "+ m_chosenLevelDifficulty.m_chosenDiff.ToString();
         //fill up the scoreboard
@@ -100,6 +106,12 @@ public class ScoreBoard : MonoBehaviour
 
     public void Back()
     {
+        StartCoroutine(Close());
+    }
+    private IEnumerator Close()
+    {
+        m_animator.SetBool("Show", false);
+        yield return new WaitForSecondsRealtime(0.40f);
         gameObject.SetActive(false);
     }
 }

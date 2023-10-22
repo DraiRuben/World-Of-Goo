@@ -88,14 +88,13 @@ GameObject:
   - component: {fileID: 1419734770995282000}
   - component: {fileID: 5267506677091203408}
   - component: {fileID: 1797476631665761143}
-  - component: {fileID: 2059530331402882903}
   m_Layer: 5
   m_Name: ScoreBoard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &7459162994103714136
 RectTransform:
   m_ObjectHideFlags: 0
@@ -179,23 +178,6 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &2059530331402882903
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 933039225021523584}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: afb4827a7b187b7499307c58c5f5be31, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_levelNameText: {fileID: 1508550363925475545}
-  m_panel: {fileID: 310777947385273522}
-  m_linePrefab: {fileID: 7187892061269934070, guid: c081c0eb3a6a43e47903cc78fc50b6cd, type: 3}
-  m_scrollbar: {fileID: 7015097902610118688}
-  m_chosenLevelDifficulty: {fileID: 0}
 --- !u!1 &1797807834296766896
 GameObject:
   m_ObjectHideFlags: 0
@@ -363,7 +345,7 @@ GameObject:
   - component: {fileID: 4867034374630293650}
   - component: {fileID: 3596988317343111574}
   m_Layer: 5
-  m_Name: MainMenu
+  m_Name: Back
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -470,7 +452,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2059530331402882903}
+      - m_Target: {fileID: 5230526543015702857}
         m_TargetAssemblyTypeName: ScoreBoard, Assembly-CSharp
         m_MethodName: Back
         m_Mode: 1
@@ -624,7 +606,7 @@ RectTransform:
   m_Father: {fileID: 7024119017122575344}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -903,7 +885,7 @@ GameObject:
   - component: {fileID: 3707326684497793869}
   - component: {fileID: 1508550363925475545}
   m_Layer: 5
-  m_Name: Difficulty
+  m_Name: Title
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1070,13 +1052,15 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2297865073002368839}
+  - component: {fileID: 5230526543015702857}
+  - component: {fileID: 5291826382662123715}
   m_Layer: 5
   m_Name: Root
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2297865073002368839
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1102,6 +1086,44 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &5230526543015702857
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4059102123799080190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afb4827a7b187b7499307c58c5f5be31, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_levelNameText: {fileID: 1508550363925475545}
+  m_panel: {fileID: 310777947385273522}
+  m_linePrefab: {fileID: 7187892061269934070, guid: c081c0eb3a6a43e47903cc78fc50b6cd, type: 3}
+  m_scrollbar: {fileID: 7015097902610118688}
+  m_chosenLevelDifficulty: {fileID: 0}
+--- !u!95 &5291826382662123715
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4059102123799080190}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: bd5bf71c6a892624799f2378be4b987a, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &4531266454227895795
 GameObject:
   m_ObjectHideFlags: 0
@@ -1114,7 +1136,7 @@ GameObject:
   - component: {fileID: 9140695246943079824}
   - component: {fileID: 4727132046463756925}
   m_Layer: 5
-  m_Name: DifficultyBackground
+  m_Name: TitleBackground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1347,7 +1369,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -23.166992, y: -146.1104}
+  m_AnchoredPosition: {x: -23.166992, y: -0.000030517578}
   m_SizeDelta: {x: 0.042236328, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &4788496198176069344
@@ -1750,13 +1772,13 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 465445155479463659}
   m_HandleRect: {fileID: 8233730203313610741}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 2831456313546642839}
         m_TargetAssemblyTypeName: UnityEngine.UI.ScrollRect, UnityEngine.UI
         m_MethodName: set_verticalNormalizedPosition
         m_Mode: 0
