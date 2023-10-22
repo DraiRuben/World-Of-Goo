@@ -44,7 +44,7 @@ public class NextLevel : MonoBehaviour
         SceneChanger.instance.ReverseCurtainState();
         yield return new WaitForSecondsRealtime(1.3f);
         Score.Instance.SaveScore();
-        DifficultyDisplayer.instance.gameObject.SetActive(true);
+        StatsEndLevel.instance.gameObject.SetActive(true);
 
     }
 }

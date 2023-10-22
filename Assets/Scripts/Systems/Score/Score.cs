@@ -20,10 +20,12 @@ public class Score : MonoBehaviour
     public int m_totalSpawnedGoos = 0;
     [HideInInspector]
     public int m_minScoreForWin = 0;
+    [HideInInspector]
+    public float m_timeSinceLevelStart = 0f;
 
     public UnityEvent scoreChanged;
     private int m_score = 0;
-    private float m_timeSinceLevelStart = 0f;
+
 
     private JsonDataService m_saver = new();
     public int m_Score

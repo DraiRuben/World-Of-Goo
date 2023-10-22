@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class Cursor : MonoBehaviour
@@ -82,16 +83,20 @@ public class Cursor : MonoBehaviour
     }
     private IEnumerator FollowMouse()
     {
+        RectTransform canvasRectTransform = transform.parent.GetComponent<RectTransform>();
+        Vector2 viewportPos;
         while (true)
         {
             if (m_selectedGoo == null)
             {
-                m_cursorTransform.anchoredPosition = Input.mousePosition;
+                viewportPos = Camera.main.ScreenToViewportPoint(Input.mousePosition);
+                m_cursorTransform.anchoredPosition = new Vector2(viewportPos.x*canvasRectTransform.sizeDelta.x,viewportPos.y*canvasRectTransform.sizeDelta.y);
                 yield return null;
             }
             else
             {
-                m_cursorTransform.anchoredPosition = Camera.main.WorldToScreenPoint(m_selectedGoo.m_rb.position);
+                viewportPos = Camera.main.WorldToViewportPoint(m_selectedGoo.m_rb.position);
+                m_cursorTransform.anchoredPosition = new Vector2(viewportPos.x * canvasRectTransform.sizeDelta.x, viewportPos.y * canvasRectTransform.sizeDelta.y);
                 yield return null;
             }
 

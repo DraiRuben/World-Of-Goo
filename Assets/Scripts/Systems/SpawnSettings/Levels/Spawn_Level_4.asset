@@ -21,3 +21,4 @@ MonoBehaviour:
     Amount: 2
   - Object: {fileID: 527057930320455668, guid: 8bef3f2eaf10fab45b644a4904e3a864, type: 3}
     Amount: 2
+  m_additionnalGoos: 20
