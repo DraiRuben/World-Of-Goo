@@ -777,7 +777,7 @@ SpriteShapeRenderer:
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
+  m_DynamicOccludee: 0
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
@@ -985,7 +985,7 @@ SpriteShapeRenderer:
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
+  m_DynamicOccludee: 0
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
@@ -6486,6 +6486,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DifficultySelectionLevel
       objectReference: {fileID: 0}
+    - target: {fileID: 5930334780021740560, guid: 8353b6e7df762a644b58d535e43b0d49, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7745795268073577715, guid: 8353b6e7df762a644b58d535e43b0d49, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -7000,6 +7004,10 @@ PrefabInstance:
       propertyPath: m_AnchorMin.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 423633694164408239, guid: 160f5307152bb554383bca2aa877bd8a, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 2.1000004
+      objectReference: {fileID: 0}
     - target: {fileID: 1234757606809830006, guid: 160f5307152bb554383bca2aa877bd8a, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -7092,6 +7100,10 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5661109621502628671, guid: 160f5307152bb554383bca2aa877bd8a, type: 3}
+      propertyPath: m_PixelsPerUnitMultiplier
+      value: 1.1
+      objectReference: {fileID: 0}
     - target: {fileID: 7022727255375750802, guid: 160f5307152bb554383bca2aa877bd8a, type: 3}
       propertyPath: m_difficulty
       value: 
@@ -7104,6 +7116,10 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 2746273159953767038}
+    - target: {fileID: 7764200937934265261, guid: 160f5307152bb554383bca2aa877bd8a, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
