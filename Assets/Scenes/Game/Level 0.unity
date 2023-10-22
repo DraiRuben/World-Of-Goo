@@ -11201,30 +11201,6 @@ PrefabInstance:
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 769189149}
-    - target: {fileID: 5728411691473005661, guid: 160f5307152bb554383bca2aa877bd8a, type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5728411691473005661, guid: 160f5307152bb554383bca2aa877bd8a, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5728411691473005661, guid: 160f5307152bb554383bca2aa877bd8a, type: 3}
-      propertyPath: m_AnchorMin.x
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5728411691473005661, guid: 160f5307152bb554383bca2aa877bd8a, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5728411691473005661, guid: 160f5307152bb554383bca2aa877bd8a, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5728411691473005661, guid: 160f5307152bb554383bca2aa877bd8a, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 7022727255375750802, guid: 160f5307152bb554383bca2aa877bd8a, type: 3}
       propertyPath: m_difficulty
       value: 

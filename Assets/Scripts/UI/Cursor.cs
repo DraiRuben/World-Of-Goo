@@ -79,7 +79,6 @@ public class Cursor : MonoBehaviour
 
         }
 
-
     }
     private IEnumerator FollowMouse()
     {

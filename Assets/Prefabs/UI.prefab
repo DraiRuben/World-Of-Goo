@@ -1991,6 +1991,7 @@ MonoBehaviour:
   m_difficulty: {fileID: 11400000, guid: 4c639f98cce900c47bc6daecb58a31ee, type: 2}
   m_totalSpawnedGoos: 0
   m_minScoreForWin: 0
+  m_timeSinceLevelStart: 0
   scoreChanged:
     m_PersistentCalls:
       m_Calls: []
