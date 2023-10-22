@@ -56,7 +56,7 @@ public class SceneChanger : MonoBehaviour
             File.Delete(path);
 
         UnlockedLevels unlocked = new();
-        unlocked.m_easy.Add(3);
+        unlocked.m_easy.Add(2);
         m_saver.SaveData("UnlockedLevels", unlocked);
 
     }

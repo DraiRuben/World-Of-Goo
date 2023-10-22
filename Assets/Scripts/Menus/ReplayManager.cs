@@ -28,14 +28,14 @@ public class ReplayManager : MonoBehaviour
     {
         //Sets the text of all buttons for the level Replay
         string path = Application.persistentDataPath + "/UnlockedLevels.json";
-        int HighestUnlockedLevel = 3;
+        int HighestUnlockedLevel = 2;
         if (File.Exists(path))
         {
             HighestUnlockedLevel = m_saver.LoadData<UnlockedLevels>("UnlockedLevels").m_easy.Last();
         }
         for (int i = 0; i < SceneManager.sceneCountInBuildSettings - 2; i++)
         {
-            if (i+3>HighestUnlockedLevel)
+            if (i+2>HighestUnlockedLevel)
             {
                 buttonList[i].m_button.interactable = false;
 
@@ -52,7 +52,7 @@ public class ReplayManager : MonoBehaviour
     }
     public void OpenDifficultyOptions(DifficultySettings settings)
     {
-        if (!DifficultyDisplayer.instance.enabled)
+        if (!m_difficultyDisplayer.gameObject.activeSelf)
         {
             m_difficultyDisplayer.m_settings = settings;
             m_difficultyDisplayer.gameObject.SetActive(true);

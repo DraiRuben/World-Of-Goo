@@ -10,6 +10,7 @@ public class DifficultyDisplayer : MonoBehaviour
 {
     public static DifficultyDisplayer instance;
     public DifficultySettings m_settings;
+
     [SerializeField]
     private TextMeshProUGUI m_levelName;
     [SerializeField]
@@ -29,10 +30,15 @@ public class DifficultyDisplayer : MonoBehaviour
     [SerializeField]
     private AudioClip m_woodHigh;
 
-    private AudioSource m_audioSource;
-    private Animator m_animator;
     [SerializeField]
     private bool m_disableOnLoad = true;
+    [SerializeField]
+    private ScoreBoard m_scoreBoard;
+
+    private AudioSource m_audioSource;
+    private Animator m_animator;
+
+
 
     private ColorBlock m_pressedButtonColors;
     private ColorBlock m_unpressedButtonColors;
@@ -125,7 +131,11 @@ public class DifficultyDisplayer : MonoBehaviour
     {
         StartCoroutine(StartLevel());
     }
-
+    public void ShowScoreboard()
+    {
+        m_scoreBoard.m_chosenLevelDifficulty = m_settings;
+        m_scoreBoard.gameObject.SetActive(true);
+    }
     public void Back()
     {
         StartCoroutine(GoBack());

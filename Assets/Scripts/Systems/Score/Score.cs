@@ -67,7 +67,7 @@ public class Score : MonoBehaviour
         string levelName = SceneManager.GetActiveScene().name;
         if (levelName.Contains("Level"))
         {
-            string path = Application.persistentDataPath + $"/{levelName}-Scores.json";
+            string path = Application.persistentDataPath + $"/{levelName}.json";
             LevelData data = new LevelData(levelName, m_minScoreForWin,m_totalSpawnedGoos, m_score, Goo.s_moves, m_timeSinceLevelStart);
             if (!File.Exists(path))
             {
@@ -89,7 +89,9 @@ public class Score : MonoBehaviour
                 UnlockedLevels unlockedLevels = new UnlockedLevels();
                 unlockedLevels.m_easy.Add(SceneManager.GetActiveScene().buildIndex);
                 unlockedLevels.m_easy.Add(SceneManager.GetActiveScene().buildIndex +1);
-                unlockedLevels.GetNextDifficulty(m_difficulty.m_chosenDiff).Add(SceneManager.GetActiveScene().buildIndex);
+                if (unlockedLevels.GetNextDifficulty(m_difficulty.m_chosenDiff) != null)
+                    unlockedLevels.GetNextDifficulty(m_difficulty.m_chosenDiff).Add(SceneManager.GetActiveScene().buildIndex);
+
                 m_saver.SaveData("UnlockedLevels",unlockedLevels);
             }
             else
@@ -97,10 +99,14 @@ public class Score : MonoBehaviour
                 UnlockedLevels unlockedLevels = m_saver.LoadData<UnlockedLevels>("UnlockedLevels");
                 if (!unlockedLevels.m_easy.Contains(SceneManager.GetActiveScene().buildIndex + 1))
                 {
-                    unlockedLevels.GetNextDifficulty(m_difficulty.m_chosenDiff).Add(SceneManager.GetActiveScene().buildIndex);
                     unlockedLevels.m_easy.Add(SceneManager.GetActiveScene().buildIndex + 1);
-                    m_saver.SaveData("UnlockedLevels", unlockedLevels);
                 }
+                if (unlockedLevels.GetNextDifficulty(m_difficulty.m_chosenDiff)!= null 
+                    && !unlockedLevels.GetNextDifficulty(m_difficulty.m_chosenDiff).Contains(SceneManager.GetActiveScene().buildIndex))
+                {
+                    unlockedLevels.GetNextDifficulty(m_difficulty.m_chosenDiff).Add(SceneManager.GetActiveScene().buildIndex);
+                }
+                m_saver.SaveData("UnlockedLevels", unlockedLevels);
             }
 
         }
