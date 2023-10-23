@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -7,11 +8,10 @@ public class Goo_Balloon : Goo
     [SerializeField]
     private float LiftStrength = 1.0f;
 
-
+    //constantly applies an upward force when placed
     public override IEnumerator DoThingIfUsed()
     {
-        yield return null;
-        s_isThereAGooSelected = false;
+        StartCoroutine(SetSelectableLate());
         while (m_isUsed)
         {
             m_rb.velocity += new Vector2(0, LiftStrength);
@@ -20,34 +20,47 @@ public class Goo_Balloon : Goo
             yield return new WaitForFixedUpdate();
         }
     }
+    //only difference with parent's one is the coroutine call
     public override void Use()
     {
-        //stops select and anchorpoint testing routines
-        //manages flags
-        //Places goo on structure
-        //starts coroutine that does whatever I want when it's placed on a structure like a balloon lifing up
 
-        //remove all null refs
-        var filteredAnchors = m_validAnchors.ToList();
+        List<Goo> filteredAnchors = m_validAnchors.ToList();
         filteredAnchors.RemoveAll(x => x == null);
         for (int i = 0; i < filteredAnchors.Count; i++)
         {
-            PathFinder.Instance.Structure.vertices++;
-            m_distanceJoints[i].connectedBody = filteredAnchors[i].GetComponent<Rigidbody2D>();
-            m_distanceJoints[i].enabled = true;
-            m_distanceJoints[i].autoConfigureDistance = false;
-            var connection = Instantiate(m_connectionPrefab, transform.position, Quaternion.identity, transform);
-            connection.GetComponent<Connection>().m_target = filteredAnchors[i];
-            connection.GetComponent<Connection>().m_isInUse = true;
+            PlaceConnection(filteredAnchors, i);
         }
+        m_animator.enabled = false;
         m_isUsed = true;
         m_isSelected = false;
         StartCoroutine(AdaptConnectionLength());
         StartCoroutine(DoThingIfUsed());
+        m_buildAudio.Play();
     }
+    //only difference with the parent one is the type of joint used
+    private protected override void PlaceConnection(List<Goo> filteredAnchors, int i)
+    {
+        m_distanceJoints[i].connectedBody = filteredAnchors[i].m_rb;
+        m_distanceJoints[i].enabled = true;
+        if (m_connections.Count < i + 1)
+        {
+            m_connections.Add(filteredAnchors[i]);
+            filteredAnchors[i].m_connections.Add(this);
+        }
+        else
+        {
+            m_connections[i] = filteredAnchors[i];
+            filteredAnchors[i].m_connections.Add(this);
+        }
+        GameObject connection = Instantiate(m_connectionPrefab, transform.position, Quaternion.identity, transform);
+        connection.GetComponent<Connection>().IsInUse = true;
+        connection.transform.parent = transform;
+        connection.GetComponent<Connection>().m_target = filteredAnchors[i];
+    }
+    //already explicit enough, this just lengthens the string until the desired value
     private IEnumerator AdaptConnectionLength()
     {
-        while (Mathf.Abs(m_distanceJoints[0].distance - m_maxAttachDistance) > 0.4f)
+        while (m_isUsed && Mathf.Abs(m_distanceJoints[0].distance - m_maxAttachDistance) > 0.4f)
         {
             m_distanceJoints[0].distance += 2 * Time.fixedDeltaTime;
             yield return new WaitForFixedUpdate();

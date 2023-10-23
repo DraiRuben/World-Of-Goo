@@ -5,13 +5,14 @@ using UnityEngine;
 public class SpawnSettings : ScriptableObject
 {
     public List<Spawnable> Spawn;
+    public int m_additionnalGoos = 0;
     public int GetTotalGooAmount()
     {
         int total = 0;
-        foreach (var v in Spawn)
+        foreach (Spawnable v in Spawn)
             total += v.Amount;
 
-        return total;
+        return total + m_additionnalGoos;
     }
 }
 [Serializable]

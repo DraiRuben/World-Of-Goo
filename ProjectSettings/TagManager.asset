@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - Goo
+  - GooConnection
+  - Ground
+  - Electric
   layers:
   - Default
   - TransparentFX
@@ -16,9 +19,9 @@ TagManager:
   - CinemachineFollowTarget
   - Boundaries
   - GooConnection
-  - 
-  - 
-  - 
+  - GooConnectionPreviewer
+  - Pipe
+  - Activable
   - 
   - 
   - 

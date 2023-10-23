@@ -5,34 +5,45 @@ using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviour
 {
-    private bool Pause;
-
-    public void PauseResume(InputAction.CallbackContext ctx)
+    private bool m_pause;
+    private Animator m_animator;
+    private void Awake()
     {
-        if(ctx.performed)
-        {
-            Pause = !Pause;
-            Time.timeScale = Pause ? 0f : 1f;
-            if (Pause)
-                gameObject.SetActive(true);
-            else
-                StartCoroutine(DelayedDeactivation());
-
-            GetComponent<Animator>().SetBool("ShowMenu", Pause);
-        }
+        m_animator = GetComponent<Animator>();
     }
-    public void PauseResumeNoCallback()
+    public void OpenPauseMenu()
     {
-        Pause = !Pause;
-        Time.timeScale = Pause ? 0f : 1f;
-        if (Pause)
+        m_pause = !m_pause;
+        Time.timeScale = m_pause ? 0f : 1f;
+        if (m_pause)
             gameObject.SetActive(true);
         else
             StartCoroutine(DelayedDeactivation());
 
-        GetComponent<Animator>().SetBool("ShowMenu", Pause);
-        
+        m_animator.SetBool("ShowMenu", m_pause);
     }
+    //for ESC press
+    public void PauseResume(InputAction.CallbackContext ctx)
+    {
+        if (ctx.performed)
+        {
+            OpenPauseMenu();
+        }
+    }
+    //used by on screen button in the UI
+    public void PauseResumeNoCallback()
+    {
+        m_pause = !m_pause;
+        Time.timeScale = m_pause ? 0f : 1f;
+        if (m_pause)
+            gameObject.SetActive(true);
+        else
+            StartCoroutine(DelayedDeactivation());
+
+        m_animator.SetBool("ShowMenu", m_pause);
+
+    }
+    //so that it can play its animation
     private IEnumerator DelayedDeactivation()
     {
         yield return new WaitForSeconds(1);

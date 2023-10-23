@@ -12,6 +12,21 @@ EditorBuildSettings:
     path: Assets/Scenes/Menus/ScoreBoard.unity
     guid: a9b8293622f2d6545bfabe6d887e93cd
   - enabled: 1
+    path: Assets/Scenes/Game/Level 0.unity
+    guid: a38a5a374556c01419133df75e0bbc93
+  - enabled: 1
     path: Assets/Scenes/Game/Level 1.unity
     guid: 99d621f61e725514a9a795391e10e55d
+  - enabled: 1
+    path: Assets/Scenes/Game/Level 2.unity
+    guid: b4580f04292eabd46bb8d1c33c55413e
+  - enabled: 1
+    path: Assets/Scenes/Game/Level 3.unity
+    guid: 9f18a5ebf03859b4fb9a41b56efd4753
+  - enabled: 1
+    path: Assets/Scenes/Game/Level 4.unity
+    guid: b4b2711a564ef274abcfbda840ef7ee1
+  - enabled: 1
+    path: Assets/Scenes/Game/Level 5.unity
+    guid: db42331001bf7854997f1de6cf42f73e
   m_configObjects: {}

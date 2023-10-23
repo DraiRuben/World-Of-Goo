@@ -8,10 +8,11 @@ public class Goo_Sticky : Goo
     {
         if (m_canStick) m_rb.constraints = RigidbodyConstraints2D.FreezeAll;
     }
+    //not much to say, this just stops moving when it first collides with something by freezing itself
     public override IEnumerator DoThingIfUsed()
     {
+        StartCoroutine(SetSelectableLate());
         yield return null;
         m_canStick = true;
-        s_isThereAGooSelected = false;
     }
 }

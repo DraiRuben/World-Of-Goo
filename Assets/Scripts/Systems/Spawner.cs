@@ -9,11 +9,12 @@ public class Spawner : MonoBehaviour
     void Start()
     {
         Spawn = SpawnSettings.Spawn;
-        foreach (var v in Spawn)
+        foreach (Spawnable v in Spawn)
         {
             for (int i = 0; i < v.Amount; i++)
             {
-                Instantiate(v.Object, transform.position, Quaternion.identity);
+                GameObject goo = Instantiate(v.Object, transform.position, Quaternion.identity);
+                goo.GetComponent<Goo>().MoveOutOfStructure();
             }
         }
         Score.Instance.m_totalSpawnedGoos = SpawnSettings.GetTotalGooAmount();

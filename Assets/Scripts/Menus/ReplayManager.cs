@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -15,31 +17,47 @@ public class ReplayManager : MonoBehaviour
         public Button m_button;
         public TextMeshProUGUI m_Text;
         public DifficultySettings m_difficultySettings;
+
     }
     [SerializeField]
     private List<ReplayButton> buttonList;
 
+    private JsonDataService m_saver = new();
+
     private void Start()
     {
         //Sets the text of all buttons for the level Replay
-        int HighestUnlockedLevel = PlayerPrefs.GetInt("HighestUnlockedLevel");
-        for (int i = 1; i <= SceneManager.sceneCountInBuildSettings - 2; i++)
+        string path = Application.persistentDataPath + "/UnlockedLevels.json";
+        int HighestUnlockedLevel = 2;
+        if (File.Exists(path))
         {
-            buttonList[i - 1].m_Text.text = "Level " + i;
-            if (HighestUnlockedLevel <= i - 1)
+            HighestUnlockedLevel = m_saver.LoadData<UnlockedLevels>("UnlockedLevels").m_easy.Last();
+        }
+        for (int i = 0; i < SceneManager.sceneCountInBuildSettings - 2; i++)
+        {
+            if (i+2>HighestUnlockedLevel)
             {
-                buttonList[i - 1].m_button.interactable = false;
-                buttonList[i - 1].m_Text.text += ": Locked";
+                buttonList[i].m_button.interactable = false;
+
+                buttonList[i].m_Text.text = buttonList[i].m_difficultySettings.m_levelName + " Locked";
             }
             else
             {
-                buttonList[i - 1].m_button.onClick.AddListener(() => OpenDifficultyOptions(buttonList[i - 1].m_difficultySettings));
+                buttonList[i].m_Text.text = buttonList[i].m_difficultySettings.m_levelName;
+                int iBis = i;
+                buttonList[i].m_button.onClick.AddListener(()
+                    => OpenDifficultyOptions(buttonList[iBis].m_difficultySettings));
             }
         }
     }
-    private void OpenDifficultyOptions(DifficultySettings settings)
+    public void OpenDifficultyOptions(DifficultySettings settings)
     {
-        m_difficultyDisplayer.m_settings = settings;
-        m_difficultyDisplayer.gameObject.SetActive(true);
+        if (!m_difficultyDisplayer.gameObject.activeSelf)
+        {
+            m_difficultyDisplayer.m_settings = settings;
+            m_difficultyDisplayer.gameObject.SetActive(true);
+        }
+
+
     }
 }
