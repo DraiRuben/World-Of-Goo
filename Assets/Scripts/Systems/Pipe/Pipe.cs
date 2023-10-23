@@ -21,8 +21,9 @@ public class Pipe : MonoBehaviour
                 m_vaccum.m_finishGoo = collision.gameObject;
                 m_coroutine ??= StartCoroutine(TryEndLevel());
             }
-            else if (Vector2.Distance(transform.position, collision.transform.position) < Vector2.Distance(m_vaccum.m_finishGoo.transform.position, transform.position))//if we detected a closer target
+            else if (collision.gameObject != m_vaccum.m_finishGoo)
             {
+                m_vaccum.m_finishGoo = collision.gameObject;
                 PathFinder.Instance.SetClosenessToExit(collision.GetComponent<Goo>(), 0);
             }
         }
@@ -43,8 +44,9 @@ public class Pipe : MonoBehaviour
                 m_vaccum.m_finishGoo = collision.gameObject;
                 m_coroutine ??= StartCoroutine(TryEndLevel());
             }
-            else if(Vector2.Distance(transform.position,collision.transform.position)<Vector2.Distance(m_vaccum.m_finishGoo.transform.position,transform.position))//if we detected a closer target
+            else if (collision.gameObject != m_vaccum.m_finishGoo)
             {
+                m_vaccum.m_finishGoo = collision.gameObject;
                 PathFinder.Instance.SetClosenessToExit(collision.GetComponent<Goo>(), 0);
             }
 

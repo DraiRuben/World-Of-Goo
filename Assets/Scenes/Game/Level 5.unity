@@ -7208,7 +7208,7 @@ PrefabInstance:
     - target: {fileID: 7022727255375750802, guid: 160f5307152bb554383bca2aa877bd8a, type: 3}
       propertyPath: m_difficulty
       value: 
-      objectReference: {fileID: 11400000, guid: 76f9b45e61b2adf499cd39a991b8a5b7, type: 2}
+      objectReference: {fileID: 11400000, guid: 7e76aaa8515f2314bac23493de5e5ceb, type: 2}
     - target: {fileID: 7159470581247597612, guid: 160f5307152bb554383bca2aa877bd8a, type: 3}
       propertyPath: m_Name
       value: UI
