@@ -172,6 +172,7 @@ MonoBehaviour:
   m_connections: []
   m_isSelected: 0
   m_rb: {fileID: 0}
+  isDying: 0
   m_isBuildableOn: 0
   m_maxAllowedAnchorsAmount: 1
   m_minAllowedAnchorsAmount: 1
@@ -204,7 +205,7 @@ DistanceJoint2D:
   m_ConnectedAnchor: {x: 0, y: 0}
   m_AutoConfigureDistance: 1
   m_Distance: 4
-  m_MaxDistanceOnly: 0
+  m_MaxDistanceOnly: 1
 --- !u!95 &2304734836498418137
 Animator:
   serializedVersion: 5

@@ -171,12 +171,14 @@ MonoBehaviour:
   m_connections: []
   m_isSelected: 0
   m_rb: {fileID: 0}
+  isDying: 0
   m_isBuildableOn: 1
   m_maxAllowedAnchorsAmount: 5
   m_minAllowedAnchorsAmount: 2
   m_minAttachDistance: 1
   m_maxAttachDistance: 7
-  m_attachStrength: 10
+  m_attachStrength: 6
+  m_gravity: 1
   m_movementSpeed: 1
   m_movementSpeedOnLevelEnd: 2
   m_connectionPrefab: {fileID: 8332312455515233139, guid: b3c0af728fd7805488d8efdfbcccfc48, type: 3}

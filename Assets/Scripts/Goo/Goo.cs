@@ -88,6 +88,8 @@ public class Goo : MonoBehaviour
         for (int i = GetComponents<DistanceJoint2D>().Length; i < m_maxAllowedAnchorsAmount; i++)
         {
             DistanceJoint2D temp = gameObject.AddComponent<DistanceJoint2D>();
+            temp.maxDistanceOnly = true;
+
             temp.enabled = false;
         }
         m_distanceJoints = GetComponents<DistanceJoint2D>().ToList();

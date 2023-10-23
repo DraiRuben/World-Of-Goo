@@ -198,7 +198,7 @@ SpringJoint2D:
   m_AutoConfigureDistance: 0
   m_Distance: 2.4203305
   m_DampingRatio: 0
-  m_Frequency: 13
+  m_Frequency: 6
 --- !u!4 &2435863280709649673 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4017665154632792079, guid: 4ab2020716d741847afcd9e7fd8f748a, type: 3}
@@ -478,7 +478,7 @@ SpringJoint2D:
   m_AutoConfigureDistance: 0
   m_Distance: 2.512946
   m_DampingRatio: 0
-  m_Frequency: 13
+  m_Frequency: 6
 --- !u!1001 &5360432876613429434
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -587,7 +587,7 @@ SpringJoint2D:
   m_AutoConfigureDistance: 0
   m_Distance: 2.5094416
   m_DampingRatio: 0
-  m_Frequency: 13
+  m_Frequency: 6
 --- !u!114 &6845899681615451749 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1541796990499192543, guid: 4ab2020716d741847afcd9e7fd8f748a, type: 3}
